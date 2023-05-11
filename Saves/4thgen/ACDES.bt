@@ -1,0 +1,19 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.1 Binary Template
+//
+//      File: ACDES.bt
+//   Authors: WarpZephyr
+//   Version: 
+//   Purpose: Armored Core 4thgen currently loaded player design file.
+//  Category: 
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+#include "Design.bt"
+BigEndian();
+
+//------------------------------------------------
+
+Design design;

@@ -1,0 +1,193 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.1 Binary Template
+//
+//      File: GPROG.bt
+//   Authors: WarpZephyr
+//   Version: 
+//   Purpose: Armored Core For Answer Save Files
+//  Category: 
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+BigEndian();
+local ulong NORMAL_MISSION_COUNT = 42;
+local ulong HARD_MISSION_COUNT = 42;
+local ulong COLLARED_MATCH_COUNT = 30;
+local ulong ORCA_MATCH_COUNT = 12;
+
+enum <ushort> PartUnlockStatus
+{
+    Hidden = 0,
+    InShop = 4096,
+    Owned = 8192
+};
+
+// Not done
+enum <ubyte> PartCategory
+{
+    Head = 0,
+    Core = 1,
+};
+
+//------------------------------------------------
+
+typedef struct
+{
+    short unk00;
+    short unk02;
+    FSkip(72);
+} Header <bgcolor=cRed>;
+
+typedef struct
+{
+    short unk00;
+    short unk02;
+    short unk04;
+    short unk06;
+    short unk08;
+    short unk0A;
+    short unk0C;
+    short unk0E;
+    int completedMissions;
+} PlayerData <bgcolor=cLtGreen>;
+
+typedef struct
+{
+    short missionIndex; // Why tho?
+} Struct2 <bgcolor=cGreen, read=ReadStruct2>;
+
+string ReadStruct2(Struct2 &struct2)
+{
+    string str;
+    return SPrintf(str, "%i", struct2.missionIndex);
+}
+
+typedef struct
+{
+    byte missionRanking;
+} MissionRanking <bgcolor=cDkGreen, read=ReadMissionRanking, optimize=false>;
+
+string ReadMissionRanking(MissionRanking &ranking)
+{
+    string str;
+    switch(ranking.missionRanking)
+    {
+        case -1: str = "Not completed"; break;
+        case 0: str = "E rank"; break;
+        case 1: str = "D rank"; break;
+        case 2: str = "C rank"; break;
+        case 3: str = "B rank"; break;
+        case 4: str = "A rank"; break;
+        case 5: str = "S rank"; break;
+        default: Assert(false); break; // Not a save file
+    }
+    return str;
+}
+
+typedef struct
+{
+    byte matchWon;
+} Match <bgcolor=cLtBlue, read=ReadMatch, optimize=false>;
+
+string ReadMatch(Match &match)
+{
+    string str;
+    switch(match.matchWon)
+    {
+        case 0: str = "Match not won"; break;
+        case 1: str = "Match won"; break;
+        default: Assert(false); break; // Not a save file
+    }
+    return str;
+}
+
+typedef struct
+{
+    ubyte unk00;
+    Match matchesWonCollared[COLLARED_MATCH_COUNT];
+    Match matchesWonOrca[ORCA_MATCH_COUNT];
+    ubyte unk2B;
+    uint unk2C <hidden=true>; Assert(unk2C == 0);
+    ubyte unkFlag;
+    ubyte orcaUnlocked;
+    ushort unk32 <hidden=true>; Assert(unk32 == 0);
+    uint unk34 <hidden=true>; Assert(unk34 == 0);
+    uint unk38 <hidden=true>; Assert(unk38 == 0);
+    uint unk3C <hidden=true>; Assert(unk3C == 0);
+} Matches <bgcolor=cBlue, read=ReadMatches>;
+
+string ReadMatches(Matches &matches)
+{
+    string str;
+    switch(matches.orcaUnlocked)
+    {
+        case 0: str = "Orca Hidden"; break;
+        case 1: str = "Orca Unlocked"; break;
+        default: Assert(false); break; // Not a save file
+    }
+    return str;
+}
+
+typedef struct
+{
+    MissionRanking missionRankingsNormal[NORMAL_MISSION_COUNT];
+    MissionRanking missionRankingsHard[HARD_MISSION_COUNT];
+    Matches matches;
+} Rankings <read=ReadRankings>;
+
+string ReadRankings(Rankings &rankings)
+{
+    return ReadMatches(rankings.matches);
+}
+
+typedef struct
+{
+    ubyte partCategory;
+    ubyte unk01 <hidden=true>; Assert(unk01 == 0);
+    ushort partID;
+    PartUnlockStatus partUnlockStatus;
+} Part <bgcolor=cYellow, read=ReadPart, optimize=false>;
+
+string ReadPart(Part &part)
+{
+    string str;
+    string unlockStatus;
+    switch(part.partUnlockStatus)
+    {
+        case Hidden:
+            unlockStatus = "Hidden";
+            break;
+        case InShop:
+            unlockStatus = "InShop";
+            break;
+        case Owned:
+            unlockStatus = "Owned";
+            break;
+        default:
+            Assert(false);
+            break;
+    }
+    return SPrintf(str, "%i / %i / %s", part.partCategory, part.partID, unlockStatus);
+}
+
+typedef struct
+{
+    int count;
+    Part parts[count];
+} Parts <bgcolor=cLtYellow, read=ReadParts>;
+
+string ReadParts(Parts &parts)
+{
+    string str;
+    return SPrintf(str, "%i", parts.count);
+}
+
+//------------------------------------------------
+
+Header header;
+PlayerData playerData;
+Struct2 struct2[42];
+Rankings rankings;
+Parts parts;

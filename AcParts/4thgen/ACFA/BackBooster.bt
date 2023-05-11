@@ -1,0 +1,25 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.1 Binary Template
+//
+//      File: BackBooster.bt
+//   Authors: WarpZephyr
+//   Version: 1.1.0
+//   Purpose: Reading Armored Core: For Answer Back Booster parts.
+//  Category: 
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+BigEndian();
+
+//------------------------------------------------
+
+typedef struct 
+{
+    BoosterComponent Horizontal_Boost;
+    BoosterComponent Quick_Boost;
+    ubyte Quick_Reload_Time;
+    ubyte unk21; // Unknown, is always 0
+    ushort unk22; // Unknown, is always 0, might be two bytes instead of a short from placement
+} Back_Booster <bgcolor=cRed>;

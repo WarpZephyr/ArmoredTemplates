@@ -1,0 +1,18 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.1 Binary Template
+//
+//      File: DefenseComponent.bt
+//   Authors: WarpZephyr
+//   Version: 
+//   Purpose: AcParts defense component.
+//  Category: 
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+typedef struct
+{
+    ushort Ballistic_Defense;
+    ushort Energy_Defense;
+} DefenseComponent;

@@ -1,0 +1,36 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.1 Binary Template
+//
+//      File: MWo3.bt
+//   Authors: WarpZephyr
+//   Version: 
+//   Purpose: Reading ACLR MWo3 files
+//  Category: 
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+LittleEndian();
+
+//------------------------------------------------
+
+typedef struct
+{
+    char magic[4]; Assert(magic == "MWo3");
+    int unk04;
+    short unk08;
+    short unk0A;
+    int unk0C;
+    int unk10;
+    int unk14;
+    short unk1C;
+    short unk1E;
+    short unk20;
+    short unk22;
+    char fileName[0x60];
+} Header <bgcolor=cLtRed>;
+
+//------------------------------------------------
+
+Header header;

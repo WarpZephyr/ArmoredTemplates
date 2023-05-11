@@ -1,0 +1,55 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.1 Binary Template
+//
+//      File: TM2.bt
+//   Authors: WarpZephyr
+//   Version: 
+//   Purpose: Armored Core 3rdgen TM2 texture containers.
+//  Category: 
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+LittleEndian();
+
+//------------------------------------------------
+
+typedef struct
+{
+    uint containerSize;
+    uint fileCount;
+
+    // Looks similar to KeyGuide's BigEndian/LittleEndian identifiers
+    ubyte unk05 <hidden=true>; Assert(unk05 == 0); 
+    ubyte unk06;
+    ubyte unk07;
+    ubyte unk08 <hidden=true>; Assert(unk08 == 0);
+
+    uint unk0C <hidden=true>; Assert(unk0C == 0);
+} Header <bgcolor=cLtRed>;
+
+typedef struct
+{
+    uint fileOffset;
+    char fileType[4];
+    uint unk08 <hidden=true>; Assert(unk08 == 0);
+    uint unk0C <hidden=true>; Assert(unk0C == 0);
+
+    local quad pos = FTell();
+    FSeek(fileOffset);
+    uint fileSize;
+    FSeek(fileOffset);
+    ubyte data[fileSize];
+    FSeek(pos);
+} FileEntry <bgcolor=cLtGreen, read=ReadFileEntry, optimize=false>;
+
+string ReadFileEntry(FileEntry& entry)
+{
+    return entry.fileType;
+}
+
+//------------------------------------------------
+
+Header header;
+FileEntry files[header.fileCount];

@@ -1,0 +1,33 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.1 Binary Template
+//
+//      File: Generator.bt
+//   Authors: WarpZephyr
+//   Version: 1.1.0
+//   Purpose: Reading Armored Core 4thgen Generator parts.
+//  Category: 
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+BigEndian();
+
+//------------------------------------------------
+
+typedef struct 
+{
+    int Energy_Capacity;
+    int Tune_Max_Energy_Capacity;
+    ushort Tune_Efficiency_Energy_Capacity;
+    ushort unk0A; // Unknown, always 0
+    int Energy_Output_Soft_Limit;
+    int Energy_Output;
+    int Tune_Max_Energy_Output;
+    ushort Tune_Efficiency_Energy_Output;
+    ushort KP_Output;
+    ushort Tune_Max_KP_Output;
+    ushort Tune_Efficiency_KP_Output;
+    ushort Active_SE;
+    ushort unk22; // Unknown, always 0
+} Generator <bgcolor=cDkYellow>;

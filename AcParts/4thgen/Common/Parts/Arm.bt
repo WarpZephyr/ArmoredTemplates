@@ -1,0 +1,68 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.1 Binary Template
+//
+//      File: Arm.bt
+//   Authors: WarpZephyr
+//   Version: 1.1.0
+//   Purpose: Reading Armored Core 4thgen Arm parts.
+//  Category: 
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+BigEndian();
+
+enum <ubyte> ArmType
+{
+    NormalArm = 0,
+    WeaponArm = 1,
+};
+
+//------------------------------------------------
+
+void AssertArmType(ArmType Arm_Type)
+{
+    Assert(Arm_Type == NormalArm
+        || Arm_Type == WeaponArm);
+}
+
+//------------------------------------------------
+
+typedef struct
+{
+    WeaponComponent weapon;
+} WeaponArmStats <bgcolor=cDkGreen>;
+
+typedef struct 
+{
+    DefenseComponent defense;
+    PAComponent primal_armor;
+    FrameComponent frame;
+    ArmType Arm_Type; AssertArmType(Arm_Type);
+    ubyte unk1D; // Unknown, always 0
+    ushort Firing_Stability;
+    ushort Energy_Weapon_Skill;
+    ushort Maneuverability;
+    ushort Aim_Precision;
+    ubyte unk26; // Unknown, always 0 in AC4, always 100 or 75 in ACFA
+    ubyte unk27; // Unknown, always 0 in AC4, always 70 or 98 in ACFA
+    ushort unk28; // Unknown, always 0
+    ushort unk2A; // Unknown, always 0
+    ushort Tune_Max_Firing_Stability;
+    ushort Tune_Efficiency_Firing_Stability;
+    ushort Tune_Max_Energy_Weapon_Skill;
+    ushort Tune_Efficiency_Energy_Weapon_Skill;
+    ushort Tune_Max_Maneuverability;
+    ushort Tune_Efficiency_Maneuverability;
+    ushort Tune_Max_Aim_Precision;
+    ushort Tune_Efficiency_Aim_Precision;
+    DisplayType Display_Type; AssertDisplayType(Display_Type);
+    ubyte unk3D; // Unknown, always 0
+    ubyte unk3E; // Unknown, always 0
+    ubyte unk3F; // Unknown, always 0
+    char AimType[0x10];
+    WeaponArmStats Weapon_Arm_Stats;
+    ushort StbzrX;
+    ushort StbzrY;
+} Arm <bgcolor=cDkGreen>;

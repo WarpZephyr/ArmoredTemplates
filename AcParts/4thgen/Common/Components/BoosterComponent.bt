@@ -1,0 +1,21 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.1 Binary Template
+//
+//      File: BoosterComponent.bt
+//   Authors: WarpZephyr
+//   Version: 
+//   Purpose: AcParts booster component.
+//  Category: 
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+typedef struct
+{
+    uint Thrust;
+    uint Tune_Max_Thrust;
+    ushort Tune_Efficiency_Thrust;
+    ushort Boost_Duration; // Only usable on Quick Boost.
+    uint Thrust_EN_Cost;
+} BoosterComponent;

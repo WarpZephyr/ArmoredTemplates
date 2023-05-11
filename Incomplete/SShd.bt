@@ -1,0 +1,63 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.1 Binary Template
+//
+//      File: SShd.bt
+//   Authors: WarpZephyr
+//   Version: 
+//   Purpose: 3rdgen Armored Core SShd model files.
+//  Category: 
+// File Mask: 
+//  ID Bytes: 53 53 68 64
+//   History: 
+//------------------------------------------------
+
+#include "../../Util.bt"
+LittleEndian();
+
+//------------------------------------------------
+
+typedef struct
+{
+    char magic[4]; Assert(magic == "SShd");
+    ulong unk2; // Some kind of count? Maybe bones or meshes?
+    ulong unk3; // Some kind of count? Maybe bones or meshes?
+    ulong unk4;
+    ulong unk5;
+    ushort dataLength; // Is the perfect length for reading all the data inside data struct 1 and 3
+    ushort unk7;
+    short unk8;
+    short unk9;
+    short unk10;
+    short unk11;
+    char magic2[4]; Assert(magic2 == "SSbd"); // Unknown what this is supposed to mean
+    ulong unk13; // Is a few thousand off from being the length of data struct 2
+    ulong unk14;
+    ushort unk17;
+    ushort unk18;
+} Header <bgcolor=cRed>;
+
+typedef struct
+{
+    ubyte data;
+} Unk2 <bgcolor=cLtGreen>;
+
+typedef struct
+{
+    ubyte data;
+} Unk3 <bgcolor=cLtGreen>;
+
+typedef struct
+{
+    ubyte data;
+} Unk4 <bgcolor=cLtGreen>;
+
+Header header;
+Align(0x810); // Aligns to the first data struct with 2096, but this isn't really used elsewhere?
+Unk2 unk2[header.dataLength]; // Perfectly reads the end of the first and the start of the next data struct
+
+// As you can see, this perfectly aligns to the start of data struct 3, I am not sure why
+Align(header.unk13 + header.dataLength);
+ubyte unk3; // The first byte of data struct 3 so you can see what I mean
+
+// Each data struct usually ends with a null line (00 00 00 00 00 00 00 00)
+// I am not sure if this is padding or not

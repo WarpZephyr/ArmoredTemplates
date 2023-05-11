@@ -1,0 +1,25 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.1 Binary Template
+//
+//      File: FrameComponent.bt
+//   Authors: WarpZephyr
+//   Version: 
+//   Purpose: AcParts frame component.
+//  Category: 
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+typedef struct
+{
+    ushort Tune_Max_Rectification;
+    ushort Tune_Efficiency_Rectification;
+    ushort AP;
+    ushort unk06; // Unknown, always 0
+    float Drag_Coefficient;
+    ushort WeightBalanceFront;
+    ushort WeightBalanceBack;
+    ushort WeightBalanceRight;
+    ushort WeightBalanceLeft;
+} FrameComponent;

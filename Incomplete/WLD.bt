@@ -1,0 +1,33 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.1 Binary Template
+//
+//      File: WLD.bt
+//   Authors: WarpZephyr
+//   Version: 
+//   Purpose: Armored Core Nine Breaker ".wld" files
+//  Category: 
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+#include "../../Util.bt"
+LittleEndian();
+
+//------------------------------------------------
+
+typedef struct
+{
+    int unk00;
+    int unk04;
+    int unk08; Assert(unk08 == 0);
+    int unk0C; Assert(unk0C == 0);
+    int unk10; Assert(unk10 == 0);
+    int unk14; Assert(unk14 == 0);
+    int unk18; Assert(unk18 == 0);
+    int unk1C; Assert(unk1C == 0);
+} Header <bgcolor=cLtRed>;
+
+//------------------------------------------------
+
+Header header;

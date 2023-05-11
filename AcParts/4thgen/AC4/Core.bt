@@ -1,0 +1,29 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.1 Binary Template
+//
+//      File: Core.bt
+//   Authors: WarpZephyr, Dropoff
+//   Version: 1.1.0
+//   Purpose: Reading Armored Core 4 Core parts.
+//  Category: 
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+BigEndian();
+
+//------------------------------------------------
+
+typedef struct 
+{
+    DefenseComponent defense;
+    PAComponent primal_armor;
+    FrameComponent frame;
+    int Hunger_Unit;
+    int unk20; // Unknown, always 0
+    short StbzrUpX;
+    short StbzrUpY;
+    short StbzrLowX;
+    short StbzrLowY; 
+} Core <bgcolor=cGreen>;

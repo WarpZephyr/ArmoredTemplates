@@ -1,0 +1,23 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.1 Binary Template
+//
+//      File: OSET.bt
+//   Authors: WarpZephyr
+//   Version: 
+//   Purpose: Armored Core For Answer Save Files
+//  Category: 
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+BigEndian();
+
+//------------------------------------------------
+
+typedef struct
+{
+    
+} Header <bgcolor=cRed>;
+
+Header header;

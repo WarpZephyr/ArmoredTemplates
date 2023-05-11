@@ -1,0 +1,24 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.1 Binary Template
+//
+//      File: ArmUnit.bt
+//   Authors: WarpZephyr
+//   Version: 1.1.0
+//   Purpose: Reading Armored Core 4thgen Arm Unit parts.
+//  Category: 
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+BigEndian();
+
+//------------------------------------------------
+
+typedef struct
+{
+    WeaponComponent weapon;
+    HangarType Hangar_Type; AssertHangarType(Hangar_Type);
+    DisplayType Display_Type; AssertDisplayType(Display_Type);
+    ushort unk56; // Unknown, always 0
+} Arm_Unit <bgcolor=cAqua>;

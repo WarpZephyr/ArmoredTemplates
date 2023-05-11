@@ -1,0 +1,23 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.1 Binary Template
+//
+//      File: RadarComponent.bt
+//   Authors: WarpZephyr
+//   Version: 
+//   Purpose: AcParts radar component.
+//  Category: 
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+typedef struct
+{
+    ushort Radar_Range;
+    ushort ECM_Resistance;
+    ushort Tune_Max_ECM_Resistance;
+    ushort Tune_Efficiency_ECM_Resistance;
+    ushort Radar_Refresh_Rate;
+    ushort Tune_Max_Radar_Refresh_Rate;
+    ushort Tune_Efficiency_Radar_Refresh_Rate;
+} RadarComponent <bgcolor=cYellow>;

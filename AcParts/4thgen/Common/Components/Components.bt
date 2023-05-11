@@ -1,0 +1,19 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.2 Binary Template
+//
+//      File: Components.bt
+//   Authors: WarpZephyr, LdBeth
+//   Version: 1.1.0
+//   Purpose: Including Armored Core 4thgen components.
+//  Category: 
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+#include "../Common/Components/DefenseComponent.bt"
+#include "../Common/Components/PAComponent.bt"
+#include "../Common/Components/FrameComponent.bt"
+#include "../Common/Components/WeaponComponent.bt"
+#include "../Common/Components/BoosterComponent.bt"
+#include "../Common/Components/RadarComponent.bt"

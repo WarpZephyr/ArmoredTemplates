@@ -1,0 +1,58 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.1 Binary Template
+//
+//      File: WeaponComponent.bt
+//   Authors: WarpZephyr
+//   Version: 1.1.0
+//   Purpose: AcParts weapon component.
+//  Category: 
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+BigEndian();
+
+//------------------------------------------------
+
+typedef struct
+{
+    FiringMode Firing_Mode; AssertFiringMode(Firing_Mode);
+    bool Lock_Enable; AssertBool(Lock_Enable);
+    ubyte Missile_Lock_Time;
+    bool unk03; AssertBool(unk03); // Unknown, appears to be a boolean.
+    ushort Firing_Range;
+    ushort Melee_Ability;
+    uint Bullet_ID;
+    uint SFX_ID;
+    uint Hit_Effect_ID;
+    float Ballistics_Velocity;
+    float EN_Cost;
+    bool Multi_Proc; AssertBool(Multi_Proc);
+    ubyte Projectile_Count;
+    ubyte Continuous_Fire_Count;
+    ubyte unk1F; // Unknown, always 0.
+    ushort unk20; // Unknown, always 0, may be part of Auto_Interval.
+    ushort Auto_Interval;
+    ushort Fire_Rate;
+    ushort Recoil;
+    ushort Cost_Per_Round;
+    ushort Shot_Precision;
+    short Number_of_Magazines;
+    short Magazine_Capacity;
+    ushort Magazine_Reload_Time;
+    WeaponType Weapon_Type; AssertWeaponType(Weapon_Type);
+    ushort Kojima_Drain_Per_Second;
+    ushort Kojima_Refill_Frame;
+    float Kojima_Max_Damage_Rate;
+    ushort Attack_Latency;
+    ushort unk3E; // Unknown, always 0
+    DamageType Damage_Type; AssertDamageType(Damage_Type);
+    bool Damage_Pierce; AssertBool(Damage_Pierce);
+    bool unk41; AssertBool(unk41);
+    bool Damage_Radial; AssertBool(Damage_Radial);
+    float Attack_Power;
+    float Impact_Force;
+    float PA_Attentuation;
+    float PA_Penetration;
+} WeaponComponent;

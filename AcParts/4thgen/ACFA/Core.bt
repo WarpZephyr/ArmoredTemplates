@@ -1,0 +1,33 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.1 Binary Template
+//
+//      File: Core.bt
+//   Authors: WarpZephyr, Dropoff
+//   Version: 1.1.0
+//   Purpose: Reading Armored Core: For Answer Core parts.
+//  Category: 
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+BigEndian();
+
+//------------------------------------------------
+
+typedef struct 
+{
+    DefenseComponent defense;
+    PAComponent primal_armor;
+    FrameComponent frame;
+    ushort unk1C; // Unknown, needs to be found out
+    ushort Tune_Max_Unk1C; // Assumed from value and positioning
+    ushort Tune_Efficiency_Unk1C; // Assumed from positioning
+    ushort Stability;
+    ushort Tune_Max_Stability;
+    ushort Tune_Efficiency_Stability;
+    short StbzrUpX;
+    short StbzrUpY;
+    short StbzrLowX;
+    short StbzrLowY; 
+} Core <bgcolor=cGreen>;

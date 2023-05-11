@@ -1,0 +1,121 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.1 Binary Template
+//
+//      File: DBP.bt
+//   Authors: TKGP
+//   Version: 
+//   Purpose: 
+//  Category: 
+// File Mask: *.dbp
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+BigEndian();
+
+enum <int> Type
+{
+    s8 = 0,
+    u8 = 1,
+    s16 = 2,
+    u16 = 3,
+    s32 = 4,
+    u32 = 5,
+    f32 = 6
+};
+
+//------------------------------------------------
+
+typedef struct {
+    int fieldCount;
+    int unk04 <hidden=true>; Assert(unk04 == 0);
+    int unk08 <hidden=true>; Assert(unk08 == 0);
+    int unk0c <hidden=true>; Assert(unk0c == 0);
+} Header <bgcolor=cLtRed>;
+
+
+typedef struct (int index) {
+    local int index <hidden=true> = index;
+
+    Type type;
+    int unk04 <hidden=true>; Assert(unk04 == 0);
+    int unk08 <hidden=true>; Assert(unk08 == 0);
+
+    switch (type) {
+        case s8:
+            byte defaultValue;
+            byte incrementValue;
+            byte minimumValue;
+            byte maximumValue;
+            break;
+        case u8:
+            ubyte defaultValue;
+            ubyte incrementValue;
+            ubyte minimumValue;
+            ubyte maximumValue;
+            break;
+        case s16:
+            short defaultValue;
+            short incrementValue;
+            short minimumValue;
+            short maximumValue;
+            break;
+        // Note some fun degenerate values in EnemyBehavior[15]
+        case u16:
+            ushort defaultValue;
+            ushort incrementValue;
+            ushort minimumValue;
+            ushort maximumValue;
+            break;
+        case s32:
+            int defaultValue;
+            int incrementValue;
+            int minimumValue;
+            int maximumValue;
+            break;
+        case u32:
+            uint defaultValue;
+            uint incrementValue;
+            uint minimumValue;
+            uint maximumValue;
+            break;
+        case f32:
+            float defaultValue;
+            float incrementValue;
+            float minimumValue;
+            float maximumValue;
+            break;
+        default: Assert(false);
+    }
+} Field <read=ReadField, bgcolor=cAqua, optimize=false>;
+
+wstring ReadField(Field &field) {
+    string str;
+    SPrintf(str, "(%d) ", field.type);
+    return str + StringToWString(FieldDescriptions[field.index].description, CHARSET_JAPANESE)
+        + " \\ " + StringToWString(FieldDescriptions[field.index].displayFormat, CHARSET_JAPANESE);
+}
+
+typedef struct
+{
+    string description;
+    string displayFormat;
+} FieldDescription <bgcolor=cLtGreen, optimize=false, read=StringToWString(this.description, CHARSET_JAPANESE)>;
+
+//------------------------------------------------
+
+Header header;
+
+int FixupsMaybe[header.fieldCount] <hidden=true, bgcolor=cBlack, fgcolor=cWhite>;
+local int i <hidden=true>;
+for (i = 0; i < header.fieldCount; i++) {
+    Assert(FixupsMaybe[i] == 0);
+}
+
+struct {
+    for (i = 0; i < header.fieldCount; i++) {
+        Field Fields(i);
+    }
+} Fields <read=Str("[%d]", header.fieldCount)>;
+
+FieldDescription FieldDescriptions[header.fieldCount];

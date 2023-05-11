@@ -1,0 +1,31 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.1 Binary Template
+//
+//      File: OveredBooster.bt
+//   Authors: WarpZephyr
+//   Version: 1.1.0
+//   Purpose: Reading Armored Core 4 Overed Booster parts.
+//  Category: 
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+BigEndian();
+
+//------------------------------------------------
+
+typedef struct 
+{
+    BoosterComponent Overed_Boost;
+    ushort Overed_Boost_KP_Cost;
+    ushort unk12; // Unknown, always 0
+    uint Prepare_EN_Cost;
+    uint Prepare_KP_Cost;
+    uint OB_Activation_Thrust;
+    uint OB_Activation_EN_Cost;
+    uint OB_Activation_KP_Cost;
+    uint OB_Activation_Limit;
+    ushort SFX_Overboost_Charge;
+    ushort SFX_Overboost_Launch;
+} Overed_Booster <bgcolor=cLtAqua>;

@@ -1,0 +1,48 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.1 Binary Template
+//
+//      File: MOSI.bt
+//   Authors: WarpZephyr
+//   Version: 
+//   Purpose: ACFA ".MIB" files for sound archives.
+//  Category: 
+// File Mask: 
+//  ID Bytes: 4D 4F 53 49
+//   History: 
+//------------------------------------------------
+
+BigEndian();
+
+//------------------------------------------------
+
+typedef struct
+{
+    char magic[4];
+    short unk04;
+    short unk06;
+    int count;
+    int unk0C;
+} Header <bgcolor=cLtRed>;
+
+typedef struct
+{
+    int id;
+    short unk04;
+    short unk06;
+    int unk08 <hidden=true>; Assert(unk08 == 0x00FFFFFF);
+    char unk0C[4];
+    char unk10[4];
+    int unk14 <hidden=true>; Assert(unk14 == 0xFF000000);
+    int unk18 <hidden=true>; Assert(unk18 == 0);
+} Entry <bgcolor=cLtGreen, read=ReadEntry, optimize=false>;
+
+string ReadEntry(Entry& entry)
+{
+    string str;
+    return SPrintf(str, "%i", entry.id);
+}
+
+//------------------------------------------------
+
+Header header;
+Entry entries[header.count];

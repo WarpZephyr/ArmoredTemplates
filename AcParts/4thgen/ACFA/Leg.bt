@@ -1,0 +1,113 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.1 Binary Template
+//
+//      File: Leg.bt
+//   Authors: WarpZephyr
+//   Version: 1.1.0
+//   Purpose: Reading Armored Core: For Answer Leg parts.
+//  Category: 
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+BigEndian();
+
+enum <ubyte> LegType
+{
+    TwoLegs = 0,
+    Reverse_Joint_Type = 1,
+    Four_Legs_Type = 2,
+    Tank_Type = 3,
+};
+
+enum <ubyte> Motion
+{
+    Two_Legs_Middle = 0,
+    Reverse_Joint = 1,
+    Four_Legs = 2,
+    Tank = 3,
+    Two_Legs_Light = 4,
+    Two_Legs_Heavy = 5,
+    Two_Legs_Light_Alternate = 6,
+};
+
+//------------------------------------------------
+
+void AssertLegType(LegType Leg_Type)
+{
+    Assert(Leg_Type == TwoLegs
+        || Leg_Type == Reverse_Joint
+        || Leg_Type == Four_Legs
+        || Leg_Type == Tank);
+}
+
+void AssertMotion(Motion Motion_Type)
+{
+    Assert(Motion_Type == Two_Legs_Middle
+        || Motion_Type == Reverse_Joint
+        || Motion_Type == Four_Legs
+        || Motion_Type == Tank
+        || Motion_Type == Two_Legs_Light
+        || Motion_Type == Two_Legs_Heavy
+        || Motion_Type == Two_Legs_Light_Alternate);
+}
+
+//-------------------------------------------------
+
+typedef struct 
+{
+    DefenseComponent defense;
+    PAComponent primal_armor;
+    FrameComponent frame;    
+    LegType Leg_Type;
+    Motion Motion_Type; AssertMotion(Motion_Type);
+    ushort unk1E; // Unknown, always 0, may be CoreTurnRange.
+    ushort Maximum_Load;
+    ushort Load;
+    ushort Tune_Max_Load;
+    ushort Tune_Efficiency_Load;
+    int Back_Unit_Angle;
+    int Movement_Ability;
+    int Turning_Ability;
+    int Braking_Ability;
+    int Jumping_Ability;
+    int Land_Stability;
+    int Hit_Stability;
+    int Shoot_Stability;
+    int Tune_Max_Movement_Ability;
+    int Tune_Max_Turning_Ability;
+    int Tune_Max_Braking_Ability;
+    int Tune_Max_Jumping_Ability;
+    int Tune_Max_Land_Stability;
+    int Tune_Max_Hit_Stability;
+    int Tune_Max_Shoot_Stability;
+    ushort Tune_Efficiency_Movement_Ability;
+    ushort Tune_Efficiency_Turning_Ability;
+    ushort Tune_Efficiency_Braking_Ability;
+    ushort Tune_Efficiency_Jumping_Ability;
+    ushort Tune_Efficiency_Land_Stability;
+    ushort Tune_Efficiency_Hit_Stability;
+    ushort Tune_Efficiency_Shoot_Stability;
+    ushort unk70; // Unknown, always 0, may be CoreTurnRange.
+    BoosterComponent Horizontal_Boost;
+    BoosterComponent Vertical_Boost;
+    BoosterComponent Quick_Boost;
+    ubyte unkA4; // Unknown, always 0 on normal legs, 36 on energy tank legs, and 40 on tank legs.
+    ubyte unkA5; // Unknown, always 0
+    short unkA6; // Unknown, always 0
+    short StbzrBackX;
+    short StbzrBackY;
+    short StbzrUpX;
+    short StbzrUpY;
+    short StbzrMidX;
+    short StbzrMidY;
+    short StbzrLowX;
+    short StbzrLowY;
+    short StbzrUpRX;
+    short StbzrUpRY;
+    short StbzrMidRX;
+    short StbzrMidRY;
+    short StbzrLowRX;
+    short StbzrLowRY;
+} Leg <bgcolor=cLtYellow>;

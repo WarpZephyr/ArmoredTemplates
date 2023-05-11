@@ -1,0 +1,34 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.1 Binary Template
+//
+//      File: ShoulderUnit.bt
+//   Authors: WarpZephyr
+//   Version: 1.1.0
+//   Purpose: Reading Armored Core 4 Shoulder Unit parts.
+//  Category: 
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+BigEndian();
+
+//------------------------------------------------
+
+typedef struct
+{
+    ShoulderType Shoulder_Type; AssertShoulderType(Shoulder_Type);
+    bool IsWeapon; AssertBool(IsWeapon);
+    DisplayType Display_Type; AssertDisplayType(Display_Type);
+    ubyte unk03; // Unknown, always 0
+    PAComponent primal_armor;
+    char Device_Name[0x10];
+    ushort Use_Count;
+    ushort Effective_Frame;
+    ushort Reload_Frame;
+    ushort unk1E; // Unknown, always 0
+    float EffectParam_0;
+    float EffectParam_1;
+    WeaponComponent weapon;
+
+} Shoulder_Unit <bgcolor=cLtPurple>;

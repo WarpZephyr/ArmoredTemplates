@@ -1,0 +1,75 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.1 Binary Template
+//
+//      File: Accel.bt
+//   Authors: WarpZephyr
+//   Version: 
+//   Purpose: Reading Accel.bin
+//  Category: 
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+enum VERSION
+{
+    ACLR,
+    ACFA
+};
+local VERSION version = ACLR;
+switch (version)
+{
+    case ACLR:
+        LittleEndian();
+        break;
+    case ACFA:
+        BigEndian();
+        break;
+}
+
+//------------------------------------------------
+
+typedef struct
+{
+    uint AccelEntryCount;
+    uint unk04;
+    uint unk08; Assert(unk08 == 0);
+    uint unk0C; Assert(unk0C == 0);
+} Header <bgcolor=cLtRed>;
+
+typedef struct(uint size)
+{
+    uint data[size];
+} Accel <bgcolor=cGreen>;
+
+typedef struct
+{
+    uint accelID;
+    uint unk04;
+    switch (version)
+    {
+        case ACLR:
+            ushort accelOffset;
+            ushort unk0A <hidden=true>; Assert(unk0A == 0);
+            break;
+        case ACFA:
+            ushort unk08 <hidden=true>; Assert(unk08 == 0);
+            ushort accelOffset;
+            break;
+    }
+    uint unk10 <hidden=true>; Assert(unk10 == 0);
+
+    local quad pos = FTell();
+    FSeek(accelOffset);
+    Accel accel(unk04 * 2);
+    FSeek(pos);
+} AccelEntry <bgcolor=cLtGreen, read=ReadAccelEntry, optimize=false>;
+
+wstring ReadAccelEntry(AccelEntry &accelEntry) {
+     string str;
+     return SPrintf( str, "%d \t\\ %d \\ %d", 
+        accelEntry.accelID, accelEntry.unk04, accelEntry.accelOffset);
+}
+
+Header header;
+AccelEntry accelEntries[header.AccelEntryCount];

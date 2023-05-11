@@ -1,0 +1,18 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.2 Binary Template
+//
+//      File: Parts.bt
+//   Authors: WarpZephyr, LdBeth
+//   Version: 1.1.1
+//   Purpose: Armored Core 4thgen common part includes.
+//  Category: 
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+#include "../Common/Parts/Arm.bt"
+#include "../Common/Parts/FCS.bt"
+#include "../Common/Parts/Generator.bt"
+#include "../Common/Parts/ArmUnit.bt"
+#include "../Common/Parts/Stabilizer.bt"

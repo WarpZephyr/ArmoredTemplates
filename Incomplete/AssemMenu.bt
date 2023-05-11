@@ -1,0 +1,119 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.1 Binary Template
+//
+//      File: AssemMenu.bt
+//   Authors: WarpZephyr
+//   Version: 
+//   Purpose: Reading AssemMenu.
+//  Category: 
+// File Mask: assemmenu.bin
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+BigEndian();
+
+//------------------------------------------------
+
+typedef struct
+{
+    uint entryCount;
+    uint entryCount2;
+    uint entryCount3;
+    uint entryCount5;
+    uint entryCount6;
+    uint entryCount4;
+    uint unk18;
+    uint unk1C;
+    uint unk20;
+} Header <bgcolor=cLtRed>;
+
+typedef struct
+{
+    uint id;
+    uint offset;
+} Entry <bgcolor=cLtGreen, read=ReadEntry, optimize=false>;
+
+string ReadEntry(Entry& entry)
+{
+    string str;
+    return SPrintf(str, "%i \\ %i", entry.id, entry.offset);
+}
+
+typedef struct
+{
+    ushort id;
+    ushort unk02;
+    uint offset;
+} Entry2 <bgcolor=cGreen, read=ReadEntry2, optimize=false>;
+
+string ReadEntry2(Entry2& entry)
+{
+    string str;
+    return SPrintf(str, "%i \\ %i \\ %i", entry.id, entry.unk02, entry.offset);
+}
+
+typedef struct
+{
+    ushort id;
+    ushort unk02;
+    uint unk04;
+} Entry3 <bgcolor=cDkGreen, read=ReadEntry3, optimize=false>;
+
+string ReadEntry3(Entry3& entry)
+{
+    string str;
+    return SPrintf(str, "%i \\ %i \\ %i", entry.id, entry.unk02, entry.unk04);
+}
+
+typedef struct
+{
+    ushort unk00;
+    ushort unk02;
+    ushort unk04;
+    ushort unk06 <hidden=true>; Assert(unk06 == 0);
+} Entry4 <bgcolor=cLtYellow, read=ReadEntry4, optimize=false>;
+
+string ReadEntry4(Entry4& entry)
+{
+    string str;
+    return SPrintf(str, "%i \\ %i \\ %i", entry.unk00, entry.unk02, entry.unk04);
+}
+
+typedef struct
+{
+    ushort unk00;
+    ushort unk02;
+    ushort unk04;
+    ushort unk06 <hidden=true>; Assert(unk06 == 0);
+    uint unk08 <hidden=true>; Assert(unk08 == 0);
+    uint unk0C <hidden=true>; Assert(unk0C == 0);
+} Entry5 <bgcolor=cYellow, read=ReadEntry5, optimize=false>;
+
+string ReadEntry5(Entry5& entry)
+{
+    string str;
+    return SPrintf(str, "%i \\ %i \\ %i", entry.unk00, entry.unk02, entry.unk04);
+}
+
+typedef struct
+{
+    uint unk00;
+    uint unk04;
+} Entry6 <bgcolor=cDkYellow, read=ReadEntry6, optimize=false>;
+
+string ReadEntry6(Entry6& entry)
+{
+    string str;
+    return SPrintf(str, "%i \\ %i", entry.unk00, entry.unk04);
+}
+
+//------------------------------------------------
+
+Header header;
+Entry entries[header.entryCount];
+Entry2 entries2[header.entryCount2];
+Entry3 entries3[header.entryCount3];
+Entry4 entries4[header.entryCount4];
+Entry5 entries5[header.entryCount5];
+Entry6 entries6[header.entryCount6];

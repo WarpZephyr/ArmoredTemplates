@@ -1,0 +1,493 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.1 Binary Template
+//
+//      File: Types.bt
+//   Authors: WarpZephyr, LdBeth
+//   Version: 1.0.1
+//   Purpose: Defining types to use.
+//  Category: 
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+typedef byte s8;
+typedef ubyte u8;
+typedef int16 s16;
+typedef uint16 u16;
+typedef int32 s32;
+typedef uint32 u32;
+typedef int64 s64;
+typedef uint64 u64;
+
+typedef hfloat f16;
+typedef float f32;
+typedef double f64;
+
+typedef ubyte bool;
+typedef byte sbool;
+typedef uint16 bool16;
+typedef int16 sbool16;
+typedef hfloat fbool16;
+typedef uint32 bool32;
+typedef int32 sbool32;
+typedef float fbool32;
+typedef uint64 bool64;
+typedef int64 sbool64;
+typedef double fbool64;
+
+enum <ubyte> FiringMode
+{
+    Automatic = 0,
+    Single = 1,
+    Cannon = 2,
+    LaserBlade = 4,
+    PileBlade = 5
+};
+
+enum <ubyte> DisplayType
+{
+    ShellGun = 0,
+    MagazineGun = 1,
+    EnergyGun = 2,
+    Shotgun = 3,
+    Railgun = 4,
+    Missile = 5,
+    VerticalMissile = 6,
+    SpreadMissile = 7,
+    Rocket = 8,
+    Blade = 9,
+    Pile = 10,
+    Kojima = 11,
+    LinkMissile = 12,
+    NoLockMissile = 13,
+    Ecm = 14,
+    Flare = 15,
+    PaCharger = 16,
+    PaMolderBack = 17,
+    PaMolderShoulder = 18,
+    Flash = 19,
+    ShotMine = 21,
+    Radar = 22,
+    MultiLaser = 23,
+    Buckshot = 24,
+    Grenade = 25,
+    AddBooster = 26,
+    AssaultAmplifier = 27,
+    EcmMakerStatic = 28,
+    AssaultCannon = 29,
+    DozarPile = 30,
+    KojimaPile = 31
+};
+
+enum <ubyte> BackUnitType
+{
+    WeaponBackUnit = 0,
+    RadarBackUnit = 1,
+    PaMolderBackUnit = 2,
+    AddMainBoosterBackUnit = 3,
+    AssaultCannonBackUnit = 4
+};
+
+enum <ubyte> HangarType
+{
+    NotHangarable = 0,
+    TankOnly = 1,
+    AnyHangar = 2
+};
+
+enum <ubyte> ShoulderType
+{
+    LinkWeapon = 0,
+    ManualWeapon = 1,
+    SpecialDevice = 2,
+    PaMolderShoulderUnit = 3,
+    AddSideBooster = 4
+};
+
+enum <ubyte> DeflectType
+{
+    None = 0,
+    Rough = 1,
+    Detailed = 2
+};
+
+enum <ushort> SubCategoryIDType
+{
+    MIDDLE = 0,
+    LIGHT = 1,
+    HEAVY = 2,
+    SUBCAT_A = 3, //  WEAPON_BALLIST, REVERSE_JOINT, MIDDLE_ASSULT
+    SUBCAT_B = 4, //  WEAPON_LASER, QUAD_LEG, LIGHT_ASSULT
+    SUBCAT_C = 5, //  WEAPON_MISSLE, TANK, HEAVY_ASSULT
+    DEBUG = 99
+};
+
+enum <ushort> WeaponSubCategoryIDType
+{
+    RIFLE = 0,
+    ASSAULT_RIFLE = 1,
+    SNIPER_RIFLE = 2,
+    MACHINE_GUN = 3,
+    SHOTGUN = 4,
+    HANDGUN = 5,
+    BAZOOKA = 6,
+    GRENADE = 7,
+    RAILGEN = 8,
+    LASER_RIFLE = 9,
+    HI_LASER_RIFLE = 10,
+    PULSE_GUN = 11,
+    PLASMA_RIFLE = 12,
+    KOJIMA_RIFLE = 13,
+    BLADE = 14,
+    LASER_BLADE = 15,
+    KOJIMA_BLADE = 16,
+    HAND_MISSILE = 17,
+    HAND_ROCKET = 18,
+    DEBUG_WEAPON = 99
+};
+
+enum <ushort> BackSubCategoryIDType
+{
+    MISSLE = 0,
+    HI_SPEED_MISSILE = 1,
+    HI_ACT_MISSILE = 2,
+    VERTICAL_MISSLE = 3,
+    SPREAD_MISSLE = 4,
+
+    VTF_MISSLE = 6,
+    LARGE_MISSLE = 7,
+    KOJIMA_MISSLE = 8,
+    SCATTER_MISSLE = 9,
+    PM_MISSLE = 10,
+    AS_MISSLE = 11,
+    ROCKET = 12,
+    SNIPER_CANNON = 13,
+    CHAIN_GUN = 14,
+    SLUG_GUN = 15,
+    GERENADE_CANNON = 16,
+    RAIL_CANNON = 17,
+    LASER_CANNON = 18,
+    HI_LASER_CANNON = 19,
+    PULSE_CANNON = 20,
+    PLASMA_CANNON = 21,
+    KOJIMA_CANNON = 22,
+    ASSAULT_CANNON = 23,
+    RADAR = 24,
+    PA_MOLDER = 25,
+    ADD_MAIN_BOOSTER = 26,
+    DEBUG_BACK = 99
+};
+
+enum <ushort> ShoulderSubCategoryIDType
+{
+    RELATION_MISSILE = 0,
+    BUCK_SHOT = 1,
+    AS_MISSILE = 2,
+    SHOCK_ROCKET = 3,
+    FLASH_ROCKET = 4,
+    FLARE = 5,
+    ECM_MAKER = 6,
+    PA_CHARGER = 7,
+    PA_SIDE_MOLDER = 8,
+    ASSAULT_AMPLIFIER = 9,
+    ADD_SIDE_BOOSTER = 10,
+    DEBUG_SHOULDER = 99
+};
+
+enum <ushort> SetIDType
+{
+    NONE = 0,
+    GAN01 = 1, // YELLOWSTONE01
+    GAN02 = 2, // KIRITUMI, YELLOWSTONE03
+    _047AN = 3,
+    GAEN01 = 4,
+    _063AN = 5, // RAIDEN
+    H01 = 11, // SOLDNER, L01
+    A06 = 12, // L02
+    H11 = 13, // C11, A11, A12
+    HILBERT = 14, // LINSTANT, RAIDEN
+    ARGYROS = 15, // L09
+    ARSINE = 16,
+    EKHAZAR = 21, // SOLUH
+    LANCEL = 22, // NECTOR
+    JUDITH = 23, // HOLOFERNES, HOGIRE
+    HOGIRE = 24, // LAHIRE
+    AALIYAH = 25,
+    BVS = 26,
+    SOBRERO = 27,
+    WHITE_GLINT = 31
+};
+
+enum <ushort> WeaponType
+{
+    NotSet = 0,
+    DozarWeapon = 1,
+    PileWeapon = 4,
+    BallisticWeapon = 5,
+    EnergyWeapon = 6,
+    MissileWeapon = 7,
+    KojimaWeapon = 9
+};
+
+enum <ubyte> DamageType
+{
+    Rigid = 0,
+    Energy = 1
+};
+
+//------------------------------------------------
+
+void AssertBool(bool& value)
+{
+    Assert(value == 0 || value == 1);
+}
+
+void AssertSBool(sbool& value)
+{
+    Assert(value == 0 || value == 1);
+}
+
+void AssertBool16(bool16& value)
+{
+    Assert(value == 0 || value == 1);
+}
+
+void AssertSBool16(sbool16& value)
+{
+    Assert(value == 0 || value == 1);
+}
+
+void AssertFBool16(fbool16& value)
+{
+    Assert(value == 0 || value == 1);
+}
+
+void AssertBool32(bool32& value)
+{
+    Assert(value == 0 || value == 1);
+}
+
+void AssertFBool32(fbool32& value)
+{
+    Assert(value == 0 || value == 1);
+}
+
+void AssertSBool32(sbool32& value)
+{
+    Assert(value == 0 || value == 1);
+}
+
+void AssertBool64(bool64& value)
+{
+    Assert(value == 0 || value == 1);
+}
+void AssertSBool64(sbool64& value)
+{
+    Assert(value == 0 || value == 1);
+}
+
+void AssertFBool64(fbool64& value)
+{
+    Assert(value == 0 || value == 1);
+}
+
+void AssertFiringMode(FiringMode firingMode)
+{
+    Assert(firingMode == Automatic
+        || firingMode == Single
+        || firingMode == Cannon
+        || firingMode == LaserBlade
+        || firingMode == PileBlade);
+}
+
+void AssertDisplayType(DisplayType Display_Type)
+{
+    Assert(Display_Type == ShellGun
+        || Display_Type == MagazineGun
+        || Display_Type == EnergyGun
+        || Display_Type == Shotgun
+        || Display_Type == Railgun
+        || Display_Type == Missile
+        || Display_Type == VerticalMissile
+        || Display_Type == SpreadMissile
+        || Display_Type == Rocket
+        || Display_Type == Blade
+        || Display_Type == Pile
+        || Display_Type == Kojima
+        || Display_Type == LinkMissile
+        || Display_Type == NoLockMissile
+        || Display_Type == Ecm
+        || Display_Type == Flare
+        || Display_Type == PaCharger
+        || Display_Type == PaMolderBack
+        || Display_Type == PaMolderShoulder
+        || Display_Type == Flash
+        || Display_Type == ShotMine
+        || Display_Type == Radar
+        || Display_Type == MultiLaser
+        || Display_Type == Buckshot
+        || Display_Type == Grenade
+        || Display_Type == AddBooster
+        || Display_Type == AssaultAmplifier
+        || Display_Type == EcmMakerStatic
+        || Display_Type == AssaultCannon
+        || Display_Type == DozarPile
+        || Display_Type == KojimaPile);
+}
+
+void AssertBackUnitType(BackUnitType Back_Unit_Type)
+{
+    Assert(Back_Unit_Type == WeaponBackUnit
+        || Back_Unit_Type == RadarBackUnit
+        || Back_Unit_Type == PaMolderBackUnit
+        || Back_Unit_Type == AddMainBoosterBackUnit
+        || Back_Unit_Type == AssaultCannonBackUnit);
+}
+
+void AssertHangarType(HangarType Hangar_Type)
+{
+    Assert(Hangar_Type == NotHangarable
+        || Hangar_Type == TankOnly
+        || Hangar_Type == AnyHangar);
+}
+
+void AssertShoulderType(ShoulderType Shoulder_Type)
+{
+    Assert(Shoulder_Type == LinkWeapon
+        || Shoulder_Type == ManualWeapon
+        || Shoulder_Type == SpecialDevice
+        || Shoulder_Type == PaMolderShoulderUnit
+        || Shoulder_Type == AddSideBooster);
+}
+
+void AssertDeflectType(DeflectType Deflect_Type)
+{
+    Assert(Deflect_Type == None
+        || Deflect_Type == Rough
+        || Deflect_Type == Detailed);
+}
+
+void AssertSubCategoryIDType(SubCategoryIDType& type)
+{
+    Assert(type == MIDDLE
+        || type == LIGHT 
+        || type == HEAVY
+        || type == SUBCAT_A
+        || type == SUBCAT_B
+        || type == SUBCAT_C
+        || type == DEBUG);
+}
+
+void AssertWeaponSubCategoryIDType(WeaponSubCategoryIDType& type)
+{
+    Assert(type == RIFLE
+        || type == ASSAULT_RIFLE
+        || type == SNIPER_RIFLE
+        || type == MACHINE_GUN
+        || type == SHOTGUN
+        || type == HANDGUN
+        || type == BAZOOKA
+        || type == GRENADE
+        || type == RAILGEN
+        || type == LASER_RIFLE
+        || type == HI_LASER_RIFLE
+        || type == PULSE_GUN
+        || type == PLASMA_RIFLE
+        || type == KOJIMA_RIFLE
+        || type == BLADE
+        || type == LASER_BLADE
+        || type == KOJIMA_BLADE
+        || type == HAND_MISSILE
+        || type == HAND_ROCKET
+        || type == DEBUG_WEAPON);
+}
+
+void AssertBackSubCategoryIDType(BackSubCategoryIDType& type)
+{
+    Assert(type == MISSLE
+        || type == HI_SPEED_MISSILE
+        || type == HI_ACT_MISSILE
+        || type == VERTICAL_MISSLE
+        || type == SPREAD_MISSLE
+
+        || type == VTF_MISSLE
+        || type == LARGE_MISSLE
+        || type == KOJIMA_MISSLE
+        || type == SCATTER_MISSLE
+        || type == PM_MISSLE
+        || type == AS_MISSLE
+        || type == ROCKET
+        || type == SNIPER_CANNON
+        || type == CHAIN_GUN
+        || type == SLUG_GUN
+        || type == GERENADE_CANNON
+        || type == RAIL_CANNON
+        || type == LASER_CANNON
+        || type == HI_LASER_CANNON
+        || type == PULSE_CANNON
+        || type == PLASMA_CANNON
+        || type == KOJIMA_CANNON
+        || type == ASSAULT_CANNON
+        || type == RADAR
+        || type == PA_MOLDER
+        || type == ADD_MAIN_BOOSTER
+        || type == DEBUG_BACK);    
+}
+
+void AssertShoulderSubCategoryIDType(ShoulderSubCategoryIDType& type)
+{
+    Assert(type == RELATION_MISSILE
+        || type == BUCK_SHOT
+        || type == AS_MISSILE
+        || type == SHOCK_ROCKET
+        || type == FLASH_ROCKET
+        || type == FLARE
+        || type == ECM_MAKER
+        || type == PA_CHARGER
+        || type == PA_SIDE_MOLDER
+        || type == ASSAULT_AMPLIFIER
+        || type == ADD_SIDE_BOOSTER
+        || type == DEBUG_SHOULDER);
+}
+
+void AssertSetID(SetIDType& type)
+{
+    Assert(type == NONE
+        || type == GAN01
+        || type == GAN02
+        || type == _047AN
+        || type == GAEN01
+        || type == _063AN
+        || type == H01
+        || type == A06
+        || type == H11
+        || type == HILBERT
+        || type == ARGYROS
+        || type == ARSINE
+        || type == EKHAZAR
+        || type == LANCEL
+        || type == JUDITH
+        || type == HOGIRE
+        || type == AALIYAH
+        || type == BVS
+        || type == SOBRERO
+        || type == WHITE_GLINT);
+}
+
+void AssertWeaponType(WeaponType& type)
+{
+    Assert(type == NotSet
+        || type == DozarWeapon
+        || type == PileWeapon
+        || type == BallisticWeapon
+        || type == EnergyWeapon
+        || type == MissileWeapon
+        || type == KojimaWeapon);
+}
+
+void AssertDamageType(DamageType& type)
+{
+    Assert(type == Rigid
+        || type == Energy);
+}

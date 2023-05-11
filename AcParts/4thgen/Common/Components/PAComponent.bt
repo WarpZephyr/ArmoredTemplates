@@ -1,0 +1,18 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.1 Binary Template
+//
+//      File: PAComponent.bt
+//   Authors: WarpZephyr
+//   Version: 
+//   Purpose: AcParts primal armor component.
+//  Category: 
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+typedef struct
+{
+    ushort PA_Rectification;
+    ushort PA_Durability;
+} PAComponent;

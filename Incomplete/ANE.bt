@@ -1,0 +1,93 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.1 Binary Template
+//
+//      File: ANE.bt
+//   Authors: WarpZephyr
+//   Version: 
+//   Purpose: Armored Core 4thgen ANE which accompany ANI animation sets.
+//  Category: 
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+BigEndian();
+
+//------------------------------------------------
+
+typedef struct
+{
+    char magic[4]; Assert(magic == "ANE");
+    short unk04;
+    short unk06;
+    short indexCount;
+    short animationEntryCount;
+    int indicesOffset;
+    int animationEntryOffset;
+    int animationDataOffset;
+    int offset18;
+    int unk1C <hidden=true>; Assert(unk1C == 0);
+} Header <bgcolor=cLtRed>;
+
+typedef struct
+{
+    short index;
+} Index <bgcolor=cGreen, read=ReadIndex>;
+
+string ReadIndex(Index& index)
+{
+    string str;
+    return SPrintf(str, "Index: %d", index.index);
+}
+
+typedef struct
+{
+    short unk00;
+    short unk02;
+    byte unk03;
+    byte unk04;
+    short unk06;
+} AnimationData <bgcolor=cDkGreen>;
+
+typedef struct
+{
+    short unk00;
+    short unk02;
+    short unk04;
+    short unk06;
+    int animationDataOffset;
+    int unk0C <hidden=true>; Assert(unk0C == 0);
+    float unk10;
+    int unk14 <hidden=true>; Assert(unk14 == 0);
+    int unk18 <hidden=true>; Assert(unk18 == 0);
+    int unk1C <hidden=true>; Assert(unk1C == 0);
+
+    if(animationDataOffset != 0)
+    {
+        local quad pos = FTell();
+        FSeek(animationDataOffset);
+        AnimationData animationData;
+        FSeek(pos);
+    }
+} AnimationEntry <bgcolor=cGreen, read=ReadAnimationEntry, optimize=false>;
+
+string ReadAnimationEntry(AnimationEntry& entry)
+{
+    string str;
+    return SPrintf(str, "%d %d %d", entry.unk00, entry.unk02, entry.animationDataOffset);
+}
+
+typedef struct
+{
+
+} Unk18 <bgcolor=cYellow>;
+
+//------------------------------------------------
+
+Header header;
+
+FSeek(header.indicesOffset);
+Index indices[header.indexCount];
+
+FSeek(header.animationEntryOffset);
+AnimationEntry animationEntries[header.animationEntryCount];

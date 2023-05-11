@@ -1,0 +1,51 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.1 Binary Template
+//
+//      File: ANC.bt
+//   Authors: WarpZephyr
+//   Version: 
+//   Purpose: Armored Core 4thgen ANC container files containing ANE which accompany ANI animation sets.
+//  Category: 
+// File Mask: *.anc
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+BigEndian();
+
+//------------------------------------------------
+
+typedef struct
+{
+    uint aniEditOffset;
+    uint unk04 <hidden=true>; Assert(unk04 == 0);
+    uint unk08 <hidden=true>; Assert(unk08 == 0);
+    uint aneNameOffset;
+    uint aneOffset;
+    uint aneSize; Assert(aneSize + 64 == FileSize());
+    uint unk18 <hidden=true>; Assert(unk18 == 0);
+    uint unk1C <hidden=true>; Assert(unk1C == 0);
+} Header <bgcolor=cLtRed>;
+
+typedef struct
+{
+    char magic[0x10]; Assert(magic == "#ANIEDIT");
+} AneEdit <bgcolor=cRed>;
+
+typedef struct
+{
+    char aneName[0x10];
+} AneName <bgcolor=cDkRed>;
+
+//------------------------------------------------
+
+Header header;
+
+FSeek(header.aniEditOffset);
+AneEdit aneEdit;
+
+FSeek(header.aneNameOffset);
+AneName aneName;
+
+FSeek(header.aneOffset);
+ubyte ane[header.aneSize] <bgcolor=cLtGreen>;

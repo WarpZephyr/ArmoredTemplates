@@ -1,0 +1,40 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.1 Binary Template
+//
+//      File: FCS.bt
+//   Authors: WarpZephyr
+//   Version: 1.1.0
+//   Purpose: Reading Armored Core 4thgen FCS parts.
+//  Category: 
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+BigEndian();
+
+//------------------------------------------------
+
+typedef struct 
+{
+    DeflectType Deflect_Type; AssertDeflectType(Deflect_Type); // Detailed is 2 in ACFA, but fcs.txt says 0 should be detailed for AC4, confusing.
+    ubyte Lock_Target_Max;
+    ushort Blade_Lock_Distance;
+    ushort Parallel_Processing;
+    ushort Visibility;
+    ushort Lock_Distance;
+    ushort Lock_Box_Height;
+    ushort Lock_Box_Width;
+    ushort Unknown_Lock_Range; // Unknown, is related to lock range and lock box stats somehow, do not know how.
+    ushort Second_Locktime; // 6000 / Second_Locktime rounded = Lock Speed
+    ushort Missile_Lock_Speed;
+    bool Multi_Lock; AssertBool(Multi_Lock);
+    ubyte unk15; // Unknown, always 0
+    ushort unk16; // Unknown, always 0, may be a part of Zoom Range.
+    ushort Zoom_Range;
+    RadarComponent Radar;
+    ushort Tune_Max_Second_Locktime;
+    ushort Tune_Efficiency_Second_Locktime;
+    ushort Tune_Max_Missile_Lock_Speed;
+    ushort Tune_Efficiency_Missile_Lock_Speed;
+} FCS <bgcolor=cYellow>;

@@ -1,0 +1,127 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.1 Binary Template
+//
+//      File: AcParts.bt
+//   Authors: TKGP, Dropoff, WarpZephyr, LdBeth
+//   Version: 1.1.0
+//   Purpose: Armored Core 4 AcParts file containing player part stats.
+//  Category: 
+// File Mask: acparts.bin, enemyparts.bin, stabilizer.bin, AcParts.bin, EnemyParts.bin, Stabilizer.bin 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+#include "../Common/Types/Types.bt"
+#include "../Common/Components/Components.bt"
+#include "../Common/Parts/Parts.bt"
+#include "Head.bt"
+#include "Core.bt"
+#include "Leg.bt"
+#include "MainBooster.bt"
+#include "BackBooster.bt"
+#include "SideBooster.bt"
+#include "OveredBooster.bt"
+#include "BackUnit.bt"
+#include "ShoulderUnit.bt"
+BigEndian();
+
+//------------------------------------------------
+
+typedef struct {
+    uint unk00; Assert(unk00 == 0);
+    ushort Head_Count;
+    ushort Core_Count;
+    ushort Arm_Count;
+    ushort Leg_Count;
+    ushort FCS_Count;
+    ushort Generator_Count;
+    ushort Main_Booster_Count;
+    ushort Back_Booster_Count;
+    ushort Side_Booster_Count;
+    ushort Overed_Booster_Count;
+    ushort Arm_Unit_Count;
+    ushort Back_Unit_Count;
+    ushort Shoulder_Unit_Count;
+    ushort Head_Top_Stabilizer_Count;
+    ushort Head_Side_Stabilizer_Count;
+    ushort Core_Upper_Side_Stabilizer_Count;
+    ushort Core_Lower_Side_Stabilizer_Count;
+    ushort Arm_Stabilizer_Count;
+    ushort Leg_Back_Stabilizer_Count;
+    ushort Leg_Upper_Stabilizer_Count;
+    ushort Leg_Middle_Stabilizer_Count;
+    ushort Leg_Lower_Stabilizer_Count;
+} Header <bgcolor=cRed>;
+
+typedef struct {
+    ushort Part_ID;
+    ushort Model_ID;
+    int Price;
+    ushort Weight;
+    ushort EN_Cost;
+    ubyte Category;
+    ubyte Init_Status;
+    ushort Cap_ID;
+    char Name[0x20];
+    char Maker[0x20];
+    char SubCategory[0x20];
+    char Explain[0x100];
+    switch(Category)
+    {
+        case 0  : Head Stats; break;
+        case 1  : Core Stats; break;
+        case 2  : Arm Stats; break;
+        case 3  : Leg Stats; break;
+        case 4  : FCS Stats; break;
+        case 5  : Generator Stats; break;
+        case 6  : Main_Booster Stats; break;
+        case 7  : Back_Booster Stats; break;
+        case 8  : Side_Booster Stats; break;
+        case 9  : Overed_Booster Stats; break;
+        case 10 : Arm_Unit Stats; break;
+        case 11 : Back_Unit Stats; break;
+        case 12 : Shoulder_Unit Stats; break;
+        case 13 : Stabilizer Stats; break;
+        case 14 : Stabilizer Stats; break;
+        case 15 : Stabilizer Stats; break;
+        case 16 : Stabilizer Stats; break;
+        case 17 : Stabilizer Stats; break;
+        case 18 : Stabilizer Stats; break;
+        case 19 : Stabilizer Stats; break;
+        case 20 : Stabilizer Stats; break;
+        case 21 : Stabilizer Stats; break;
+    }
+} Part <read=ReadPart, optimize=false>;
+
+string ReadPart(Part &part) {
+    string str;
+    return SPrintf(str, "%d \\ %s \\ %s \\ %s \\ %s",
+        part.Part_ID, part.Name, part.Maker, part.SubCategory, part.Explain);
+}
+
+//------------------------------------------------
+
+Header header;
+
+Part Heads[header.Head_Count] <bgcolor=cLtGreen>;
+Part Cores[header.Core_Count] <bgcolor=cGreen>;
+Part Arms[header.Arm_Count] <bgcolor=cDkGreen>;
+Part Legs[header.Leg_Count] <bgcolor=cLtYellow>;
+Part FCSs[header.FCS_Count] <bgcolor=cYellow>;
+Part Generators[header.Generator_Count] <bgcolor=cDkYellow>;
+Part Main_Boosters[header.Main_Booster_Count] <bgcolor=cLtRed>;
+Part Back_Boosters[header.Back_Booster_Count] <bgcolor=cRed>;
+Part Side_Boosters[header.Side_Booster_Count] <bgcolor=cDkRed>;
+Part Overed_Boosters[header.Overed_Booster_Count] <bgcolor=cLtAqua>;
+Part Arm_Units[header.Arm_Unit_Count] <bgcolor=cAqua>;
+Part Back_Units[header.Back_Unit_Count] <bgcolor=cDkAqua>;
+Part Shoulder_Units[header.Shoulder_Unit_Count] <bgcolor=cLtPurple>;
+Part Head_Top_Stabilizers[header.Head_Top_Stabilizer_Count] <bgcolor=cPurple>;
+Part Head_Side_Stabilizers[header.Head_Side_Stabilizer_Count] <bgcolor=cDkPurple>;
+Part Core_Upper_Side_Stabilizers[header.Core_Upper_Side_Stabilizer_Count] <bgcolor=cLtBlue>;
+Part Core_Lower_Side_Stabilizers[header.Core_Lower_Side_Stabilizer_Count] <bgcolor=cBlue>;
+Part Arm_Stabilizers[header.Arm_Stabilizer_Count] <bgcolor=cDkBlue>;
+Part Leg_Back_Stabilizers[header.Leg_Back_Stabilizer_Count] <bgcolor=cLtGray>;
+Part Leg_Upper_Stabilizers[header.Leg_Upper_Stabilizer_Count] <bgcolor=cGray>;
+Part Leg_Middle_Stabilizers[header.Leg_Middle_Stabilizer_Count] <bgcolor=cDkGray>;
+Part Leg_Lower_Stabilizers[header.Leg_Lower_Stabilizer_Count] <bgcolor=cBlack>;

@@ -1,0 +1,128 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.1 Binary Template
+//
+//      File: BND0.bt
+//   Authors: WarpZephyr, Dropoff
+//   Version: 
+//   Purpose: FromSoft Binder0 containers
+//  Category: Dantelion
+// File Mask: 
+//  ID Bytes: 42 4E 44 00
+//   History: 
+//------------------------------------------------
+
+#include "../../Util.bt"
+LittleEndian();
+
+enum <ushort> VERSION {
+    NO_NAMES = 0,
+    NAMES_NO_OFFSET = 1,
+    PATH_NAMES = 2,
+    NAMES_OFFSET = 3
+};
+
+//------------------------------------------------
+
+typedef struct 
+{
+    char magic[4]; Assert(magic == "BND");
+    uint unk04 <hidden=true>; Assert(unk04 == 0xFFFF);
+    uint unk08 <format=hex>; Assert(unk08 == 0xD3 || unk08 == 0xCA);
+    uint fileSize;
+    uint fileCount;
+    uint namesOffset;
+    ushort alignment;
+    ubyte version; Assert(version == NO_NAMES || version == NAMES_NO_OFFSET || version == PATH_NAMES || version == NAMES_OFFSET);
+    ubyte unk1B;
+    uint unk1C <hidden=true>; Assert(unk1C == 0);
+} Header <bgcolor=cLtRed, read=ReadHeader, optimize=false>;
+
+string ReadHeader(Header& header) {    
+    string names;
+    switch(header.version)
+    {
+        case NO_NAMES: names = "false"; break;
+        case NAMES_NO_OFFSET: names = "true"; break;
+        case PATH_NAMES: names = "true"; break;
+        case NAMES_OFFSET: names = "true"; break;
+        default: Assert(false);
+    }
+
+    string str;
+    SPrintf(str, "File Count: %i | Names: %s | Archive Size: %i | Alignment: %i", header.fileCount, names, header.fileSize, header.alignment);
+    return str;
+}
+
+typedef struct(ushort alignment)
+{
+    uint id;
+    uint offset;
+    uint size;
+    uint nameOffset;
+
+    local quad end = FTell();
+    FSeek(offset);
+    Align(alignment);
+    ubyte data[size];
+
+    if(nameOffset != 0)
+    {
+        FSeek(nameOffset);
+        string name;
+    }
+
+    FSeek(end);
+} File <bgcolor=cLtGreen, read=ReadFile, optimize=false>;
+
+string ReadFile(File& file) {
+    string name;
+    switch(header.version)
+    {
+        case NO_NAMES: name = "None"; break;
+        case NAMES_NO_OFFSET: name = file.name; break;
+        case PATH_NAMES: name = file.name; break;
+        case NAMES_OFFSET: name = file.name; break;
+        default: Assert(false);
+    }
+
+    string str;
+    SPrintf(str, "ID: %i | Name: %s | Size: %i", file.id, name, file.size);
+    return str;
+}
+
+typedef struct
+{
+    string name;
+} FileName <read=ReadName>;
+
+string ReadName(FileName& name)
+{
+    return name.name;
+}
+
+//------------------------------------------------
+
+Header header;
+if (header.fileCount > 0)
+{
+    if(header.namesOffset != 0 && header.version == NAMES_OFFSET)
+    {
+        local quad entryStart = FTell();
+        FSeek(header.namesOffset);
+        struct {
+            string path;
+        
+            local int i;
+            for(i = 0; i < header.fileCount; i++)
+            {
+                FileName fileName;
+            }
+        } FileNames <bgcolor=cLtAqua>;
+        FSeek(entryStart);
+    }
+
+    struct
+    {
+        File files(header.alignment)[header.fileCount];
+    } Files;
+}

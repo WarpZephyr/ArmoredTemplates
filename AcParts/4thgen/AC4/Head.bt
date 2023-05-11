@@ -1,0 +1,31 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.1 Binary Template
+//
+//      File: Head.bt
+//   Authors: WarpZephyr, Dropoff
+//   Version: 1.1.0
+//   Purpose: Reading Armored Core 4 Head parts.
+//  Category: 
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+BigEndian();
+
+//------------------------------------------------
+
+typedef struct 
+{
+    DefenseComponent defense;
+    PAComponent primal_armor;
+    FrameComponent frame;
+    ushort Stability;
+    ushort SFX_Monoeye;
+    ushort Tune_Max_Stability;
+    ushort Tune_Efficiency_Stability;
+    ushort StbzrTopX;
+    ushort StbzrTopY;
+    ushort StbzrSideX;
+    ushort StbzrSideY;
+} Head <bgcolor=cLtGreen>;

@@ -1,0 +1,162 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.1 Binary Template
+//
+//      File: Design.bt
+//   Authors: WarpZephyr
+//   Version: 
+//   Purpose: Reading a single Armored Core 4thgen design.
+//  Category: 
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+#include "AcColorSet.bt"
+#include "Thumbnail.bt"
+BigEndian();
+
+//------------------------------------------------
+
+typedef struct
+{
+    ushort Head;
+    ushort Core;
+    ushort Arms;
+    ushort Legs;
+    ushort FCS;
+    ushort Generator;
+    ushort Main_Booster;
+    ushort Back_Booster;
+    ushort Side_Booster;
+    ushort Overed_Booster;
+    ushort Right_Arm_Unit;
+    ushort Left_Arm_Unit;
+    ushort Right_Back_Unit;
+    ushort Left_Back_Unit;
+    ushort Shoulder_Unit;
+    ushort Right_Hangar_Unit;
+    ushort Left_Hangar_Unit;
+    ushort Head_Top_Stabilizer;
+    ushort Head_Right_Stabilizer;
+    ushort Head_Left_Stabilizer;
+    ushort Core_Upper_Right_Stabilizer;
+    ushort Core_Upper_Left_Stabilzier;
+    ushort Core_Lower_Right_Stabilizer;
+    ushort Core_Lower_Left_Stabilizer;
+    ushort Arm_Right_Stabilizer;
+    ushort Arm_Left_Stabilizer;
+    ushort Legs_Back_Stabilizer;
+    ushort Legs_Upper_Right_Stabilizer;
+    ushort Legs_Upper_Left_Stabilizer;
+    ushort Legs_Upper_Right_Back_Stabilizer;
+    ushort Legs_Upper_Left_Back_Stabilizer;
+    ushort Legs_Middle_Right_Stabilizer;
+    ushort Legs_Middle_Left_Stabilizer;
+    ushort Legs_Middle_Right_Back_Stabilizer;
+    ushort Legs_Middle_Left_Back_Stabilizer;
+    ushort Legs_Lower_Right_Stabilizer;
+    ushort Legs_Lower_Left_Stabilizer;
+    ushort Legs_Lower_Right_Back_Stabilizer;
+    ushort Legs_Lower_Left_Back_Stabilizer;
+} Equipped <bgcolor=cLtGreen>;
+
+typedef struct
+{
+    ubyte Energy_Output;
+    ubyte Energy_Capacity;
+    ubyte KP_Output;
+    ubyte Load;
+} Tuning_Capacity <bgcolor=cYellow>;
+
+typedef struct
+{
+    ubyte Energy_Weapon_skill;
+    ubyte Maneuverability;
+    ubyte Firing_Stability;
+    ubyte Aim_Precision;
+} Tuning_Attack <bgcolor=cYellow>;
+
+typedef struct
+{
+    ubyte Lock_Speed;
+    ubyte Missile_Lock_Speed;
+    ubyte Radar_Refresh_Rate;
+    ubyte ECM_Resistance;
+} Tuning_Acquisition <bgcolor=cYellow>;
+
+typedef struct
+{
+    ubyte Rectification_Head;
+    ubyte Rectification_Core;
+    ubyte Rectification_Arm;
+    ubyte Rectification_Leg;
+} Tuning_Primal_Armor <bgcolor=cYellow>;
+
+typedef struct
+{
+    ubyte Horizontal_Thrust_Main_Booster;
+    ubyte Vertical_Thrust;
+    ubyte Horizontal_Thrust_Side_Booster;
+    ubyte Horizontal_Thrust_Back_Booster;
+} Tuning_Boost <bgcolor=cYellow>;
+
+typedef struct
+{
+    ubyte Quick_Boost_Main_Booster;
+    ubyte Quick_Boost_Side_Booster;
+    ubyte Quick_Boost_Back_Booster;
+    ubyte Quick_Boost_Overed_Booster;
+} Tuning_Special_Boost <bgcolor=cYellow>;
+
+typedef struct
+{
+    ubyte Turning_Ability;
+    ubyte Stability_Head;
+    ubyte Stability_Core;
+    ubyte Stability_Legs;
+} Tuning_Control <bgcolor=cYellow>;
+
+typedef struct
+{
+    ubyte unk00;
+    ubyte unk01;
+} Tuning_Unknown <bgcolor=cYellow>;
+
+typedef struct
+{
+    Tuning_Capacity Capacity;
+    Tuning_Attack Attack;
+    Tuning_Acquisition Acquisition;
+    Tuning_Primal_Armor Primal_Armor;
+    Tuning_Boost Boost;
+    Tuning_Special_Boost Special_Boost;
+    Tuning_Control Control; 
+    Tuning_Unknown Unknown;
+} Tuning_Stats <bgcolor=cYellow>;
+
+typedef struct
+{
+    Equipped Equipped_Parts;
+    Tuning_Stats Tuning;
+} Parts <bgcolor=cGreen>;
+
+typedef struct
+{
+    wchar_t Design_Name[48];
+    wchar_t Designer_Name[48];
+    uquad Creation_TimeStamp; // In microseconds, starting from 01/01/01 00:00:00
+    uint unkC8 <hidden=true>; Assert(unkC8 == 0);
+    uint unkCC <hidden=true>; Assert(unkCC == 0);
+    uint unkD0 <hidden=true>; Assert(unkD0 == 0);
+    uint unkD4 <hidden=true>; Assert(unkD4 == 0);
+    Parts Part;
+    uint unk148;
+    AcColorSet acColorSet;
+    FSkip(6692);
+    Thumbnail thumbnail;
+    FSkip(4);
+} Design <bgcolor=cLtGreen, read=ReadDesign, optimize=false>;
+
+string ReadDesign(Design& design) {
+    return design.Design_Name + " \\ " + design.Designer_Name;
+}

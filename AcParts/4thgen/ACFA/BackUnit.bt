@@ -1,0 +1,45 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.1 Binary Template
+//
+//      File: BackUnit.bt
+//   Authors: WarpZephyr
+//   Version: 1.1.0
+//   Purpose: Reading Armored Core: For Answer Back Unit parts.
+//  Category: 
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+BigEndian();
+
+//------------------------------------------------
+
+typedef struct
+{
+    WeaponComponent weapon;
+    ubyte unk54; Assert(unk54 == 1);
+    ubyte unk55; Assert(unk55 == 0);
+    ushort unk56; Assert(unk56 == 0);
+    ushort unk58; Assert(unk58 == 0);
+    RadarComponent Radar;
+    uint Horizontal_Thrust;
+    uint Vertical_Thrust;
+    uint Quick_Boost;
+    uint unk74; // Something to do with boosters I am 99% sure
+    uint Horizontal_EN_Cost;
+    uint Vertical_EN_Cost;
+    uint Quick_Boost_EN_Cost;
+    uint unk84; // Something to do with boosters I am 99% sure
+    ushort Assault_Cannon_Attack;
+    ushort unk8A;
+    ushort Assault_Cannon_Impact;
+    ushort AC_Attenuation;
+    ushort AC_Penetration;
+    ushort unk92;
+    BackUnitType Back_Unit_Type; AssertBackUnitType(Back_Unit_Type);
+    DisplayType Display_Type; AssertDisplayType(Display_Type);
+    bool TakesBothSlots; AssertBool(TakesBothSlots);
+    ubyte unk97;
+    PAComponent primal_armor;
+} Back_Unit <bgcolor=cDkAqua>;

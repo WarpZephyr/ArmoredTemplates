@@ -1,0 +1,35 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.1 Binary Template
+//
+//      File: OveredBooster.bt
+//   Authors: WarpZephyr
+//   Version: 1.1.0
+//   Purpose: Reading Armored Core: For Answer Overed Booster parts.
+//  Category: 
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+BigEndian();
+
+//------------------------------------------------
+
+typedef struct 
+{
+    BoosterComponent Overed_Boost;
+    ushort Overed_Boost_KP_Cost;
+    ushort unk12; // Unknown, always 0
+    uint Prepare_EN_Cost;
+    uint Prepare_KP_Cost;
+    uint OB_Activation_Thrust;
+    uint OB_Activation_EN_Cost;
+    uint OB_Activation_KP_Cost;
+    uint OB_Activation_Limit;
+    uint unk2C; // Unknown, always 0
+    ushort Assault_Armor_Attack;
+    ushort Assault_Armor_Range;
+    uint unk34; // Unknown, always 0
+    uint unk38; // Unknown, always 0
+    uint unk3C; // Unknown, always 0
+} Overed_Booster <bgcolor=cLtAqua>;

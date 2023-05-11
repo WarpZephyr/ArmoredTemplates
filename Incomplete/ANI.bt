@@ -1,0 +1,153 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.1 Binary Template
+//
+//      File: ANI.bt
+//   Authors: WarpZephyr, FatDuck (For work from FatImporter)
+//   Version: 
+//   Purpose: Armored Core: For Answer ANI animation files
+//  Category: 
+// File Mask: 
+//  ID Bytes: 20 05 10 14
+//   History: 
+//------------------------------------------------
+
+#include "../../../Util.bt"
+BigEndian();
+
+//------------------------------------------------
+
+typedef struct {
+    short x;
+    short y;
+    short z;
+} Vector3Short <read=ReadVector3Short>;
+
+string ReadVector3Short(Vector3Short& vec) {
+    string str;
+    SPrintf(str, "<%f, %f, %f>", vec.x / 1000.0, vec.y / 1000.0, vec.z / 1000.0);
+    return str;
+}
+
+//------------------------------------------------
+
+typedef struct
+{
+    int unk00; Assert(unk00 == 0x20051014);
+    int unk04; Assert(unk04 == 0);
+    int unk08; Assert(unk08 == 1 || unk08 == 100);
+    int boneOffset;
+    int boneCount;
+    int framePositionOffset;
+    int frameRotationOffset;
+    int framePositionCount;
+    int frameRotationCount;
+    int unk24; // Size or offset?
+} Header <bgcolor=cRed>;
+
+typedef struct (int animationType)
+{
+    short nextKeyFrame; Assert(nextKeyFrame == 0 || nextKeyFrame == 1);
+    switch(animationType)
+    {
+        case 1:
+            byte framePositionIndex;
+			byte unk03;
+			byte unk04;
+			byte frameRotationIndex;
+			byte unk06;
+			byte unk07;
+            break;
+        case 2:
+			short framePositionIndex;
+		    short unk04;
+			short unk06;
+			short frameRotationIndex;
+			short unk0A;
+			short unk0C;
+			short unk0E;
+            break;
+        case 4:
+            short frameRotationIndex;
+            short unk04;
+            short unk06;
+            break;
+        default:
+            Assert(false);
+            break;
+    }
+} FrameData <bgcolor=cDkYellow, optimize=false>;
+
+typedef struct
+{
+    int frameDataOffset;
+    int frameCount;
+    int animationType; Assert(animationType == 1 || animationType == 2 || animationType == 4);
+    Vector3 unk10;
+    Vector3 unk20;
+    int unk24; Assert(unk24 == 0);
+
+    FSeek(frameDataOffset);
+    local int i;
+    for(i = 0; i < frameCount; i++)
+    {
+        FrameData frameData(animationType);
+    }
+} BoneData <bgcolor=cYellow, optimize=false>;
+
+typedef struct
+{
+    int boneNameOffset; Assert(boneNameOffset != 0);
+    int unk04; Assert(unk04 == 0 || unk04 == 1 || unk04 == 2);
+    short boneIndex; Assert(boneIndex < header.boneCount);
+    short unk08Index; Assert(unk08Index < header.boneCount);
+    short parentBoneIndex; Assert(parentBoneIndex < header.boneCount);
+    short childIndex; Assert(childIndex < header.boneCount);
+    short nextSiblingIndex; Assert(nextSiblingIndex < header.boneCount);
+    short unk12Index; Assert(unk12Index < header.boneCount);
+    Vector3 boneTranslation;
+    Vector3 boneRotation;
+    Vector3 boneScale;
+    int boneDataOffset;
+
+    // Go retrieve the bone name, bone data, and frame data
+    local quad end = FTell();
+    FSeek(boneNameOffset);
+    string boneName;
+
+    if(boneDataOffset != 0)
+    {
+        FSeek(boneDataOffset);
+        BoneData boneData;
+    }
+    FSeek(end);
+    
+    // Go to the next Entry
+    FSeek(FTell() + 0xB8);
+} BoneEntry <bgcolor=cLtGreen, read=ReadBoneName, optimize=false>;
+
+string ReadBoneName(BoneEntry& boneEntry) {
+    return boneEntry.boneName;
+}
+
+typedef struct
+{
+    Vector3 framePosition;
+} FramePosition <bgcolor=cAqua>;
+
+typedef struct
+{
+    Vector3Short frameRotation;
+} FrameRotation <bgcolor=cDkAqua>;
+
+//------------------------------------------------
+
+Header header;
+
+FSeek(header.boneOffset);
+BoneEntry boneEntries[header.boneCount];
+
+FSeek(header.framePositionOffset);
+FramePosition framePositions[header.framePositionCount];
+
+FSeek(header.frameRotationOffset);
+FrameRotation frameRotations[header.frameRotationCount];

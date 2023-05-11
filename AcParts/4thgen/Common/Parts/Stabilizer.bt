@@ -1,0 +1,25 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.1 Binary Template
+//
+//      File: Stabilizer.bt
+//   Authors: WarpZephyr
+//   Version: 1.1.0
+//   Purpose: Reading Armored Core 4thgen Stabilizer parts.
+//  Category: 
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+BigEndian();
+
+//------------------------------------------------
+
+typedef struct
+{
+    ubyte Stabilizer_Category;
+    ubyte unk01 <hidden=true>; Assert(unk01 == 0); // Unknown, always 0
+    ubyte unk02 <hidden=true>; Assert(unk02 == 0); // Unknown, always 0
+    ubyte unk03 <hidden=true>; Assert(unk03 == 0); // Unknown, always 0
+    float Control_Calibration;
+} Stabilizer <bgcolor=cPurple>;

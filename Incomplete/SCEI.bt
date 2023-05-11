@@ -1,0 +1,54 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.1 Binary Template
+//
+//      File: SCEI.bt
+//   Authors: WarpZephyr
+//   Version: 
+//   Purpose: Unknown ACNB file.
+//  Category: 
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+#include "../../Util.bt"
+LittleEndian();
+
+//------------------------------------------------
+
+typedef struct
+{
+    int unk00;
+    int unk04;
+    int sceiOffset;
+    int sceiSize;
+    int unk10;
+    int unk14;
+    int unk18;
+    int unk1C;
+    int unk20;
+    int unk24;
+    int unk28;
+    int dataSize;
+    FSkip(80); // Padding I think
+} Header <bgcolor=cLtRed>;
+
+typedef struct
+{
+    int64 eightCC;
+    uint unk0C;
+    uint unk10;
+} VersSCEI <bgcolor=cLtGreen, read=ReadVersSCEI>;
+
+string ReadVersSCEI(VersSCEI& scei)
+{
+    string str;
+    return SPrintf(str, "%s", Int64ToEightCC(scei.eightCC));
+}
+
+//------------------------------------------------
+
+Header header;
+
+FSeek(header.sceiOffset);
+VersSCEI versSCEI;

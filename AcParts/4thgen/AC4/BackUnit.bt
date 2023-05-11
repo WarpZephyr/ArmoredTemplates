@@ -1,0 +1,30 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.1 Binary Template
+//
+//      File: BackUnit.bt
+//   Authors: WarpZephyr
+//   Version: 1.1.0
+//   Purpose: Reading Armored Core 4 Back Unit parts.
+//  Category: 
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+BigEndian();
+
+//------------------------------------------------
+
+typedef struct
+{
+    WeaponComponent weapon;
+    ubyte unk54; // Unknown, always 1
+    ubyte unk55; // Unknown, always 0
+    ushort unk56; // Unknown, always 0
+    ushort unk58; // Unknown, always 0
+    RadarComponent Radar;
+    BackUnitType Back_Unit_Type; AssertBackUnitType(Back_Unit_Type);
+    DisplayType Display_Type; AssertDisplayType(Display_Type);
+    ushort unk6A; // Unknown, always 0
+    PAComponent PA_Component;
+} Back_Unit <bgcolor=cDkAqua>;
