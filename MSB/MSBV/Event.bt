@@ -1,0 +1,641 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.2 Binary Template
+//
+//      File: Event.bt
+//   Authors: WarpZephyr
+//   Version: 1.1.1
+//   Purpose: Armored Core V Events.
+//  Category: Maps
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+enum <int> EventType
+{
+    EventTypeLight = 100, // An event holding light parameters.
+    EventTypeScene = 101, // An event holding scene parameters such as render distance.
+    EventTypeWind = 102,  // An event holding wind parameters.
+    EventTypeRain = 103,  // An event holding rain parameters.
+    EventTypeBGM = 400,   // An event referencing what background game music should be played.
+};
+
+// EventScene Sub Sub Structs
+// TODO: Clean up.
+//------------------------------------------------
+
+typedef struct
+{
+    int unk00;
+    float unk04;
+    float unk08;
+    float unk0C;
+    float unk10;
+    float unk14;
+    float unk18;
+    float unk1C;
+    float unk20;
+    float unk24;
+    float unk28;
+    float unk2C;
+    Null null[80];
+} EventSceneUnk0428;
+
+typedef struct
+{
+    int unk00; // Type?
+    switch (unk00)
+    {
+        case 0:
+        case 1:
+        case 3:
+        case 10:
+            byte unk04;
+            byte unk05;
+            byte unk06;
+            byte unk07;
+            float unk08;
+            byte unk0C;
+            byte unk0D;
+            byte unk0E;
+            byte unk0F;
+            byte unk10;
+            byte unk11;
+            byte unk12;
+            byte unk13;
+            Null null[108];
+            break;
+        case -1:
+        case 2:
+        case 4:
+        case 6:
+        case 8:
+            byte unk04;
+            byte unk05;
+            byte unk06;
+            byte unk07;
+            float unk08;
+            float unk0C;
+            byte unk10;
+            byte unk11;
+            byte unk12;
+            byte unk13;
+            Null null[108];
+            break;
+        case 5:
+        case 7:
+            float unk04;
+            float unk08;
+            float unk0C;
+            byte unk10;
+            byte unk11;
+            byte unk12;
+            byte unk13;
+            Null null[108];
+            break;
+        default:
+            Assert(false);
+    }
+} EventSceneUnk1438;
+
+typedef struct
+{
+    int unk00;
+    float unk04;
+    float unk08;
+    int unk0C;
+    float unk10;
+    float unk14;
+    float unk18;
+    float unk1C;
+    float unk20;
+    int unk24;
+    int unk28;
+    float unk2C;
+    float unk30;
+    float unk34;
+    float unk38;
+    float unk3C;
+} EventSceneUnk1490;
+
+typedef struct
+{
+    int unk00;
+    float unk04;
+    float unk08;
+    float unk0C;
+    int unk10;
+    Null null[12];
+} EventSceneUnk1494;
+
+// EventScene Sub Structs
+// TODO: Clean up.
+//------------------------------------------------
+
+typedef struct
+{
+    short unk00;
+    short unk02;
+    float globalDrawDistance;
+    float unk08;
+    float unk0C;
+    float unk10;
+    short unk14;
+    short unk16;
+    float unk18;
+    float unk1C;
+    float unk20;
+    ubyte unk24;
+    ubyte unk25;
+    ubyte unk26;
+    ubyte unk27;
+    float unk28;
+    float unk2C;
+    short unk30;
+    short unk32;
+    float unk34;
+    float unk38;
+    short unk3C;
+    short unk3E;
+    short unk40;
+    short unk42;
+    short unk44;
+    short unk46;
+    short unk48;
+    short unk4A;
+    short unk4C;
+    short unk4E;
+    short unk50;
+    short unk52;
+    short unk54;
+    short unk56;
+    short unk58;
+    short unk5A;
+    short unk5C;
+    short unk5E;
+    short unk60;
+    short unk62;
+    short unk64;
+    Null null[410];
+} EventSceneUnk00;
+
+typedef struct
+{
+    local quad start = FTell();
+
+    // Read Data
+    ubyte unk00;
+    ubyte unk01;
+    ubyte unk02;
+    ubyte unk03;
+    float unk04;
+    float unk08;
+    float unk0C;
+    float unk10;
+    float unk14;
+    float unk18;
+    float unk1C;
+    float unk20;
+    int unk24;
+    int offset28;
+    Null null[468];
+
+    // Get Offset Structs
+    FSeek(start + offset28);
+    EventSceneUnk0428 eventSceneUnk0428;
+} EventSceneUnk04;
+
+typedef struct
+{
+    int unk00;
+    float unk04;
+    float unk08;
+    float unk0C;
+    float unk10;
+    float unk14;
+    short unk18;
+    short unk1A;
+    float unk1C;
+    float unk20;
+    float unk24;
+    float unk28;
+    float unk2C;
+    float unk30;
+    float unk34;
+    float unk38;
+    float unk3C;
+    float unk40;
+    float unk44;
+    int unk48;
+    float unk4C;
+    float unk50;
+    float unk54;
+    float unk58;
+    float unk5C;
+    float unk60;
+    Null null[412];
+} EventSceneUnk08;
+
+typedef struct
+{
+    int unk00;
+    float unk04;
+    float unk08;
+    float unk0C;
+    float unk10;
+    float unk14;
+    float unk18;
+    float unk1C;
+    float unk20;
+    Null null[476];
+} EventSceneUnk0C;
+
+typedef struct
+{
+    int unk00;
+    float unk04;
+    float unk08;
+    float unk0C;
+    float unk10;
+    float unk14;
+    Null null[488];
+} EventSceneUnk10;
+
+typedef struct
+{
+    local quad start = FTell();
+
+    // Read Data
+    int unk00;
+    float unk04;
+    float unk08;
+    float unk0C;
+    float unk10;
+    float unk14;
+    float unk18;
+    float unk1C;
+    float unk20;
+    float unk24;
+    float unk28;
+    float unk2C;
+    float unk30;
+    int unk34;
+    int offsets38[22];
+    int offset90;
+    int offset94;
+    Null null[360];
+    
+    // Get Offset Structs
+    if (offsets38[0] > 0)
+    {
+        struct
+        {
+            local int i <hidden=true>;
+            for (i = 0; i < 22; i++)
+            {
+                if (offsets38[i] > 0)
+                {
+                    FSeek(start + offsets38[i]);
+                    EventSceneUnk1438 eventSceneUnk1438;
+                }
+            }
+        } eventScene1438s;
+    }
+    
+    if (offset90 > 0)
+    {
+        FSeek(start + offset90);
+        EventSceneUnk1490 eventSceneUnk1490;
+    }
+
+    if (offset94 > 0)
+    {
+        FSeek(start + offset94);
+        EventSceneUnk1494 eventSceneUnk1494;
+    }
+} EventSceneUnk14;
+
+typedef struct
+{
+    short unk00;
+    short unk02;
+    float unk04;
+    float unk08;
+    float unk0C;
+    float unk10;
+    float unk14;
+    float unk18;
+    short unk1C;
+    short unk1E;
+    ubyte unk20;
+    ubyte unk21;
+    ubyte unk22;
+    ubyte unk23;
+    int unk24;
+    float unk28;
+    Null null[468];
+} EventSceneUnk18;
+
+typedef struct
+{
+    short unk00;
+    short unk02;
+    float unk04;
+    float unk08;
+    float unk0C;
+    float unk10;
+    float unk14;
+    float unk18;
+    float unk1C;
+    float unk20;
+    float unk24;
+    ubyte unk28;
+    ubyte unk29;
+    ubyte unk2A;
+    ubyte unk2B;
+    float unk2C;
+    float unk30;
+    float unk34;
+    float unk38;
+    float unk3C;
+    float unk40;
+    float unk44;
+    Null null[440];
+} EventSceneUnk1C;
+
+typedef struct
+{
+    float unk00;
+    float unk04;
+    float unk08;
+    float unk0C;
+    float unk10;
+    float unk14;
+    float unk18;
+    Null null[484];
+} EventSceneUnk20;
+
+typedef struct
+{
+    Null null[128];
+} EventSceneUnk24;
+
+typedef struct
+{
+    Null null[512];
+} EventSceneUnk28;
+
+typedef struct
+{
+    Null null_1[72];
+    int unk00;
+    float unk04;
+    float unk08;
+    float unk0C;
+    float unk10;
+    float unk14;
+    float unk18;
+    Null null[412];
+} EventSceneUnk2C;
+
+typedef struct
+{
+    short unk00;
+    short unk02;
+    float unk04;
+    float unk08;
+    float unk0C;
+    float unk10;
+    float unk14;
+    float unk18;
+    short unk1C;
+    short unk1E;
+    float unk20;
+    float unk24;
+    float unk28;
+    float unk2C;
+    float unk30;
+    Null null[460];
+} EventSceneUnk30;
+
+typedef struct
+{
+    float unk00;
+    float unk04;
+    float unk08;
+    float unk0C;
+    float unk10;
+    float unk14;
+    float unk18;
+    float unk1C;
+    float unk20;
+    float unk24;
+    float unk28;
+    float unk2C;
+    float unk30;
+    Null null_2[12];
+} EventSceneUnk34;
+
+// EventType Structs
+//------------------------------------------------
+
+typedef struct
+{
+    short unk00;
+    short unk02;
+    short unk04;
+    short unk06;
+    short unk08;
+    short unk0A;
+    short unk0C;
+    short unk0E;
+    short unk10;
+    short unk12;
+    short unk14;
+    short unk16;
+    short unk18;
+    short unk1A;
+    short unk1C;
+    short unk1E;
+    short unk20;
+    short unk22;
+    short unk24;
+    short unk26;
+    short unk28;
+    short unk2A;
+    short unk2C;
+    short unk2E;
+    int unk30;
+    int unk34;
+    short unk38;
+    short unk3A;
+    short unk3C;
+    short unk3E;
+    short unk40;
+    short unk42;
+    short unk44;
+    short unk46;
+    short unk48;
+    short unk4A;
+    short unk4C;
+    Null null[434];
+} EventLight <optimize=true>;
+
+typedef struct
+{
+    local quad start = FTell();
+
+    // Read Data
+    int offset00;
+    int offset04;
+    int offset08;
+    int offset0C;
+    int offset10;
+    int offset14;
+    int offset18;
+    int offset1C;
+    int offset20;
+    int offset24;
+    int offset28;
+    int offset2C;
+    int offset30;
+    int offset34;
+    Null null[456];
+
+    // Get Offset Structs
+    FSeek(start + offset00);
+    EventSceneUnk00 eventSceneUnk00;
+
+    FSeek(start + offset04);
+    EventSceneUnk04 eventSceneUnk04;
+
+    FSeek(start + offset08);
+    EventSceneUnk08 eventSceneUnk08;
+
+    FSeek(start + offset0C);
+    EventSceneUnk0C eventSceneUnk0C;
+
+    FSeek(start + offset10);
+    EventSceneUnk10 eventSceneUnk10;
+
+    FSeek(start + offset14);
+    EventSceneUnk14 eventSceneUnk14;
+
+    FSeek(start + offset18);
+    EventSceneUnk18 eventSceneUnk18;
+
+    FSeek(start + offset1C);
+    EventSceneUnk1C eventSceneUnk1C;
+
+    FSeek(start + offset20);
+    EventSceneUnk20 eventSceneUnk20;
+
+    FSeek(start + offset24);
+    EventSceneUnk24 eventSceneUnk24;
+
+    FSeek(start + offset28);
+    EventSceneUnk28 eventSceneUnk28;
+
+    FSeek(start + offset2C);
+    EventSceneUnk2C eventSceneUnk2C;
+
+    FSeek(start + offset30);
+    EventSceneUnk30 eventSceneUnk30;
+
+    FSeek(start + offset34);
+    EventSceneUnk34 eventSceneUnk34;
+} EventScene;
+
+typedef struct
+{
+    ubyte unk00;
+    ubyte unk01;
+    short unk02;
+    short unk04;
+    short unk06;
+    float windPower;
+    Null null[20];
+} EventWind;
+
+typedef struct
+{
+    short unk00;
+    short unk02;
+    short unk04;
+    short unk06;
+    short unk08;
+    short unk0A;
+    float unk0C;
+    float unk10;
+    short unk14;
+    short unk16;
+    float unk18;
+    float unk1C;
+    float unk20;
+    int unk24;
+    Null null[24];
+} EventRain;
+
+typedef struct
+{
+    int bgmID;
+    int unk04;
+    Null null[56];
+} EventBGM;
+
+// Main Struct
+//------------------------------------------------
+
+typedef struct
+{
+    local quad start = FTell();
+    
+    // Read Data
+    int nameOffset; Assert(nameOffset >= 20);
+    int uniqueID;
+    EventType type;
+    int id;
+    int typeDataOffset; Assert(typeDataOffset >= 0);
+    
+    // Get Offset Structs
+    FSeek(start + nameOffset);
+    string name;
+    
+    if (typeDataOffset > 0)
+    {
+        FSeek(start + typeDataOffset);
+        switch (type)
+        {
+            case EventTypeLight: EventLight light; break;
+            case EventTypeScene: EventScene scene; break;
+            case EventTypeWind:  EventWind wind; break;
+            case EventTypeRain: EventRain rain; break;
+            case EventTypeBGM: EventBGM bgm; break;
+            default: Assert(false);
+        }
+    }
+} Event <read=ReadEvent>;
+
+string ReadEvent(Event& event)
+{
+    local string str;
+    local string type;
+    local string name = "";
+
+    switch (event.type)
+    {
+        case EventTypeLight: type = "Light"; break;
+        case EventTypeScene: type = "Scene"; break;
+        case EventTypeWind: type = "Wind"; break;
+        case EventTypeRain: type = "Rain"; break;
+        case EventTypeBGM: type = "BGM"; break;
+        default: type = "UnknownType";
+    }
+
+    if (event.name != name)
+    {
+        name = " | " + event.name;
+    }
+
+    return SPrintf(str, "ID: %d | %s%s", event.id, type, name);
+}

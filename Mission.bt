@@ -1,0 +1,58 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.2 Binary Template
+//
+//      File: Mission.bt
+//   Authors: WarpZephyr
+//   Version: 1.0.0
+//   Purpose: Armored Core Last Raven Mission Binary files
+//  Category: Games
+// File Mask: *.bin
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+LittleEndian();
+local int ENTRY_SIZE = 36;
+
+//------------------------------------------------
+
+typedef struct
+{
+    int offset;
+    local quad pos = FTell();
+    FSeek(STRING_BASE_ADDRESS + offset);
+    string str;
+    FSeek(pos);
+} OffsetString <bgcolor=cLtGreen, read=ReadOffsetString, optimize=false>;
+
+string ReadOffsetString(OffsetString &str)
+{
+    return str.str;
+}
+
+
+typedef struct
+{
+    byte unk00[4];
+    int offset1;
+    int offset2;
+    int offset3;
+    //int unk10;
+    //int unk14;
+    //int unk18;
+    //int unk1C;
+    //int unk20;
+    //byte unk24[92];
+} Entry <bgcolor=cLtGreen, read=ReadEntry, optimize=false>;
+
+string ReadEntry(Entry &entry)
+{
+    local string str;
+    return SPrintf(str, "%i %i %i", entry.offset1, entry.offset2, entry.offset3);
+}
+
+//------------------------------------------------
+
+int count;
+local int STRING_BASE_ADDRESS = (count * ENTRY_SIZE) + 4;
+Entry entries[count];

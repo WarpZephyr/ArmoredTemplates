@@ -2,10 +2,10 @@
 //--- 010 Editor v13.0.1 Binary Template
 //
 //      File: DBP.bt
-//   Authors: TKGP
-//   Version: 
-//   Purpose: 
-//  Category: 
+//   Authors: WarpZephyr, TKGP
+//   Version: 1.0.2
+//   Purpose: DBP files that read params meant to use them. Found in folder named DBMenu.
+//  Category: Binary
 // File Mask: *.dbp
 //  ID Bytes: 
 //   History: 
@@ -27,7 +27,18 @@ enum <int> Type
 //------------------------------------------------
 
 typedef struct {
-    int fieldCount;
+    int rawFieldCount;
+    local int fieldCount = rawFieldCount;
+    
+    // Account for depreciated LittleEndian DBPs in AC4.
+    if (rawFieldCount > FileSize())
+    {
+        LittleEndian();
+        FSeek(0);
+        int trueFieldCount;
+        fieldCount = trueFieldCount;
+    }
+
     int unk04 <hidden=true>; Assert(unk04 == 0);
     int unk08 <hidden=true>; Assert(unk08 == 0);
     int unk0c <hidden=true>; Assert(unk0c == 0);
@@ -47,18 +58,21 @@ typedef struct (int index) {
             byte incrementValue;
             byte minimumValue;
             byte maximumValue;
+            total_size += 1;
             break;
         case u8:
             ubyte defaultValue;
             ubyte incrementValue;
             ubyte minimumValue;
             ubyte maximumValue;
+            total_size += 1;
             break;
         case s16:
             short defaultValue;
             short incrementValue;
             short minimumValue;
             short maximumValue;
+            total_size += 2;
             break;
         // Note some fun degenerate values in EnemyBehavior[15]
         case u16:
@@ -66,32 +80,37 @@ typedef struct (int index) {
             ushort incrementValue;
             ushort minimumValue;
             ushort maximumValue;
+            total_size += 2;
             break;
         case s32:
             int defaultValue;
             int incrementValue;
             int minimumValue;
             int maximumValue;
+            total_size += 4;
             break;
         case u32:
             uint defaultValue;
             uint incrementValue;
             uint minimumValue;
             uint maximumValue;
+            total_size += 4;
             break;
         case f32:
             float defaultValue;
             float incrementValue;
             float minimumValue;
             float maximumValue;
+            total_size += 4;
             break;
-        default: Assert(false);
+        default:
+            Assert(false);
     }
 } Field <read=ReadField, bgcolor=cAqua, optimize=false>;
 
 wstring ReadField(Field &field) {
     string str;
-    SPrintf(str, "(%d) ", field.type);
+    SPrintf(str, "(%d) [%d] ", field.type, field.defaultValue);
     return str + StringToWString(FieldDescriptions[field.index].description, CHARSET_JAPANESE)
         + " \\ " + StringToWString(FieldDescriptions[field.index].displayFormat, CHARSET_JAPANESE);
 }
@@ -112,6 +131,7 @@ for (i = 0; i < header.fieldCount; i++) {
     Assert(FixupsMaybe[i] == 0);
 }
 
+local int total_size = 0;
 struct {
     for (i = 0; i < header.fieldCount; i++) {
         Field Fields(i);
@@ -119,3 +139,4 @@ struct {
 } Fields <read=Str("[%d]", header.fieldCount)>;
 
 FieldDescription FieldDescriptions[header.fieldCount];
+Printf("Param Size: %i", total_size);

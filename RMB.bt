@@ -1,0 +1,145 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.2 Binary Template
+//
+//      File: RMB.bt
+//   Authors: TKGP
+//   Version: 
+//   Purpose: Pad rumble files
+//  Category: Dantelion
+// File Mask: *.rmb
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+#include "Util.bt"
+BigEndian();
+
+//------------------------------------------------
+
+typedef struct {
+    int unk00 <hidden=true>; Assert(unk00 == 0);
+    int fileSize; Assert(fileSize == FileSize());
+    int unk08 <hidden=true>; Assert(unk08 == 0);
+    int unk0C <hidden=true>; Assert(unk0C == 0);
+    int unk10;
+    int unk14 <hidden=true>; Assert(unk14 == 0);
+    int unk18 <hidden=true>; Assert(unk18 == 0);
+    int unk1C <hidden=true>; Assert(unk1C == 0);
+    int offset20;
+    int count20;
+    int offset28;
+    int count28;
+    int offset30;
+    int count30;
+    int offset38;
+    int count38;
+    int unk40 <hidden=true>; Assert(unk40 == 0);
+} Header <bgcolor=cLtRed>;
+
+typedef struct
+{
+    local quad start = FTell();
+
+    int nameOffset;
+    int sibOffset;
+    int nameOffset2;
+    int unk0C;
+    int unk10;
+    int stringsSize;
+
+    FSeek(start + nameOffset);
+    string name;
+
+    FSeek(start + sibOffset);
+    string sibPath;
+
+    FSeek(start + nameOffset2);
+    string name2;
+
+    FSeek(start + stringsSize);
+    int size50;
+    
+    ubyte data[size50];
+    ubyte padding[60] <hidden=true, bgcolor=cBlack>;
+} Entry20 <bgcolor=cLtGreen, optimize=false>;
+
+typedef struct
+{
+    local quad start = FTell();
+
+    int nameOffset;
+    int sibOffset;
+    int stringsSize;
+
+    FSeek(start + nameOffset);
+    string name;
+
+    FSeek(start + sibOffset);
+    string sibPath;
+
+    FSeek(start + stringsSize);
+    ubyte padding[128] <hidden=true, bgcolor=cBlack>;
+} Entry28 <bgcolor=cLtGreen, optimize=false>;
+
+typedef struct
+{
+    local quad start = FTell();
+
+    int nameOffset;
+    int offset04;
+    int count08;
+    int size0C;
+    int count10;
+    int offset14;
+    int stringsSize;
+
+    FSeek(start + nameOffset);
+    string name;
+
+    FSeek(start + stringsSize);
+    int count2C;
+} Entry30 <bgcolor=cLtGreen, optimize=false>;
+
+//------------------------------------------------
+
+Header header;
+local int i <hidden=true>;
+local quad start = FTell();
+
+FSeek(header.offset20);
+int offsets20[header.count20] <bgcolor=cYellow>;
+FSeek(header.offset28);
+int offsets28[header.count28] <bgcolor=cYellow>;
+FSeek(header.offset30);
+int offsets30[header.count30] <bgcolor=cYellow>;
+FSeek(header.offset38);
+int offsets38[header.count38] <bgcolor=cYellow>;
+FSeek(start);
+
+
+struct
+{
+    for (i = 0; i < header.count20; i++)
+    {
+        FSeek(offsets20[i]);
+        Entry20 entry;
+    }
+} Entries20;
+
+struct
+{
+    for (i = 0; i < header.count28; i++)
+    {
+        FSeek(offsets28[i]);
+        Entry28 entry;
+    }
+} Entries28;
+
+struct
+{
+    for (i = 0; i < header.count30; i++)
+    {
+        FSeek(offsets30[i]);
+        Entry30 entry;
+    }
+} Entries30;

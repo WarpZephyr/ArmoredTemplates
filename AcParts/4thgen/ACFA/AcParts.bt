@@ -80,7 +80,8 @@ typedef struct {
             SubCategoryIDType SubCategoryID; AssertSubCategoryIDType(SubCategoryID);
     }
     SetIDType SetID; AssertSetID(SetID);
-    char Explain[0xfc];
+    char Explain[0xFC];
+    
     switch(Category)
     {
         case 0  : Head Stats; break;
@@ -105,6 +106,7 @@ typedef struct {
         case 19 : Stabilizer Stats; break;
         case 20 : Stabilizer Stats; break;
         case 21 : Stabilizer Stats; break;
+        default : Assert(false); break;
     }
 } Part <read=ReadPart, optimize=false>;
 

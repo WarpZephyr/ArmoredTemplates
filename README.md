@@ -1,2 +1,2 @@
 # ArmoredTemplates
- Templates I've made for Armored Core games so far, incomplete.
+Templates I've made for Armored Core games so far, incomplete.

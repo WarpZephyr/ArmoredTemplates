@@ -1,0 +1,254 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.2 Binary Template
+//
+//      File: PPM.bt
+//   Authors: WarpZephyr
+//   Version: 1.0.0
+//   Purpose: Armored Core Formula Front PPM model files.
+//  Category: Models
+// File Mask: *.ppm
+//  ID Bytes: 50 50 4D 20
+//   History: 
+//------------------------------------------------
+
+LittleEndian();
+
+// Helper Structs
+//------------------------------------------------
+
+typedef struct
+{
+    ubyte null; Assert(null == 0);
+} Null <bgcolor=cBlack, optimize=false>;
+
+typedef struct
+{
+    float x;
+    float y;
+    float z;
+} Vector3 <read=ReadVector3>;
+
+string ReadVector3(Vector3& vec)
+{
+    string str;
+    SPrintf(str, "<%7.2f, %7.2f, %7.2f>", vec.x, vec.y, vec.z);
+    return str;
+}
+
+typedef struct
+{
+    float x;
+    float y;
+    float z;
+    float w;
+} Vector4 <read=ReadVector4>;
+
+string ReadVector4(Vector4& vec)
+{
+    string str;
+    SPrintf(str, "<%7.2f, %7.2f, %7.2f, %7.2f>", vec.x, vec.y, vec.z, vec.w);
+    return str;
+}
+
+// Structs
+//------------------------------------------------
+
+typedef struct
+{
+    char magic[4]; Assert(magic == "PPM "); // Probably stands for Playstation Portable Model
+    short unk04;
+    short unk06;
+    int fileSize;
+    int unk0C;
+    Null null_1[32];
+    int unk30;
+    Null null_2[28];
+    Vector3 boundingBoxMin;
+    Vector3 boundingBoxMax;
+    int countUnkStruct1;
+    int boneCount;
+    int countUnkStruct3; // Never seen
+    int layoutCount;
+    int meshNamesCount;
+    int vertexBufferSize;
+    int indicesBufferSize;
+    int dummyCount;
+    int countUnkStruct9;
+    int countUnkStruct10; // Never seen
+    int offsetUnkStruct1s;
+    int bonesOffset;
+    int offsetUnkStruct3s; // Never seen
+    int layoutsOffset;
+    int meshNamesOffset;
+    int vertexBufferOffset;
+    int indicesOffset;
+    int dummiesOffset;
+    int offsetUnkStruct9s;
+    int offsetUnkStruct10s; // Never seen
+} Header <bgcolor=cLtRed>;
+
+typedef struct
+{
+    ubyte unk00[48]; // What is this struct?
+} UnkStruct1 <bgcolor=cLtGreen, optimize=false>;
+
+typedef struct
+{
+    Vector3 position;
+    Vector3 rotation;
+    Vector3 scale;
+    Vector3 unk24; // Not a directional vector?
+    Vector3 unk30; // Directional vector?
+    Vector4 unk3C; // Directional vector?
+    Vector3 boundingBoxMin;
+    Vector3 boundingBoxMax;
+    
+    int unk64;
+    int unk68;
+    int unk6C;
+    char name[8];
+} Bone <bgcolor=cGreen, read=ReadBone, optimize=false>;
+
+string ReadBone(Bone& bone)
+{
+    return bone.name;
+}
+
+typedef struct
+{
+    Assert(false); // Never seen
+} UnkStruct3 <bgcolor=cDkGreen, optimize=false>;
+
+typedef struct
+{
+    short unk00; Assert(unk00 >= 0 || unk00 <= 6);
+    ubyte unk02; Assert(unk02 == 1);
+    ubyte unk03; Assert(unk03 == 4);
+    ubyte unk04;
+    ubyte unk05;
+    short unk06 <hidden=true>; Assert(unk06 == 0);
+    int unk08;
+    int vertexBufferOffset;
+    int vertexCount;
+    int unk14 <hidden=true>; Assert(unk14 == 0);
+} Layout <bgcolor=cLtYellow, optimize=false>;
+
+typedef struct
+{
+    char name[24]; // Assumed to be a mesh name of some kind
+} MeshName <bgcolor=cYellow, read=ReadMeshName, optimize=false>;
+
+string ReadMeshName(MeshName& name)
+{
+    return name.name;
+}
+
+typedef struct
+{
+    ubyte buffer[header.vertexBufferSize];
+} VertexBuffer <bgcolor=cDkYellow>;
+
+typedef struct
+{
+    short indices[header.indicesBufferSize / 2];
+} Indices <bgcolor=cLtAqua>;
+
+typedef struct
+{
+    Vector3 position;
+    Vector3 forward;
+    ubyte color[4];
+    int unk1C;
+    int unk20;
+} Dummy <bgcolor=cAqua, read=ReadDummy, optimize=false>;
+
+string ReadDummy(Dummy& dummy)
+{
+    local string str;
+    return SPrintf(str, "%s", ReadVector3(dummy.position));
+}
+
+typedef struct
+{
+    Null null[64];
+} UnkStruct9 <bgcolor=cDkAqua, optimize=false>;
+
+typedef struct
+{
+    Assert(false); // Never seen
+} UnkStruct10 <bgcolor=cLtPurple, optimize=false>;
+
+// Read
+//------------------------------------------------
+
+Header header;
+
+if (header.countUnkStruct1 > 0)
+{
+    Assert(header.offsetUnkStruct1s > 0);
+    FSeek(header.offsetUnkStruct1s);
+    UnkStruct1 unkStruct1s[header.countUnkStruct1];
+}
+
+if (header.boneCount > 0)
+{
+    Assert(header.bonesOffset > 0);
+    FSeek(header.bonesOffset);
+    Bone bones[header.boneCount];
+}
+
+// Never seen
+if (header.countUnkStruct3 > 0)
+{
+    Assert(header.offsetUnkStruct3s > 0);
+    FSeek(header.offsetUnkStruct3s);
+    UnkStruct3 unkStruct3s[header.countUnkStruct3];
+}
+
+if (header.layoutCount > 0)
+{
+    Assert(header.layoutsOffset > 0);
+    FSeek(header.layoutsOffset);
+    Layout layouts[header.layoutCount];
+}
+
+if (header.meshNamesCount > 0)
+{
+    Assert(header.meshNamesOffset > 0);
+    FSeek(header.meshNamesOffset);
+    MeshName meshNames[header.meshNamesCount];
+}
+
+if (header.dummyCount > 0)
+{
+    Assert(header.dummiesOffset > 0);
+    FSeek(header.dummiesOffset);
+    Dummy dummies[header.dummyCount];
+}
+
+if (header.countUnkStruct9 > 0)
+{
+    Assert(header.offsetUnkStruct9s > 0);
+    FSeek(header.offsetUnkStruct9s);
+    UnkStruct9 unkStruct9s[header.countUnkStruct9];
+}
+
+// Never seen
+if (header.countUnkStruct10 > 0)
+{
+    Assert(header.offsetUnkStruct10s > 0);
+    FSeek(header.offsetUnkStruct10s);
+    UnkStruct10 unkStruct10s[header.countUnkStruct10];
+}
+
+if (header.vertexBufferOffset > 0)
+{
+    FSeek(header.vertexBufferOffset);
+    VertexBuffer vertexBuffer;
+}
+
+if (header.indicesOffset > 0)
+{
+    FSeek(header.indicesOffset);
+    Indices indices;
+}

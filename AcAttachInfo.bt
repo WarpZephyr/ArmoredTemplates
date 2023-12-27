@@ -1,0 +1,52 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.2 Binary Template
+//
+//      File: AcAttachInfo.bt
+//   Authors: WarpZephyr
+//   Version: 
+//   Purpose: Reading AcAttachInfo.bin.
+//  Category: 
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+BigEndian();
+
+//------------------------------------------------
+
+typedef struct
+{
+    int entryCount;
+    int unk04 <hidden=true>; Assert(unk04 == 0);
+    int unk08 <hidden=true>; Assert(unk08 == 0);
+    int unk0C <hidden=true>; Assert(unk0C == 0);
+} Header <bgcolor=cLtRed>;
+
+typedef struct (int stringsOffset)
+{
+    short unk00;
+    byte unk02;
+    byte unk03;
+    int stringOffset;
+    int unk08 <hidden=true>; Assert(unk08 == 0);
+    byte unk0C; Assert(unk0C == 0 || unk0C == 1);
+    byte unk0E <hidden=true>; Assert(unk0E == 0);
+    short unk10 <hidden=true>; Assert(unk0E == 0);
+
+    local long pos = FTell();
+    FSeek(stringsOffset + stringOffset);
+    string boneName;
+    FSeek(pos);
+} Entry <bgcolor=cLtGreen, read=ReadEntry, optimize=false>;
+
+string ReadEntry(Entry& entry)
+{
+    local string str;
+    return SPrintf(str, "%s | %i %i %i %i", entry.boneName, entry.unk00, entry.unk02, entry.unk03, entry.unk0C);
+}
+
+//------------------------------------------------
+
+Header header;
+Entry entries((header.entryCount * 16) + 16)[header.entryCount];

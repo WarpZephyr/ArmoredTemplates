@@ -25,6 +25,7 @@ typedef struct
     RadarComponent Radar;
     BackUnitType Back_Unit_Type; AssertBackUnitType(Back_Unit_Type);
     DisplayType Display_Type; AssertDisplayType(Display_Type);
-    ushort unk6A; // Unknown, always 0
+    ubyte unk6A; // Unknown, always 0
+    ubyte unk6B; // Unknown, always 0
     PAComponent PA_Component;
 } Back_Unit <bgcolor=cDkAqua>;

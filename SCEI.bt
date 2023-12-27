@@ -1,0 +1,128 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.1 Binary Template
+//
+//      File: SCEI.bt
+//   Authors: WarpZephyr
+//   Version: 1.0.1
+//   Purpose: Sony PS2 ".HD" audio file
+//  Category: Audio
+// File Mask: *.hd
+//  ID Bytes: 49 45 43 53 73 72 65 56
+//   History: 
+//------------------------------------------------
+
+LittleEndian();
+local ubyte SCEI_HEADER_SIZE = 0x10;
+
+//------------------------------------------------
+
+typedef struct
+{
+    int size_data;
+    
+    local int offsets_size = (size_header - SCEI_HEADER_SIZE) - 4; Assert(offsets_size % 4 == 0);
+    local int offsets_count = offsets_size / 4;
+    int offset_headers[offsets_count];
+} Header <bgcolor=cRed>;
+
+typedef struct
+{
+    
+} Prog <bgcolor=cDkRed>;
+
+typedef struct
+{
+    
+} Sset <bgcolor=cDkRed>;
+
+typedef struct
+{
+    
+} Sample <bgcolor=cDkRed>;
+
+typedef struct
+{
+    int offset_audio_data;
+    ushort sample_rate;
+    byte loop;
+    byte unk07;
+    int unk08; // May not be a part of this struct
+} Vagi <bgcolor=cDkRed>;
+
+typedef struct
+{
+    local quad start_pos <hidden=true> = FTell();
+    char magic[8];
+    uint size_header;
+    
+    switch (magic)
+    {
+        case "IECSsreV":
+            ubyte version[4];
+            break;
+        case "IECSdaeH":
+            uint size_headers;
+            Header header;
+            break;
+        case "IECSgorP":
+        case "IECStesS":
+        case "IECSlpmS":
+        case "IECSigaV":
+            int count;
+            local int true_count <hidden=true> = count + 1;
+
+            int offsets[true_count] <bgcolor=cRed>;
+            local int i <hidden=true>;
+            for (i = 0; i < true_count; i++)
+            {
+                FSeek(start_pos + offsets[i]);
+                switch (magic)
+                {
+                    case "IECSgorP":
+                        Prog prog;
+                        break;
+                    case "IECStesS":
+                        Sset sset;
+                        break;
+                    case "IECSlpmS":
+                        Sample sample; // Name assumed from smpl
+                        break;
+                    case "IECSigaV":
+                        Vagi vagi;
+                        break;
+                    default:
+                        Assert(false);
+                }
+            }
+            break;
+        default:
+            Assert(false);
+    }
+
+    
+} SCEIHeader <bgcolor=cLtRed, read=ReadSCEIHeader>;
+
+string ReadSCEIHeader(SCEIHeader& scei)
+{
+    string str;
+    return scei.magic;
+}
+
+//------------------------------------------------
+
+local quad SCEI_HEADERS_START_POS = FTell();
+
+SCEIHeader version;
+SCEIHeader header;
+
+local int i <hidden=true>;
+local int offset <hidden=true>;
+for (i = 0; i < header.header.offsets_count; i++)
+{
+    offset = header.header.offset_headers[i];
+    if (offset != -1)
+    {
+        FSeek(SCEI_HEADERS_START_POS + offset);
+        SCEIHeader scei_section;
+    }
+}

@@ -1,0 +1,37 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.2 Binary Template
+//
+//      File: Layer.bt
+//   Authors: WarpZephyr
+//   Version: 1.1.0
+//   Purpose: Armored Core 4 MSB layers
+//  Category: Maps
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+typedef struct
+{
+    local quad start = FTell();
+    
+    // Read Data
+    int nameOffset;
+    int layerID;
+    int unk08;
+    int unk0C;
+    int unk10;
+    int unk14;
+    int unk18;
+    int unk1C;
+
+    // Get Offset Structs
+    FSeek(start + nameOffset);
+    string name;
+} Layer <read=ReadLayer>;
+
+string ReadLayer(Layer& layer)
+{
+    local string str;
+    return SPrintf(str, "Layer ID: %d | %s", layer.layerID, layer.name);
+}

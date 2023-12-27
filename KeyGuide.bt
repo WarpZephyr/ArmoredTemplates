@@ -1,0 +1,120 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.1 Binary Template
+//
+//      File: KeyGuide.bt
+//   Authors: WarpZephyr
+//   Version: 
+//   Purpose: Armored Core KeyGuide files.
+//  Category: 
+// File Mask: keyguide.bin, skeyguide.bin
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+typedef struct
+{
+    ubyte unk00 <hidden=true>; Assert(unk00 == 0);
+    ubyte littleEndian();
+    ubyte bigEndian();
+    if (littleEndian == 1)
+        LittleEndian();
+    else if (bigEndian == 1)
+        BigEndian();
+    else
+        Assert(false);
+    ubyte unk03 <hidden=true>; Assert(unk03 == 0);
+
+    uint unk04 <hidden=true>; Assert(unk04 == 0);
+    uint keyInfoCount;
+
+    uint unk0C <hidden=true>; Assert(unk0C == 0);
+    uint keyDataCount; Assert(keyInfoCount == keyDataCount);
+
+    uint unk14 <hidden=true>; Assert(unk14 == 0);
+    uint entryCount3;
+
+    uint unk1C <hidden=true>; Assert(unk1C == 0);
+} Header <bgcolor=cLtRed>;
+
+typedef struct
+{
+    uint id;
+    uint unk04; Assert(unk04 == 1);
+    uint index;
+    uint unk0C <hidden=true>; Assert(unk0C == 0);
+} KeyInfo <bgcolor=cLtGreen, read=ReadKeyInfo, optimize=false>;
+
+string ReadKeyInfo(KeyInfo& entry)
+{
+    string str;
+    return SPrintf(str, "%i \\ %i \\ %i",
+    entry.id, entry.unk04, entry.index);
+}
+
+typedef struct
+{
+    uint guide_count;
+    uint offset; // ?
+    uint unk08 <hidden=true>; Assert(unk08 == 0);
+    uint unk0C <hidden=true>; Assert(unk0C == 0);
+} KeyData <bgcolor=cGreen, read=ReadKeyData, optimize=false>;
+
+string ReadKeyData(KeyData& entry)
+{
+    string str;
+    return SPrintf(str, "%i \\ %i",
+    entry.guide_count, entry.offset);
+}
+
+typedef struct
+{
+    uint unk00;
+    uint unk04 <hidden=true>; Assert(unk04 == 0);
+} Entry3 <bgcolor=cDkGreen, read=ReadEntry3, optimize=false>;
+
+string ReadEntry3(Entry3& entry)
+{
+    string str;
+    return SPrintf(str, "%i",
+    entry.unk00);
+}
+
+typedef struct
+{
+    wstring keys;
+    wstring text;
+} KeyEntry <bgcolor=cYellow, read=ReadKeyEntry, optimize=false>;
+
+string ReadKeyEntry(KeyEntry& entry)
+{
+    string str;
+    return SPrintf(str, "Keys: %s | Text: %s", entry.keys, entry.text);
+}
+
+typedef struct (uint count)
+{
+    local uint local_count = count;
+    ushort unk00 <hidden=true>; Assert(unk00 == 0);
+    KeyEntry entries[count];
+} KeyGuideEntry <bgcolor=cYellow, read=ReadKeyGuideEntry, optimize=false>;
+
+string ReadKeyGuideEntry(KeyGuideEntry& entry)
+{
+    string str;
+    return SPrintf(str, "Entries: %i", entry.local_count);
+}
+
+//------------------------------------------------
+
+Header header;
+KeyInfo keyInfo[header.keyInfoCount];
+KeyData keyData[header.keyDataCount];
+Entry3 entries3[header.entryCount3];
+
+struct {
+    local int i;
+    for (i = 0; i < header.keyDataCount; i++)
+    {
+        KeyGuideEntry guide(keyData[i].guide_count);
+    }
+} KeyGuides;

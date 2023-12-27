@@ -1,0 +1,91 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.2 Binary Template
+//
+//      File: Model.bt
+//   Authors: WarpZephyr
+//   Version: 1.1.0
+//   Purpose: Armored Core 4 MSB Models.
+//  Category: Maps
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+enum <int> ModelType
+{
+    ModelTypeMapPiece = 0,
+    ModelTypeObject = 1,
+    ModelTypeEnemy = 2,
+    ModelTypeDummy = 4,
+};
+
+// Sub Structs
+//------------------------------------------------
+
+typedef struct
+{
+    ubyte unk00;
+    ubyte unk01;
+    ubyte unk02;
+    ubyte unk03;
+} ModelUnk14;
+
+typedef struct
+{
+    // References a row ID in a param
+    short rowID;
+
+    // 0 = Object or MapPiece
+    // 100 = Dummy
+    short unk02;
+} ModelRowReference;
+
+// Main Struct
+//------------------------------------------------
+
+typedef struct
+{
+    local quad start = FTell();
+
+    // Read Data
+    int nameOffset;
+    ModelType type;
+    int id;
+    int resourceOffset;
+    int instanceCount;
+    int offset14; Assert(offset14 > 0);
+    int rowReferenceOffset;
+    
+    // Get Offset Structs
+    FSeek(start + nameOffset);
+    string name;
+
+    FSeek(start + resourceOffset);
+    string resourcePath;
+
+    FSeek(start + offset14);
+    ModelUnk14 modelUnk14;
+
+    if(rowReferenceOffset > 0)
+    {
+        FSeek(start + rowReferenceOffset);
+        ModelRowReference rowReference;
+    }
+} Model <read=ReadModel>;
+
+string ReadModel(Model& model)
+{
+    local string str;
+    local string type;
+
+    switch (model.type)
+    {
+        case ModelTypeMapPiece: type = "MapPiece"; break;
+        case ModelTypeObject: type = "Object"; break;
+        case ModelTypeEnemy: type = "Enemy"; break;
+        case ModelTypeDummy: type = "Dummy"; break;
+        default: type = "UnknownType";
+    }
+
+    return SPrintf(str, "ID: %d | Instances: %d | %s | %s", model.id, model.instanceCount, type, model.name);
+}

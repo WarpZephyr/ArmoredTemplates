@@ -1,0 +1,177 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.1 Binary Template
+//
+//      File: AcColorSet.bt
+//   Authors: WarpZephyr
+//   Version: 
+//   Purpose: Armored Core 5thgen AcColorSet structures.
+//  Category: 
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+#include "Colors.bt"
+BigEndian();
+
+enum <byte> ColorPattern
+{
+    Unknown = -1,
+    Solid = 0,
+    Pattern2 = 1,
+    Pattern3 = 2,
+    Pattern4 = 3,
+    Pattern5 = 4,
+    Pattern6 = 5,
+    Pattern7 = 6,
+    Pattern8 = 7,
+    Pattern9 = 8,
+    Pattern10 = 9,
+    Pattern11 = 10,
+    Pattern12 = 11
+};
+
+void AssertColorPattern(ColorPattern pattern)
+{
+    Assert(pattern > -2 && pattern < 12);
+}
+
+//------------------------------------------------
+
+typedef struct
+{
+    ColorPattern All; AssertColorPattern(All);
+    ColorPattern AllFrames; AssertColorPattern(AllFrames);
+    ColorPattern AllUnits; AssertColorPattern(AllUnits);
+    ColorPattern Hidden_AllStabilizers; AssertColorPattern(Hidden_AllStabilizers);
+    ColorPattern Head; AssertColorPattern(Head);
+    ColorPattern Core; AssertColorPattern(Core);
+    ColorPattern ArmRight; AssertColorPattern(ArmRight);
+    ColorPattern ArmLeft; AssertColorPattern(ArmLeft);
+    ColorPattern Legs; AssertColorPattern(Legs);
+    ColorPattern ArmUnitRight; AssertColorPattern(ArmUnitRight);
+    ColorPattern ArmUnitLeft; AssertColorPattern(ArmUnitLeft);
+    ColorPattern UltimateWeapon; AssertColorPattern(UltimateWeapon);
+    ColorPattern Hidden_BackUnitLeft; AssertColorPattern(Hidden_BackUnitLeft);
+    ColorPattern Hidden_ShoulderUnit; AssertColorPattern(Hidden_ShoulderUnit);
+    ColorPattern HangerUnitRight; AssertColorPattern(HangerUnitRight);
+    ColorPattern HangerUnitLeft; AssertColorPattern(HangerUnitLeft);
+    ColorPattern Hidden_AllHeadStabilizers; AssertColorPattern(Hidden_AllHeadStabilizers);
+    ColorPattern Hidden_AllCoreStabilizers; AssertColorPattern(Hidden_AllCoreStabilizers);
+    ColorPattern Hidden_AllArmStabilizers; AssertColorPattern(Hidden_AllArmStabilizers);
+    ColorPattern Hidden_AllLegStabilizers; AssertColorPattern(Hidden_AllLegStabilizers);
+    ColorPattern Hidden_HeadTopStabilizer; AssertColorPattern(Hidden_HeadTopStabilizer);
+    ColorPattern Hidden_HeadRightSideStabilizer; AssertColorPattern(Hidden_HeadRightSideStabilizer);
+    ColorPattern Hidden_HeadLeftSideStabilizer; AssertColorPattern(Hidden_HeadLeftSideStabilizer);
+    ColorPattern Hidden_CoreUpperRightSideStabilizer; AssertColorPattern(Hidden_CoreUpperRightSideStabilizer);
+    ColorPattern Hidden_CoreUpperLeftSideStabilizer; AssertColorPattern(Hidden_CoreUpperLeftSideStabilizer);
+    ColorPattern Hidden_CoreLowerRightSideStabilizer; AssertColorPattern(Hidden_CoreLowerRightSideStabilizer);
+    ColorPattern Hidden_CoreLowerLeftSideStabilizer; AssertColorPattern(Hidden_CoreLowerLeftSideStabilizer);
+    ColorPattern Hidden_ArmRightStabilizer; AssertColorPattern(Hidden_ArmRightStabilizer);
+    ColorPattern Hidden_ArmLeftStabilizer; AssertColorPattern(Hidden_ArmLeftStabilizer);
+    ColorPattern Hidden_LegsBackStabilizer; AssertColorPattern(Hidden_LegsBackStabilizer);
+    ColorPattern Hidden_LegsUpperRightSideStabilizer; AssertColorPattern(Hidden_LegsUpperRightSideStabilizer);
+    ColorPattern Hidden_LegsUpperLeftSideStabilizer; AssertColorPattern(Hidden_LegsUpperLeftSideStabilizer);
+    ColorPattern Hidden_LegsMiddleRightSideStabilizer; AssertColorPattern(Hidden_LegsMiddleRightSideStabilizer);
+    ColorPattern Hidden_LegsMiddleLeftSideStabilizer; AssertColorPattern(Hidden_LegsMiddleLeftSideStabilizer);
+    ColorPattern Hidden_LegsLowerRightSideStabilizer;
+    ColorPattern Hidden_LegsLowerLeftSideStabilizer;
+} PatternSelection <bgcolor=cGreen, read=ReadPatternSelection>;
+
+string ReadPatternSelection(PatternSelection& selection)
+{
+    string str;
+    return SPrintf(str, "Selections: %d\\%d\\%d\\%d\\%d\\%d\\%d\\%d\\%d\\%d\\%d\\%d\\%d\\%d\\%d\\%d\\%d\\%d\\%d\\%d\\%d\\%d\\%d\\%d\\%d\\%d\\%d\\%d\\%d\\%d\\%d\\%d\\%d\\%d\\%d\\%d",
+            selection.All, selection.AllFrames, selection.AllUnits,
+            selection.Hidden_AllStabilizers, selection.Head, selection.Core,
+            selection.ArmRight, selection.ArmLeft, selection.Legs,
+            selection.ArmUnitRight, selection.ArmUnitLeft, selection.UltimateWeapon,
+            selection.Hidden_BackUnitLeft, selection.Hidden_ShoulderUnit, selection.HangerUnitRight,
+            selection.HangerUnitLeft, selection.Hidden_AllHeadStabilizers, selection.Hidden_AllCoreStabilizers,
+            selection.Hidden_AllArmStabilizers, selection.Hidden_AllLegStabilizers, selection.Hidden_HeadTopStabilizer,
+            selection.Hidden_HeadRightSideStabilizer, selection.Hidden_HeadLeftSideStabilizer, selection.Hidden_CoreUpperRightSideStabilizer,
+            selection.Hidden_CoreUpperLeftSideStabilizer, selection.Hidden_CoreLowerRightSideStabilizer, selection.Hidden_CoreLowerLeftSideStabilizer,
+            selection.Hidden_ArmRightStabilizer, selection.Hidden_ArmLeftStabilizer, selection.Hidden_LegsBackStabilizer,
+            selection.Hidden_LegsUpperRightSideStabilizer, selection.Hidden_LegsUpperLeftSideStabilizer, selection.Hidden_LegsMiddleRightSideStabilizer,
+            selection.Hidden_LegsMiddleLeftSideStabilizer, selection.Hidden_LegsLowerRightSideStabilizer, selection.Hidden_LegsLowerLeftSideStabilizer);
+}
+
+typedef struct
+{
+    ColorSet HeadColor;
+    ColorSet CoreColor;
+    ColorSet ArmRightColor;
+    ColorSet ArmLeftColor;
+    ColorSet LegsColor;
+} AllFrameColorSets <bgcolor=cLtGreen>;
+
+typedef struct
+{
+    ColorSet ArmUnitRightColor;
+    ColorSet ArmUnitLeftColor;
+    ColorSet UltimateWeaponColor;
+    ColorSet Hidden_BackUnitLeftColor;
+    ColorSet Hidden_ShoulderUnitColor;
+    ColorSet HangarUnitRightColor;
+    ColorSet HangarUnitLeftColor;
+} AllUnitColorSets <bgcolor=cLtGreen>;
+
+typedef struct
+{
+    ColorSet Hidden_HeadTopStabilizerColor;
+    ColorSet Hidden_HeadRightSideStabilizerColor;
+    ColorSet Hidden_HeadLeftSideStabilizerColor;
+} AllHeadStabilizerColorSets <bgcolor=cLtGreen>;
+
+typedef struct
+{
+    ColorSet Hidden_CoreUpperRightSideStabilizerColor;
+    ColorSet Hidden_CoreUpperLeftSideStabilizerColor;
+    ColorSet Hidden_CoreLowerRightSideStabilizerColor;
+    ColorSet Hidden_CoreLowerLeftSideStabilizerColor;
+} AllCoreStabilizerColorSets <bgcolor=cLtGreen>;
+
+typedef struct
+{
+    ColorSet Hidden_ArmRightStabilizerColor;
+    ColorSet Hidden_ArmLeftStabilizerColor;
+} AllArmStabilizerColorSets <bgcolor=cLtGreen>;
+
+typedef struct
+{
+    ColorSet Hidden_LegsBackStabilizerColor;
+    ColorSet Hidden_LegsUpperRightSideStabilizerColor;
+    ColorSet Hidden_LegsUpperLeftSideStabilizerColor;
+    ColorSet Hidden_LegsUpperRightBackStabilizerColor;
+    ColorSet Hidden_LegsUpperLeftBackStabilizerColor;
+    ColorSet Hidden_LegsMiddleRightSideStabilizerColor;
+    ColorSet Hidden_LegsMiddleLeftSideStabilizerColor;
+    ColorSet Hidden_LegsMiddleRightBackStabilizerColor;
+    ColorSet Hidden_LegsMiddleLeftBackStabilizerColor;
+    ColorSet Hidden_LegsLowerRightSideStabilizerColor;
+    ColorSet Hidden_LegsLowerLeftSideStabilizerColor;
+    ColorSet Hidden_LegsLowerRightBackStabilizerColor;
+    ColorSet Hidden_LegsLowerLeftBackStabilizerColor;
+} AllLegStabilizerColorSets <bgcolor=cLtGreen>;
+
+typedef struct
+{
+    AllHeadStabilizerColorSets Hidden_AllStabilizerHeadColors;
+    AllCoreStabilizerColorSets Hidden_AllStabilizerCoreColors;
+    AllArmStabilizerColorSets Hidden_AllStabilizerArmColors;
+    AllLegStabilizerColorSets Hidden_AllStabilizerLegColors;
+} AllStabilizerColorSets <bgcolor=cLtGreen>;
+
+typedef struct
+{
+    AllFrameColorSets AllFrameColors;
+    AllUnitColorSets AllUnitColors;
+    AllStabilizerColorSets Hidden_AllStabilizerColors;
+} AllColorSets <bgcolor=cLtGreen>;
+
+typedef struct
+{
+    AllColorSets AllColors;
+    PatternSelection patternSelections;
+    ColorRGBA Hidden_EyeColor;
+} AcColorSet <bgcolor=cLtGreen>;

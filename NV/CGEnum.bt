@@ -1,0 +1,42 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.2 Binary Template
+//
+//      File: CGEnum.bt
+//   Authors: WarpZephyr
+//   Version: 1.0.0
+//   Purpose: NVBinary Enum enum.
+//  Category: Shaders
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+enum <uint> CGEnum
+{
+    CG_UNKNOWN = 4096,
+    CG_IN = 4097,
+    CG_OUT = 4098,
+    CG_INOUT = 4099,
+    CG_MIXED = 4100,
+    CG_VARYING = 4101,
+    CG_UNIFORM = 4102,
+    CG_CONSTANT = 4103,
+    CG_PROGRAM_SOURCE = 4104,
+    CG_PROGRAM_ENTRY = 4105,
+    CG_COMPILED_PROGRAM = 4106,
+    CG_PROGRAM_PROFILE = 4107,
+    CG_GLOBAL = 4108,
+    CG_PROGRAM = 4109,
+    CG_DEFAULT = 4110,
+    CG_ERROR = 4111,
+    CG_SOURCE = 4112,
+    CG_OBJECT = 4113,
+    CG_COMPILE_MANUAL = 4114,
+    CG_COMPILE_IMMEDIATE = 4115,
+    CG_COMPILE_LAZY = 4116,
+    CG_CURRENT = 4117,
+    CG_LITERAL = 4118,
+    CG_VERSION = 4119,
+    CG_ROW_MAJOR = 4120,
+    CG_COLUMN_MAJOR = 4121,
+};

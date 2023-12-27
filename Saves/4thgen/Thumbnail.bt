@@ -19,7 +19,7 @@ typedef struct
 {
     ubyte unk00;
     ubyte unk01 <hidden=true>; Assert(unk01 == 0);
-    ushort chunkCount; // Maybe, dataSize (16384) / chunkCount (128) = 128
+    ushort chunkCount;
     uint unk04 <hidden=true>; Assert(unk04 == 0);
     uint unk08 <hidden=true>; Assert(unk08 == 0);
     int dataSize;
@@ -27,18 +27,6 @@ typedef struct
 
 typedef struct
 {
-    ColorRGBA colors[32];
-} Chunk <bgcolor=cYellow, optimize=false>;
-
-typedef struct
-{
     ThumbnailHeader header;
-    //Chunk chunks(header.dataSize / header.chunkCount)[header.chunkCount];
-    Chunk chunks[128];
+    ubyte data[128 * 128];
 } Thumbnail <bgcolor=cLtGreen>;
-
-string ReadThumbnail(Thumbnail& thumbnail)
-{
-    string str;
-    return SPrintf(str, "%d \\ %d \\ Data Size: %d", thumbnail.header.unk00, thumbnail.header.unk02, thumbnail.header.thumbnailDataSize);
-}

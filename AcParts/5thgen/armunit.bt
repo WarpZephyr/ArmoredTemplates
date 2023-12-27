@@ -1,0 +1,77 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.2 Binary Template
+//
+//      File: armunit.bt
+//   Authors: WarpZephyr
+//   Version: 1.0.0
+//   Purpose: Armored Core Verdict Day Arm Unit Parts.
+//  Category: Games
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+BigEndian();
+
+//------------------------------------------------
+
+typedef struct
+{
+    Null unk00[52];
+    float unk34;
+    float unk38;
+    float unk3C;
+    float unk40;
+    Null unk44[144];
+    short ke_defense;
+    short ce_defense;
+    short te_defense;
+    short ap;
+    short unkDC;
+    short unkDE;
+    uint unkE0;
+    Null unkE4[16];
+    ushort unkF4;
+    ushort anti_impact_performance;
+    Null unkF8[28];
+    ushort unk114;
+    ubyte unk116;
+    ubyte unk117;
+    ushort explosion_range;
+    ushort base_lock;
+    uint bullet_id;
+    uint sfx_id;
+    uint landing_sfx_id;
+    float muzzle;
+    float en_consumption_during_use;
+    ushort simultaneous_rounds;
+    ushort unk132;
+    uint unk134;
+    ushort reload_time;
+    ushort unk13A;
+    ushort ammo_cost;
+    ushort unk13E;
+    float unk140;
+    float unk144;
+    float duration;
+    float unk14C;
+    uint max_charge_time;
+    ushort unk154;
+    ushort ammo;
+    uint unk158;
+    ushort optimal_range;
+    ubyte decay_rate;
+    ubyte unk15F;
+    ushort unk160;
+    ushort unk162;
+    uint unk164;
+    uint unk168;
+    float attack_power;
+    float impact;
+    uint unk174;
+    uint unk178;
+    ubyte unk17C;
+    ubyte unk17D;
+    ubyte unk17E;
+    ubyte unk17F;
+} ArmUnit <bgcolor=cAqua>;

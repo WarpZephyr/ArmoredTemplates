@@ -1,0 +1,166 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.2 Binary Template
+//
+//      File: NVBinary.bt
+//   Authors: WarpZephyr
+//   Version: 1.0.1
+//   Purpose: Reading PS3 Fragment and Vertex Shaders.
+//  Category: Shaders
+// File Mask: *.fpo,*.vpo
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+#include "CGType.bt"
+#include "CGResource.bt"
+#include "CGEnum.bt"
+
+BigEndian();
+
+enum <uint> PROFILE_SCE
+{
+    // SCE aliases to NVidia's profile defs.    
+    PROFILE_SCE_FP_TYPEB = 6151,
+    PROFILE_SCE_VP_TYPEB = 7001,
+
+    // NVidia style profile defs for RSX, not found in original NV .h files.
+    PROFILE_SCE_VP_RSX = 7003,
+    PROFILE_SCE_FP_RSX = 7004,
+
+    // Deprecated. Not used anywhere in cgc. Needed for compatibility with older SDKs.
+    PROFILE_SCE_VP_TYPEC = 7005,
+    PROFILE_SCE_FP_TYPEC = 7006
+};
+
+//------------------------------------------------
+
+void Align(int align) {
+    if (FTell() % align > 0) {
+        FSkip(align - (FTell() % align));
+    }
+}
+
+//------------------------------------------------
+
+typedef int CGBool;
+typedef uint CgBinaryOffset;
+typedef CgBinaryOffset CgBinaryEmbeddedConstOffset;
+typedef CgBinaryOffset CgBinaryFloatOffset;
+typedef CgBinaryOffset CgBinaryStringOffset;
+typedef CgBinaryOffset CgBinaryParameterOffset;
+
+typedef struct
+{
+    uint instructionCount;
+    uint instructionSlot;
+    uint registerCount;
+    uint attributeInputMask <format=binary>;
+    uint attributeOutputMask <format=binary>;
+    uint userClipMask;
+    Align(0x10);
+} CgBinaryVertexProgram <bgcolor=cDkRed>;
+
+typedef struct
+{
+    uint instructionCount;
+    uint attributeInputMask <format=binary>;
+    uint partialTexType;
+    ushort texCoordsInputMask <format=binary>;
+    ushort texCoords2D <format=binary>;
+    ushort texCoordsCentroid <format=binary>;
+    uchar registerCount;
+    uchar outputFromH0;
+    uchar depthReplace;
+    uchar pixelKill;
+    Align(0x10);
+ } CgBinaryFragmentProgram <bgcolor=cDkRed>;
+
+typedef struct
+{
+    uint ucodeCount;
+    uint ucodeOffset[ucodeCount];
+} CgBinaryEmbeddedConstant <bgcolor=cYellow>;
+
+typedef struct
+{
+    CGType type;
+    CGResource res;
+    CGEnum var;
+    int resIndex;
+    CgBinaryStringOffset nameOffset;
+    CgBinaryFloatOffset defaultValueOffset;
+    CgBinaryEmbeddedConstOffset embeddedConstantOffset;
+    CgBinaryStringOffset semanticOffset;
+    CGEnum direction;
+    int paramno;
+    CGBool isReferenced;
+    CGBool isShared;
+    local quad end = FTell();
+
+    if (nameOffset > 0)
+    {
+        FSeek(start + nameOffset);
+        string name;
+    }
+
+    if (defaultValueOffset > 0)
+    {
+        FSeek(start + defaultValueOffset);
+        DefaultValue defaultValue(type);
+        Align(0x10);
+    }
+
+    if (embeddedConstantOffset > 0)
+    {
+        FSeek(start + embeddedConstantOffset);
+        CgBinaryEmbeddedConstant embeddedConstant;
+    }
+
+    if (semanticOffset > 0)
+    {
+        FSeek(start + semanticOffset);
+        string semantic;
+    }
+
+    FSeek(end);
+} CgBinaryParameter <bgcolor=cLtYellow, optimize=false>;
+
+typedef struct
+{
+    PROFILE_SCE profile;
+    uint binaryFormatRevision;
+    uint totalSize;
+    uint parameterCount;
+    CgBinaryParameterOffset parameterArrayOffset;
+    CgBinaryOffset programOffset;
+    uint ucodeSize;
+    CgBinaryOffset ucodeOffset;
+    Align(0x10);
+    
+    FSeek(start + programOffset);
+    switch(profile)
+    {
+        case PROFILE_SCE_VP_RSX:
+            CgBinaryVertexProgram vertexProgram;
+            break;
+        case PROFILE_SCE_FP_RSX:
+            CgBinaryFragmentProgram fragmentProgram;
+            break;
+        default:
+            Assert(false);
+    }
+
+    if (parameterCount > 0)
+    {
+        FSeek(start + parameterArrayOffset);
+        CgBinaryParameter parameters[parameterCount];
+    }
+
+    FSeek(start + ucodeOffset);
+    ubyte microCode[ucodeSize] <bgcolor=cLtGreen>;
+} CgBinaryProgram <bgcolor=cRed, optimize=false>;
+
+//------------------------------------------------
+
+local quad start = FTell();
+CgBinaryProgram program;

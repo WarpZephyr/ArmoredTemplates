@@ -1,0 +1,73 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.2 Binary Template
+//
+//      File: PARAMACFF.bt
+//   Authors: WarpZephyr
+//   Version: 1.0.0
+//   Purpose: Armored Core Formula Front params.
+//  Category: Games
+// File Mask: *.bin
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+      
+#include "Util.bt"
+LittleEndian();
+if (ReadByte(0x2C) == -1)
+    BigEndian();
+
+local byte HEADER_SIZE = 0x30;
+
+//------------------------------------------------
+
+typedef struct
+{
+    uint stringsOffset <format=hex>;
+    ushort shortDataOffset <format=hex>;
+    short unk06;
+    short paramdefDataVersion;
+    ushort rowCount;
+
+    char paramType[0x20];
+
+    byte bigEndian; Assert(bigEndian == 0 || bigEndian == -1);
+    // All uses of these two values below are highly speculative
+    byte format2D;
+    byte format2E;
+    // Matches the paramdef version for paramdef version 101, otherwise 0 or -1
+    byte paramdefFormatVersion;
+    
+    // format2D of 1 and 2 don't have this but 3 does. I really don't know.
+    if ((format2D & 1) && (format2D & 2))
+    {
+        int dataOffset <format=hex>;
+        int pad1 <hidden=true>; Assert(pad1 == 0);
+        quad pad2 <hidden=true>; Assert(pad2 == 0);
+    }
+    else if (format2D & 4)
+    {
+        quad dataOffset <format=hex>;
+        quad pad2 <hidden=true>; Assert(pad2 == 0);
+    }
+} Header <read=ReadHeader, bgcolor=cLtRed>;
+
+string ReadHeader(Header& header)
+{
+    string str;
+    return SPrintf(str, "[%4i] %s", header.rowCount,
+        header.format2D & 0x80 ? header.paramType.str : header.paramType);
+}
+
+typedef struct(long rowSize)
+{
+    ubyte data[rowSize];
+} Row <bgcolor=cBlack, optimize=false>;
+
+//------------------------------------------------
+
+Header header;
+if (header.rowCount > 0)
+{
+    local long rowSize = (FileSize() - HEADER_SIZE) / header.rowCount;
+    Row rows(rowSize)[header.rowCount];
+}

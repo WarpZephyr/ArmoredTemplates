@@ -1,0 +1,28 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.2 Binary Template
+//
+//      File: HTR.bt
+//   Authors: WarpZephyr
+//   Version: 1.0.0
+//   Purpose: HTR navigation files.
+//  Category: Games
+// File Mask: *.htr
+//  ID Bytes: 48 54 52 00
+//   History: 
+//------------------------------------------------
+
+BigEndian();
+
+//------------------------------------------------
+
+typedef struct
+{
+    char magic[4]; Assert(magic == "HTR\0");
+    char version[4]; Assert(version == "0001");
+    int unk08;
+    
+} Header <bgcolor=cLtRed>;
+
+//------------------------------------------------
+
+Header header;

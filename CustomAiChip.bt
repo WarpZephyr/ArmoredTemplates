@@ -1,0 +1,97 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.2 Binary Template
+//
+//      File: CustomAiChip.bt
+//   Authors: WarpZephyr
+//   Version: 1.0.0
+//   Purpose: Armored Core Verdict Day Custom Ai Chip Binary file
+//  Category: Games
+// File Mask: CustomAiChip.bin
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+BigEndian();
+
+//------------------------------------------------
+
+void Align(int align) {
+    if (FTell() % align > 0) {
+        FSkip(align - (FTell() % align));
+    }
+}
+
+//------------------------------------------------
+
+typedef struct
+{
+    int unk00;
+    int unk04;
+    int unk08;
+    int unk0C;
+    int unk10;
+    int unk14;
+} Header <bgcolor=cLtRed>;
+
+typedef struct
+{
+    int unk00;
+    int unk04;
+    int unk08;
+    int unk0C;
+    string name;
+    Align(4);
+    int unk1;
+    int unk2;
+} EntryA <bgcolor=cRed, read=ReadEntryA, optimize=false>;
+
+string ReadEntryA(EntryA& entry)
+{
+    return entry.name;
+}
+
+typedef struct
+{
+    short unk00;
+    short unk02;
+    int unk04;
+    int unk08;
+    int unk0C;
+    int unk10;
+    string name;
+    Align(4);
+    int unk1;
+    int unk2;
+    int unk3;
+    int unk4;
+    int unk5;
+} EntryB <bgcolor=cDkRed, read=ReadEntryB, optimize=false>;
+
+string ReadEntryB(EntryB& entry)
+{
+    return entry.name;
+}
+
+typedef struct
+{
+    ubyte unk00[56];
+    string name;
+    Align(4);
+    int unk1;
+    int unk2;
+    int unk3;
+    int unk4;
+    int unk5;
+} EntryC <bgcolor=cDkRed, read=ReadEntryC, optimize=false>;
+
+string ReadEntryC(EntryC& entry)
+{
+    return entry.name;
+}
+
+//------------------------------------------------
+
+Header header;
+EntryA entriesA[header.unk00];
+EntryB entriesB[header.unk04];
+EntryC entriesC[header.unk08];

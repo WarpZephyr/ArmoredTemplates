@@ -23,13 +23,12 @@ local byte IS_WSTRING = 1;
 
 typedef struct
 {
-    uint subtitleOffset;
+    uint textOffset;
     uint subtitleCount;
     uint subtitleEntriesOffset;
-    uint unk0C;
-    uint videoOffset;
-    ushort unk14;
-    ushort eventID; // Maybe
+    uint videoCount;
+    uint videoEntriesOffset;
+    uint eventID; // Maybe
     uint unk18 <hidden=true>; Assert(unk18 == 0);
     uint unk1C <hidden=true>; Assert(unk1C == 0);
 } Header <bgcolor=cLtRed>;
@@ -38,22 +37,35 @@ typedef struct
 {
     short frameDelay;
     short frameTime;
-    uint textOffset; // relative to subtitle container
+    uint textOffset;
     uint unk08 <hidden=true>; Assert(unk08 == 0);
     uint unk0C <hidden=true>; Assert(unk0C == 0);
+
+    local quad end = FTell();
+    FSeek(header.textOffset + textOffset);
+    if (IS_WSTRING)
+    {
+        wstring text;
+        ushort padding; Assert(padding == 0);
+    }
+    else
+    {
+        string text;
+    }
+    FSeek(end);
 } SubtitleEntry <bgcolor=cGreen, read=ReadSubtitleEntry, optimize=false>;
 
-string ReadSubtitleEntry(SubtitleEntry& subtitleEntry)
+wstring ReadSubtitleEntry(SubtitleEntry& entry)
 {
-    string str;
-    return SPrintf(str, "Subtitle begins after %i frames have past since the last subtitle, and the frame lasts for %i frame(s)", subtitleEntry.frameDelay, subtitleEntry.frameTime);
+    return entry.text;
 }
 
-typedef struct(int subtitleOffset)
+typedef struct
 {
-    uint videoNameOffset;
+    uint textOffset;
     uint unk04 <hidden=true>; Assert(unk04 == 0);
-    uint unk08 <hidden=true>; Assert(unk08 == 0);
+    short unk08;
+    short unk0A;
     short width;
     short height;
     uint unk14 <hidden=true>; Assert(unk14 == 0);
@@ -62,27 +74,9 @@ typedef struct(int subtitleOffset)
     uint unk20 <hidden=true>; Assert(unk20 == 0);
 
     local quad end = FTell();
-    FSeek(subtitleOffset + videoNameOffset);
-    if(IS_WSTRING == 1) {
-        wstring videoName;
-        ushort padding; Assert(padding == 0);
-    }
-    else
+    FSeek(header.textOffset + textOffset);
+    if (IS_WSTRING)
     {
-        string videoName;
-    }
-    FSeek(end);
-} VideoEntry <bgcolor=cPurple, read=ReadVideoEntry, optimize=false>;
-
-string ReadVideoEntry(VideoEntry& videoEntry)
-{
-    string str;
-    return SPrintf(str, "Video is named \"%s\" with %i by %i resolution", videoEntry.videoName, videoEntry.width, videoEntry.height);
-}
-
-typedef struct
-{
-    if(IS_WSTRING == 1) {
         wstring text;
         ushort padding; Assert(padding == 0);
     }
@@ -90,26 +84,27 @@ typedef struct
     {
         string text;
     }
-} Subtitle <bgcolor=cLtGreen, read=ReadSubtitle>;
+    FSeek(end);
+} VideoEntry <bgcolor=cPurple, read=ReadVideoEntry, optimize=false>;
 
-string ReadSubtitle(Subtitle& subtitle)
+wstring ReadVideoEntry(VideoEntry& entry)
 {
-    return subtitle.text;
+    local string str;
+    return SPrintf(str, "%i %i \t %i %i \t %s", entry.width, entry.height, entry.unk08, entry.unk0A, entry.text);
 }
 
 //------------------------------------------------
 
 Header header;
 
-FSeek(header.subtitleEntriesOffset);
-SubtitleEntry subtitleEntries[header.subtitleCount];
-
-FSeek(header.videoOffset);
-VideoEntry videoEntry(header.subtitleOffset);
-
-local int i;
-for(i = 0; i < header.subtitleCount; i++)
+if (header.subtitleCount > 0)
 {
-    FSeek(header.subtitleOffset + subtitleEntries[i].textOffset);
-    Subtitle subtitle;
+    FSeek(header.subtitleEntriesOffset);
+    SubtitleEntry subtitleEntries[header.subtitleCount];
+}
+
+if (header.videoCount > 0)
+{
+    FSeek(header.videoEntriesOffset);
+    VideoEntry videoEntries[header.videoCount];
 }

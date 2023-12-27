@@ -1,0 +1,259 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.2 Binary Template
+//
+//      File: Point.bt
+//   Authors: WarpZephyr
+//   Version: 1.2.0
+//   Purpose: Armored Core 4 MSB Points.
+//  Category: Maps
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+enum <int> PointType
+{
+    PointTypeDistance = 0,          // Associated with estimated distance?
+    PointTypeRoute = 1,             // Appears to be points for AI Routes
+    PointTypeAction = 50,           // Seems to reference trigger or action bounds, usually for enemies
+    PointTypeOperationalArea = 100, // An area the player can be in without failure
+    PointTypeWarningArea = 101,     // An area the player can be in with a warning
+    PointTypeNormalArea = 102,      // An area the player can be in without interruption
+    PointTypeDeathArea = 150,       // An area that forces death.
+    PointTypeSpawn = 200,           // A spawn point
+    PointTypeCamera = 300,          // A camera point?
+    PointTypeSFX = 500,             // An SFX point?
+    PointTypeNoTurretArea = 700,    // An area turrets cannot fire into.
+};
+
+// PointType Structs
+//------------------------------------------------
+
+typedef struct
+{
+    byte unk00;
+    byte unk01;
+    byte unk02;
+    byte unk03;
+    ubyte unk04;
+    ubyte unk05;
+    ubyte unk06;
+    ubyte unk07;
+    Null null[24];
+} PointArea;
+
+typedef struct
+{
+    ubyte unk00;
+    ubyte unk01;
+    ubyte unk02;
+    ubyte unk03;
+    int unk01;
+    int unk02;
+    int unk03;
+} PointSpawn;
+
+typedef struct
+{
+    int unk00;
+    int unk04;
+    int unk08;
+    int unk0C;
+} PointCamera;
+
+typedef struct
+{
+    int sfxID;
+    int unk04;
+    int unk08;
+    int unk0C;
+} PointSFX;
+
+typedef struct
+{
+    short unk00;
+    short unk02;
+    short unk04;
+    short unk06;
+    int unk08;
+    int unk0C;
+} PointNoTurretArea;
+
+// Sub Structs
+//------------------------------------------------
+
+typedef struct
+{
+    short unk00;
+    short unk02;
+} PointUnk1;
+
+typedef struct
+{
+    short unk00;
+    short unk02;
+} PointUnk2;
+
+typedef struct
+{
+    byte unk00;
+    byte unk01;
+    byte unk02;
+    byte unk03;
+    int unk04;
+    int unk08;
+    int unk0C;
+    int unk10;
+    int unk14;
+    int unk18;
+    int unk1C;
+} PointUnk3;
+
+// Main Struct
+//------------------------------------------------
+
+typedef struct
+{
+    local quad start = FTell();
+    
+    // Read Data
+    int nameOffset; Assert(nameOffset > 0);
+    int uniqueID;
+    PointType pointType;
+    int id;
+    ShapeType shapeType;
+    Vector3 position;
+    Vector3 rotation;
+    int offsetUnk1; Assert(offsetUnk1 > 0);
+    int offsetUnk2; Assert(offsetUnk2 > 0);
+    int pointID;
+    int shapeDataOffset;
+    int offsetArea;
+    int offsetSpawn;
+    int offsetCamera;
+    int offset50 <hidden=true>; Assert(offset50 == 0);
+    int offsetSFX;
+    int offset58 <hidden=true>; Assert(offset58 == 0);
+    int offsetNoTurretArea;
+    int offset60 <hidden=true>; Assert(offset60 == 0);
+    int offsetUnk3; Assert(offsetUnk3 > 0);
+    int offset68 <hidden=true>; Assert(offset68 == 0);
+    int offset6C <hidden=true>; Assert(offset6C == 0);
+    int offset70 <hidden=true>; Assert(offset70 == 0);
+    int offset74 <hidden=true>; Assert(offset74 == 0);
+    int offset78 <hidden=true>; Assert(offset78 == 0);
+    int offset7C <hidden=true>; Assert(offset7C == 0);
+    int offset80 <hidden=true>; Assert(offset80 == 0);
+    int offset84 <hidden=true>; Assert(offset84 == 0);
+    
+    // Get Offset Structs
+    FSeek(start + nameOffset);
+    string name;
+
+    FSeek(start + offsetUnk1);
+    PointUnk1 unk1;
+    
+    FSeek(start + offsetUnk2);
+    PointUnk2 unk2;
+
+    if (shapeDataOffset > 0)
+    {
+        Assert(shapeType != ShapeTypePoint);
+        FSeek(start + shapeDataOffset);
+        switch (shapeType)
+        {
+            case ShapeTypeCircle: ShapeCircle circle; break;
+            case ShapeTypeSphere: ShapeSphere sphere; break;
+            case ShapeTypeCylinder: ShapeCylinder cylinder; break;
+            case ShapeTypeRect: ShapeRect rect; break;
+            case ShapeTypeBox: ShapeBox box; break;
+            case ShapeTypeComposite: ShapeComposite composite; break;
+            default: Assert(false);
+        }
+    }
+
+    if (offsetArea > 0)
+    {
+        Assert(pointType == PointTypeOperationalArea
+            || pointType == PointTypeWarningArea
+            || pointType == PointTypeNormalArea
+            || pointType == PointTypeVOBPurgeArea);
+        FSeek(start + offsetArea);
+        PointArea area;
+    }
+
+    if (offsetSpawn > 0)
+    {
+        Assert(pointType == PointTypeSpawn);
+        FSeek(start + offsetSpawn);
+        PointSpawn spawn;
+    }
+
+    if (offsetCamera > 0)
+    {
+        Assert(pointType == PointTypeCamera);
+        FSeek(start + offsetCamera);
+        PointCamera camera;
+    }
+
+    if (offsetSFX > 0)
+    {
+        Assert(pointType == PointTypeSFX);
+        FSeek(start + offsetSFX);
+        PointSFX sfx;
+    }
+
+    if (offsetNoTurretArea > 0)
+    {
+        Assert(pointType == PointTypeNoTurretArea);
+        FSeek(start + offsetNoTurretArea);
+        PointNoTurretArea noTurretArea;
+    }
+    
+    FSeek(start + offsetUnk3);
+    PointUnk3 unk3;
+} Point <read=ReadPoint>;
+
+string ReadPoint(Point& point)
+{
+    local string str;
+    local string shape;
+    local string type;
+    local string name = "";
+
+    switch (point.shapeType)
+    {
+        case ShapeTypeNone: shape = "NoShape"; break;
+        case ShapeTypePoint: shape = "Point"; break;
+        case ShapeTypeCircle: shape = "Circle"; break;
+        case ShapeTypeSphere: shape = "Sphere"; break;
+        case ShapeTypeCylinder: shape = "Cylinder"; break;
+        case ShapeTypeRect: shape = "Rect"; break;
+        case ShapeTypeBox: shape = "Box"; break;
+        case ShapeTypeComposite: shape = "Composite"; break;
+        default: shape = "UnknownShape";
+    }
+
+    switch (point.pointType)
+    {
+        case PointTypeDistance: type = "Distance"; break;
+        case PointTypeRoute: type = "Route"; break;
+        case PointTypeAction: type = "Action"; break;
+        case PointTypeOperationalArea: type = "OperationalArea"; break;
+        case PointTypeWarningArea: type = "WarningArea"; break;
+        case PointTypeNormalArea: type = "Area"; break;
+        case PointTypeDeathArea: type = "DeathArea"; break;
+        case PointTypeSpawn: type = "Spawn"; break;
+        case PointTypeCamera: type = "Camera"; break;
+        case PointTypeSFX: type = "SFX"; break;
+        case PointTypeNoTurretArea: type = "NoTurretArea"; break;
+        default: type = "UnknownType";
+    }
+
+    if (point.name != name)
+    {
+        name = " | " + point.name;
+    }
+    
+    return SPrintf(str, "ID: %d | %s | %s%s", point.id, shape, type, name);
+}

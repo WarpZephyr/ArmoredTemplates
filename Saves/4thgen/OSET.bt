@@ -4,7 +4,7 @@
 //      File: OSET.bt
 //   Authors: WarpZephyr
 //   Version: 
-//   Purpose: Armored Core For Answer Save Files
+//   Purpose: Armored Core For Answer options/settings save data.
 //  Category: 
 // File Mask: 
 //  ID Bytes: 
@@ -13,11 +13,130 @@
 
 BigEndian();
 
+enum <int> RadarType
+{
+    Classic = 0,
+    Normal = 1
+};
+
+enum <ubyte> AutoOptionsProperty
+{
+    Purge = 49,
+    Boost = 81,
+    BoostPurge = 113,
+    Sight = 145,
+    SightPurge = 177,
+    SightBoost = 209,
+    SightBoostPurge = 241
+};
+
+enum <ubyte> KeyBind
+{
+    LeftStickUpArrow = 0,
+    LeftStickDownArrow = 1,
+    LeftStickRightArrow = 2,
+    LeftStickLeftArrow = 3,
+    RightStickUpArrow = 4,
+    RightStickDownArrow = 5,
+    RightStickRightArrow = 6,
+    RightStickLeftArrow = 7,
+    Circle = 8,
+    Triangle = 9,
+    Square = 10,
+    X = 11,
+    L1 = 12,
+    L2 = 13,
+    R1 = 14,
+    R2 = 15,
+    L3 = 16,
+    R3 = 17,
+    Select = 18,
+    Start = 19,
+    UpArrow = 20,
+    DownArrow = 21,
+    RightArrow = 22,
+    LeftArrow = 23,
+    Compound = 254,
+    Unassigned = 255
+};
+
+//------------------------------------------------
+
+void AssertRadarType(RadarType type)
+{
+    Assert(type == Classic
+        || type == Normal);
+}
+
 //------------------------------------------------
 
 typedef struct
 {
-    
-} Header <bgcolor=cRed>;
+    KeyBind LookUpKey;
+    KeyBind LookDownKey;
+    KeyBind ResetViewKey;
+    KeyBind RotateRightKey;
+    KeyBind RotateLeftKey;
+    KeyBind BoostKey;
+    KeyBind OveredBoostKey;
+    KeyBind QuickBoostKey;
+    KeyBind RightWeaponKey;
+    KeyBind LeftWeaponKey;
+    KeyBind ShoulderWeaponKey;
+    KeyBind SwitchRightKey;
+    KeyBind SwitchLeftKey;
+    KeyBind PurgeRightKey;
+    KeyBind PurgeLeftKey;
+    KeyBind PurgeShoulderKey;
+    KeyBind ReloadRightKey;
+    KeyBind ReloadLeftKey;
+    KeyBind LockTargetKey;
+    KeyBind SwitchLockKey;
+    KeyBind PauseKey;
+    KeyBind MoveForwardKey;
+    KeyBind MoveBackKey;
+    KeyBind StrafeRightKey;
+    KeyBind StrafeLeftKey;
+    KeyBind AssaultArmorKey;
+} KeyBindings <bgcolor=cLtRed>;
 
-Header header;
+typedef struct
+{
+    ubyte unk00;
+    ubyte VibrationIntensity;
+    ushort unk02 <hidden=true>; Assert(unk02 == 0);
+    KeyBindings RegularAKeyBinds;
+    ubyte unk1E;
+    ubyte unk1F;
+    FSkip(4);
+    KeyBindings RegularBKeyBinds;
+    ubyte unk3E;
+    ubyte unk3F;
+    FSkip(4);
+    KeyBindings SimpleKeyBinds;
+    ubyte unk5E;
+    ubyte unk5F;
+    FSkip(4);
+    AutoOptionsProperty AutoOptions;
+    FSkip(31);
+    ubyte Brightness;
+    ubyte UnknownSetting2;
+    ubyte MusicVolume;
+    ubyte SoundEffectsVolume;
+    ubyte VoiceVolume;
+    ubyte UnknownSetting6;
+    ubyte unk8A;
+    ubyte unk8B;
+    ubyte unk8C;
+    ubyte unk8D;
+    ubyte unk8E;
+    ubyte unk8F;
+    int unk90 <hidden=true>; Assert(unk90 == 0);
+    RadarType Radar_Type; AssertRadarType(Radar_Type);
+    int CockpitColor;
+    char RegulationVersion[16];
+} OSET <bgcolor=cRed>;
+
+//------------------------------------------------
+
+OSET options;

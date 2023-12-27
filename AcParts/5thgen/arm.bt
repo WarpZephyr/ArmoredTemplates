@@ -1,0 +1,50 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.2 Binary Template
+//
+//      File: arm.bt
+//   Authors: WarpZephyr
+//   Version: 1.0.0
+//   Purpose: Armored Core Verdict Day Arm Parts.
+//  Category: Games
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+BigEndian();
+
+//------------------------------------------------
+
+typedef struct
+{
+    float ce_defense;
+    float shoulder_unit_storage;
+    float unk08;
+    float unk0C;
+    float unk10;
+    float unk14;
+    float unk18;
+    float unk1C;
+    float unk20;
+    Null unk24[176];
+    short arm_unit_id;
+    short unkD6;
+    Null unkD8[28];
+    ubyte firing_stability;
+    ubyte unkF5;
+    short unkF6;
+    ubyte unkF8;
+    ubyte unkF9;
+    ubyte unkFA;
+    ubyte unkFB;
+    Null unkFC[24];
+    short ke_defense;
+    short te_defense;
+    short ap;
+    short unk11A;
+    ubyte is_weapon_arm; // boolean
+    ubyte unk11D;
+    ubyte unk11E;
+    ubyte unk11F;
+    Null unk120[8];
+} Arm <bgcolor=cDkGreen>;

@@ -1,0 +1,253 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.2 Binary Template
+//
+//      File: Paths.bt
+//   Authors: WarpZephyr
+//   Version: 1.0.1
+//   Purpose: Armored Core Verdict Day EBOOT Path strings
+//  Category: Games
+// File Mask: EBOOT.BIN
+//  ID Bytes: 7F 45 4C 46
+//   History: 
+//------------------------------------------------
+
+BigEndian();
+local int ENCRYPTED_MAGIC = 0x53434500; // "SCE "
+local int DECRYPTED_MAGIC = 0x7F454C46; // " ELF"
+local long US_VER_100_SIZE = 31446192;
+local long US_VER_102_SIZE = 31513264;
+
+//------------------------------------------------
+
+// US VERSION 1.0.0
+//------------------------------------------------
+
+typedef struct
+{
+    local quad start = FTell();
+    FSeek(27692416); wstring str1;
+    FSeek(27692472); wstring str2;
+    FSeek(27692544); wstring str3;
+    FSeek(27692616); wstring str4;
+    FSeek(27692688); wstring str5;
+    FSeek(27692760); wstring str6;
+    FSeek(27692832); wstring str7;
+    FSeek(27692896); wstring str8;
+    FSeek(27692968); wstring str9;
+    FSeek(27693032); wstring str10;
+    FSeek(27693080); wstring str11;
+    FSeek(27693128); wstring str12;
+    FSeek(27693192); wstring str13;
+    FSeek(27693256); wstring str14;
+    FSeek(27693328); wstring str15;
+    FSeek(27693384); wstring str16;
+    FSeek(27693912); wstring str17;
+    FSeek(27712280); wstring str18;
+    FSeek(27712504); wstring str19;
+    FSeek(27717648); wstring str20;
+    FSeek(27720624); wstring str21;
+    FSeek(27724584); wstring str23;
+    FSeek(27724608); wstring str24;
+    FSeek(27724708); wstring str25;
+    FSeek(start + 1);
+} US_VER_100_PATHS_UNICODE <bgcolor=cLtGreen>;
+
+typedef struct
+{
+    local quad start = FTell();
+    FSeek(27696152); string str1;
+    FSeek(27696168); string str2;
+    FSeek(27696184); string str3;
+    FSeek(27696200); string str4;
+    FSeek(27696216); string str5;
+    FSeek(27696232); string str6;
+    FSeek(27696248); string str7;
+    FSeek(27696264); string str8;
+    FSeek(27696280); string str9;
+    FSeek(27696312); string str10;
+    FSeek(27696344); string str11;
+    FSeek(27696400); string str12;
+    FSeek(27696536); string str13;
+    FSeek(27698584); string str14;
+    FSeek(27706456); string str15;
+    FSeek(27706552); string str16;
+    FSeek(27718464); string str17;
+    FSeek(27727408); string str18;
+    FSeek(27775520); string str19;
+    FSeek(27775560); string str20;
+    FSeek(27905336); string str21;
+    FSeek(27906528); string str22;
+    FSeek(27984048); string str23;
+    FSeek(28098816); string str24;
+    FSeek(28126504); string str25;
+    FSeek(28128480); string str26;
+    FSeek(28153376); string str27;
+    FSeek(28153416); string str28;
+    FSeek(28153464); string str29;
+    FSeek(28153512); string str30;
+    FSeek(28153560); string str31;
+    FSeek(28153608); string str32;
+    FSeek(28153648); string str33;
+    FSeek(28153680); string str34;
+    FSeek(28153712); string str35;
+    FSeek(27696464); string str36;
+    FSeek(27696488); string str37;
+    FSeek(27696512); string str38;
+    FSeek(27696520); string str39;
+    FSeek(27696552); string str40;
+    FSeek(27696576); string str41;
+    FSeek(27696600); string str42;
+    FSeek(27696616); string str43;
+    FSeek(27696704); string str44;
+    FSeek(27696744); string str45;
+    FSeek(27696776); string str46;
+    FSeek(27696808); string str47;
+    FSeek(27696840); string str48;
+    FSeek(27696872); string str49;
+    FSeek(27696904); string str50;
+    FSeek(27696936); string str51;
+    FSeek(27696944); string str52;
+    FSeek(27696960); string str53;
+    FSeek(27696976); string str54;
+    FSeek(27696984); string str55;
+    FSeek(27696992); string str56;
+    FSeek(27697040); string str57;
+    FSeek(start + 1);
+} US_VER_100_PATHS_ASCII <bgcolor=cLtGreen>;
+
+// US VERSION 1.0.2
+//------------------------------------------------
+
+typedef struct
+{
+    local quad start = FTell();
+    FSeek(27744152); wstring str1;
+    FSeek(27744264); wstring str2;
+    FSeek(27744320); wstring str3;
+    FSeek(27744392); wstring str4;
+    FSeek(27744464); wstring str5;
+    FSeek(27744536); wstring str6;
+    FSeek(27744608); wstring str7;
+    FSeek(27744680); wstring str8;
+    FSeek(27744744); wstring str9;
+    FSeek(27744816); wstring str10;
+    FSeek(27744864); wstring str11;
+    FSeek(27744912); wstring str12;
+    FSeek(27744960); wstring str13;
+    FSeek(27745024); wstring str14;
+    FSeek(27745088); wstring str15;
+    FSeek(27745160); wstring str16;
+    FSeek(27745216); wstring str17;
+    FSeek(27745744); wstring str18;
+    FSeek(27764416); wstring str19;
+    FSeek(27764640); wstring str20;
+    FSeek(27769928); wstring str21;
+    FSeek(27772968); wstring str22;
+    FSeek(27776896); wstring str23;
+    FSeek(27776920); wstring str24;
+    FSeek(27777020); wstring str25;
+    FSeek(27772992); wstring str26;
+    FSeek(27773064); wstring str27;
+    FSeek(27773128); wstring str28;
+    FSeek(27773144); wstring str29;
+    FSeek(27773176); wstring str30;
+    FSeek(27773200); wstring str31;
+    FSeek(27778296); wstring str32;
+    FSeek(27778336); wstring str33;
+    FSeek(27778376); wstring str34;
+    FSeek(27778432); wstring str35;
+    FSeek(27772888); wstring str36;
+    FSeek(27772904); wstring str37;
+    FSeek(27772168); wstring str38;
+    FSeek(27772176); wstring str39;
+    FSeek(27772200); wstring str40;
+    FSeek(27772232); wstring str41;
+    FSeek(27772264); wstring str42;
+    FSeek(27772296); wstring str43;
+    FSeek(27772320); wstring str44;
+    FSeek(27772344); wstring str45;
+    FSeek(27772360); wstring str46;
+    FSeek(start + 1);
+} US_VER_102_PATHS_UNICODE <bgcolor=cLtGreen>;
+
+typedef struct
+{
+    local quad start = FTell();
+    FSeek(27748000); string str1;
+    FSeek(27748088); string str2;
+    FSeek(27749504); string str3;
+    FSeek(27750256); string str4;
+    FSeek(27758392); string str5;
+    FSeek(27758480); string str6;
+    FSeek(27766000); string str7;
+    FSeek(27766056); string str8;
+    FSeek(27766104); string str9;
+    FSeek(27771080); string str10;
+    FSeek(27779720); string str11;
+    FSeek(27827840); string str12;
+    FSeek(27827880); string str13;
+    FSeek(27957704); string str14;
+    FSeek(27958896); string str15;
+    FSeek(28036512); string str16;
+    FSeek(28151184); string str17;
+    FSeek(28179656); string str18;
+    FSeek(28181632); string str19;
+    FSeek(28206528); string str20;
+    FSeek(28206568); string str21;
+    FSeek(28206616); string str22;
+    FSeek(28206664); string str23;
+    FSeek(28206712); string str24;
+    FSeek(28206760); string str25;
+    FSeek(28206800); string str26;
+    FSeek(28206832); string str27;
+    FSeek(28206864); string str28;
+    FSeek(27773376); string str29;
+    FSeek(27773440); string str30;
+    FSeek(27773472); string str31;
+    FSeek(27773496); string str32;
+    FSeek(27773568); string str33;
+    FSeek(27749000); string str34;
+    FSeek(27756496); string str35;
+    FSeek(27771248); string str36;
+    FSeek(27748320); string str37;
+    FSeek(27844272); string str38;
+    FSeek(27789312); string str39;
+    FSeek(27789424); string str40;
+    FSeek(27789440); string str41;
+    FSeek(27789480); string str42;
+    FSeek(27789520); string str43;
+    FSeek(27789552); string str44;
+    FSeek(27789592); string str45;
+    FSeek(27789624); string str46;
+    FSeek(27772392); string str47;
+    FSeek(start + 1);
+} US_VER_102_PATHS_ASCII <bgcolor=cLtGreen>;
+
+//------------------------------------------------
+
+int magic <hidden=true>;
+if (magic == ENCRYPTED_MAGIC)
+{
+    Warning("EBOOT is still encrypted, please decrypt first.");
+    Assert(false);
+}
+else if (magic != DECRYPTED_MAGIC)
+{
+    Warning("File could not be identified as EBOOT.");
+    Assert(false);
+}
+
+switch (FileSize())
+{
+    case US_VER_100_SIZE:
+        US_VER_100_PATHS_UNICODE unicode_paths;
+        US_VER_100_PATHS_ASCII acsii_paths;
+        break;
+    case US_VER_102_SIZE:
+        US_VER_102_PATHS_UNICODE unicode_paths;
+        US_VER_102_PATHS_ASCII acsii_paths;
+        break;
+    default:
+        Warning("File could not be identified as valid Armored Core Verdict Day EBOOT from size.");
+        Assert(false);
+}

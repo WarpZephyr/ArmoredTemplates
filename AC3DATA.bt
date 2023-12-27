@@ -1,0 +1,42 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.2 Binary Template
+//
+//      File: AC3DATA.bt
+//   Authors: WarpZephyr
+//   Version: 1.0.0
+//   Purpose: Armored Core 3 AC3DATA archive
+//  Category: Games
+// File Mask: AC3DATA.BIN
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+LittleEndian();
+local int ALIGNMENT = 0x800;
+local int BASE_ADDRESS = 0x10000;
+
+//------------------------------------------------
+
+typedef struct
+{
+    int start_block;
+    int block_count;
+
+    if (block_count != 0)
+    {
+        local quad pos = FTell();
+        FSeek(BASE_ADDRESS + (start_block * ALIGNMENT));
+        ubyte data[block_count * ALIGNMENT];
+        FSeek(pos);
+    }
+} Entry <bgcolor=cLtGreen, read=ReadEntry, optimize=false>;
+
+string ReadEntry(Entry &entry)
+{
+    local string str;
+    return SPrintf(str, "%d %d", entry.start_block, entry.block_count);
+}
+
+//------------------------------------------------
+
+Entry entries[8192];

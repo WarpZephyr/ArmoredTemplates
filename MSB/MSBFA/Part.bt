@@ -1,0 +1,348 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.2 Binary Template
+//
+//      File: Part.bt
+//   Authors: WarpZephyr
+//   Version: 1.1.0
+//   Purpose: Armored Core For Answer MSB Parts.
+//  Category: Maps
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+enum <int> PartType
+{
+    PartTypeMapPiece = 0,
+    PartTypeObject = 1,
+    PartTypeEnemy = 2
+};
+
+// Sub Sub Structs
+//------------------------------------------------
+
+typedef struct
+{
+    byte unk00;
+    byte unk01;
+    byte unk02;
+    byte unk03;
+    int unk04;
+    int unk08;
+    int unk0C;
+    int unk10;
+    int unk14;
+    int unk18;
+    int unk1C;
+    int unk20;
+} PartObjectBlock;
+
+// Sub Structs
+//------------------------------------------------
+
+typedef struct
+{
+    local quad start = FTell();
+
+    // Read Data
+    int offsetBehavior;
+
+    // Get Offset Structs
+    FSeek(start + offsetBehavior);
+    string behavior;
+} PartBehavior;
+
+typedef struct
+{
+    local quad start = FTell();
+
+    // Read Data
+    int offsetAi;
+    int offsetUnk;
+    
+    // Get Offset Structs
+    FSeek(start + offsetAi);
+    string aiScript;
+
+    FSeek(start + offsetUnk);
+    string unk;
+} PartEnemy;
+
+typedef struct
+{
+    int unk00;
+    ubyte unk04;
+    ubyte unk05;
+    ubyte unk06;
+    ubyte unk07;
+    byte unk08;
+    byte unk09;
+    byte unk0A;
+    byte unk0B;
+    int unk0C;
+    short unk10;
+    byte unk12;
+    byte unk13;
+    short unk14;
+    short unk16;
+    int unk18;
+    int unk1C;
+    int unk20;
+    int unk24;
+    int unk28;
+    int unk2C;
+    int unk30;
+    int unk34;
+    int unk38;
+    int unk3C;
+} Part4C;
+
+typedef struct
+{
+    short unk00;
+    short unk02;
+    int unk04;
+} Part50;
+
+typedef struct
+{
+    local quad start = FTell();
+    
+    // Read Data
+    int offsetUnk;
+    int size;
+    int unk08;
+    int unk0C;
+    int unk10;
+    int unk14;
+    int unk18;
+    int unk1C;
+
+    // Get Offset Structs
+    FSeek(start + offsetUnk);
+    string unk;
+} Part54;
+
+typedef struct
+{
+    local quad start = FTell();
+
+    // Read Data
+    int offsetUnk;
+    int unk04;
+    int unk08;
+    int unk0C;
+    int unk10;
+    int unk14;
+    int unk18;
+    int unk1C;
+    
+    // Get Offset Structs
+    FSeek(start + offsetUnk);
+    string unk;
+} Part58;
+
+typedef struct
+{
+    int unk00;
+    int unk04;
+} Part5C;
+
+typedef struct
+{
+    local quad start = FTell();
+
+    // Read Data
+    int offset00;
+    int offset04;
+    int offset08;
+    int offset0C;
+    Null null[16];
+    
+    // Get Offset Structs
+    FSeek(start + offset00);
+    PartObjectBlock unkBlock00;
+    
+    FSeek(start + offset04);
+    PartObjectBlock unkBlock04;
+
+    FSeek(start + offset08);
+    PartObjectBlock unkBlock08;
+
+    FSeek(start + offset0C);
+    PartObjectBlock unkBlock0C;
+} PartObject;
+
+typedef struct
+{
+    short layerMask <format=binary>;
+    short unk02;
+    int unk04;
+    int unk08;
+    int unk0C;
+    int unk10;
+    int unk14;
+    int unk18;
+    int unk1C;
+} PartLayer;
+
+typedef struct
+{
+    int unk00;
+    int unk04;
+    int unk08;
+    int unk0C;
+} Part68;
+
+typedef struct
+{
+    int unk00;
+    int unk04;
+    int unk08;
+    int unk0C;
+} Part6C;
+
+typedef struct
+{
+    int unk00;
+    int unk04;
+    int unk08;
+    int unk0C;
+} Part70;
+
+// Main Struct
+//------------------------------------------------
+
+typedef struct
+{
+    local quad start = FTell();
+
+    // Read Data
+    int nameOffset;
+    PartType type;
+    int id;
+    int modelNameOffset;
+    int resourceOffset;
+    Vector3 position;
+    Vector3 rotation;
+    Vector3 scale;
+    int entityGroupID; // -1 = Unused; 0 = Neutral; 1 = Friendly; 2 = Hostile
+    int entityID;
+    short unk40;
+    ubyte unk42; Assert(unk42 == 0 || unk42 == 1);
+    ubyte unk43; Assert(unk43 == 0 || unk43 == 1);
+    int behaviorOffset; Assert(behaviorOffset > 0);
+    int enemyOffset;
+    int offset4C; Assert(offset4C > 0);
+    int offset50; Assert(offset50 > 0);
+    int offset54; Assert(offset54 > 0);
+    int offset58; Assert(offset58 > 0);
+    int offset5C; Assert(offset5C > 0);
+    int objectOffset;
+    int layerOffset; Assert(layerOffset > 0);
+    int offset68; Assert(offset68 > 0);
+    int offset6C;
+    int offset70;
+    int offset74 <hidden=true>; Assert(offset74 == 0);
+    int offset78 <hidden=true>; Assert(offset78 == 0);
+    int offset7C <hidden=true>; Assert(offset7C == 0);
+
+    // Assert Offset Values
+    switch(type)
+    {
+        case PartTypeMapPiece:
+            Assert(enemyOffset == 0);
+            Assert(objectOffset == 0);
+            Assert(offset6C == 0);
+            Assert(offset70 == 0);
+            break;
+        case PartTypeObject:
+            Assert(enemyOffset == 0);
+            Assert(objectOffset > 0);
+            Assert(offset6C > 0);
+            Assert(offset70 > 0);
+            break;
+        case PartTypeEnemy:
+            Assert(enemyOffset > 0);
+            Assert(objectOffset == 0);
+            Assert(offset6C > 0);
+            Assert(offset70 > 0);
+            break;
+        default:
+            Assert(false);
+    }
+    
+    // Get Offset Structs
+    FSeek(start + nameOffset);
+    string name;
+
+    FSeek(start + modelNameOffset);
+    string modelName;
+
+    FSeek(start + resourceOffset);
+    string resourcePath;
+    
+    FSeek(start + behaviorOffset);
+    PartBehavior partBehavior;
+
+    if (enemyOffset > 0)
+    {
+        FSeek(start + enemyOffset);
+        PartEnemy partEnemy;
+    }
+
+    FSeek(start + offset4C);
+    Part4C part4C;
+
+    FSeek(start + offset50);
+    Part50 part50;
+
+    FSeek(start + offset54);
+    Part54 part54;
+
+    FSeek(start + offset58);
+    Part58 part58;
+
+    FSeek(start + offset5C);
+    Part5C part5C;
+
+    if (objectOffset > 0)
+    {
+        FSeek(start + objectOffset);
+        PartObject object;
+    }
+
+    FSeek(start + layerOffset);
+    PartLayer partLayer;
+
+    FSeek(start + offset68);
+    Part68 part68;
+
+    if (offset6C > 0)
+    {
+        FSeek(start + offset6C);
+        Part6C part6C;
+    }
+
+    if (offset70 > 0)
+    {
+        FSeek(start + offset70);
+        Part70 part70;
+    }
+} Part <read=ReadPart>;
+
+string ReadPart(Part& part)
+{
+    local string str;
+    local string type;
+
+    switch (part.type)
+    {
+        case PartTypeMapPiece: type = "MapPiece"; break;
+        case PartTypeObject: type = "Object"; break;
+        case PartTypeEnemy: type = "Enemy"; break;
+        default: type = "UnknownType";
+    }
+    
+    return SPrintf(str, "ID: %d | %s | %s", part.id, type, part.name);
+}

@@ -1,0 +1,29 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.2 Binary Template
+//
+//      File: generator.bt
+//   Authors: WarpZephyr
+//   Version: 1.0.0
+//   Purpose: Armored Core Verdict Day Generator Parts.
+//  Category: Games
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+BigEndian();
+
+//------------------------------------------------
+
+typedef struct
+{
+    float critical_power;
+    Null unk04[208];
+    short unkD4;
+    short power_jamming_resist;
+    Null unkD8[60];
+    int energy_capacity;
+    int unk118;
+    int energy_output;
+    int unk120;
+} Generator <bgcolor=cDkYellow>;

@@ -1,0 +1,73 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.2 Binary Template
+//
+//      File: BND0.bt
+//   Authors: WarpZephyr
+//   Version: 1.0.0
+//   Purpose: FromSoftware Binder archives in Kuon.
+//  Category: Archives
+// File Mask: *.BND
+//  ID Bytes: 42 4E 44 00
+//   History: 
+//------------------------------------------------
+
+LittleEndian();
+
+// Used for asserting file offsets are not invalid
+local byte HEADER_SIZE = 16;
+local byte FILE_ENTRY_SIZE = 16;
+
+//------------------------------------------------
+
+typedef struct 
+{
+    char magic[4]; Assert(magic == "BND\0");
+    ubyte rawFormat <format=binary>; Assert(rawFormat == 0xD3 || rawFormat == 0xCA);
+    ubyte unk05 <hidden=true>; Assert(unk05 == 0);
+    ubyte unk06 <hidden=true>; Assert(unk06 == 0);
+    ubyte unk07 <hidden=true>; Assert(unk07 == 0);
+    uint fileSize;
+    uint fileCount;
+} Header <bgcolor=cLtRed, read=ReadHeader, optimize=false>;
+
+string ReadHeader(Header& header)
+{
+    local string str;
+    SPrintf(str, "File Count: %i | Archive Size: %i", header.fileCount, header.fileSize);
+    return str;
+}
+
+typedef struct
+{
+    uint id;
+    uint offset; Assert(offset > HEADER_SIZE + (FILE_ENTRY_SIZE * header.fileCount));
+    uint size;
+    uint nameOffset;
+
+    local quad end = FTell();
+    FSeek(offset);
+    ubyte data[size];
+
+    if(nameOffset != 0)
+    {
+        FSeek(nameOffset);
+        string name;
+    }
+
+    FSeek(end);
+} File <bgcolor=cLtGreen, read=ReadFile, optimize=false>;
+
+string ReadFile(File& file)
+{
+    local string str;
+    SPrintf(str, "ID: %i | Name: %s | Size: %i", file.id, file.name, file.size);
+    return str;
+}
+
+//------------------------------------------------
+
+Header header;
+if (header.fileCount > 0)
+{
+    File files[header.fileCount];
+}

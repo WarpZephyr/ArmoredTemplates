@@ -1,0 +1,36 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.2 Binary Template
+//
+//      File: Route.bt
+//   Authors: WarpZephyr
+//   Version: 1.1.2
+//   Purpose: Armored Core V Routes.
+//  Category: Maps
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+typedef struct
+{
+    local quad start = FTell();
+    
+    // Read Data
+    int nameOffset;
+    int startPointID;
+    int goalPointID;
+    int unk0C;
+    int id;
+    int unk14;
+    Null null[104];
+    
+    // Get Offset Structs
+    FSeek(start + nameOffset);
+    string name;
+} Route <read=ReadRoute>;
+
+string ReadRoute(Route& route)
+{
+    local string str;
+    return SPrintf(str, "ID: %d | %s", route.id, route.name);
+}

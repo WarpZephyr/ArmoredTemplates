@@ -1,0 +1,78 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.2 Binary Template
+//
+//      File: MOFC.bt
+//   Authors: WarpZephyr
+//   Version: 1.0.0
+//   Purpose: Reading FromSoftware multichannel.bin files.
+//  Category: Audio
+// File Mask: multichannel.bin
+//  ID Bytes: 4D 4F 46 43
+//   History: 
+//------------------------------------------------
+
+BigEndian();
+
+//------------------------------------------------
+
+typedef struct
+{
+    char magic[4]; Assert(magic == "MOFC");
+    short unk04;
+    short unk06;
+    int entryCount;
+    int entriesOffset;
+} Header <bgcolor=cLtRed>;
+
+typedef struct
+{
+    ubyte unk00;
+    ubyte unk01;
+    ubyte unk02;
+    ubyte unk03;
+    float value;
+} Property <bgcolor=cYellow, read=ReadProperty>;
+
+string ReadProperty(Property& property)
+{
+    local string str;
+    return SPrintf(str, "%0.1f", property.value);
+}
+
+typedef struct
+{
+    short unk00;
+    ubyte propertyCount;
+    ubyte unk03;
+    int propertiesOffset;
+    
+    FSeek(propertiesOffset);
+    Property properties[propertyCount];
+} PropertyGroup <bgcolor=cGreen, read=ReadPropertyGroup, optimize=false>;
+
+string ReadPropertyGroup(PropertyGroup& group)
+{
+    local string str;
+    return SPrintf(str, "Count: %d", group.propertyCount);
+}
+
+typedef struct
+{
+    short id;
+    ubyte unk02;
+    ubyte unk03;
+    int propertyGroupOffset;
+    
+    local quad end = FTell();
+    FSeek(propertyGroupOffset);
+    PropertyGroup propertyGroup;
+    
+    FSeek(end);
+} PropertyGroupEntry <bgcolor=cLtGreen, optimize=false>;
+
+//------------------------------------------------
+
+Header header;
+
+FSeek(header.entriesOffset);
+PropertyGroupEntry entries[header.entryCount];

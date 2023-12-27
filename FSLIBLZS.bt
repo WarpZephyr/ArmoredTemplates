@@ -1,0 +1,44 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.1 Binary Template
+//
+//      File: FSLIBLZS.bt
+//   Authors: WarpZephyr
+//   Version: 
+//   Purpose: fsliblzs compression format in 3rdgen Armored Core.
+//  Category: 
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+local byte HEADER_SIZE = 44;
+
+LittleEndian();
+
+//------------------------------------------------
+
+typedef struct
+{
+    char magic[8]; Assert(magic == "fsliblzs");
+    int unk0C;
+    int unk10;
+    int compressed_size;
+    int unk18;
+    int unk1C;
+    int unk20;
+    BigEndian();
+    short unk24;
+    short unk26;
+    int decompressed_size;
+    int compressed_is_larger;
+    LittleEndian();
+} Header <bgcolor=cLtRed>;
+
+//------------------------------------------------
+
+Header header;
+
+if (header.compressed_size > HEADER_SIZE)
+{
+    byte compressed_data[header.compressed_size - HEADER_SIZE] <bgcolor=cLtGreen>;
+}

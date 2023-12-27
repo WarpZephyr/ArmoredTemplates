@@ -1,0 +1,52 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.2 Binary Template
+//
+//      File: FromSoftwareNVBinary.bt
+//   Authors: WarpZephyr
+//   Version: 1.0.1
+//   Purpose: NVBinary additional header
+//  Category: Shaders
+// File Mask: *.fpo, *.vpo
+//  ID Bytes: FF 0F
+//   History: 
+//------------------------------------------------
+
+BigEndian();
+
+//------------------------------------------------
+
+// Only present on FPO files
+typedef struct
+{
+    int unk00;
+    int unk04;
+} UnkHeaderEntry;
+
+typedef struct
+{
+    ubyte unk00 <hidden=true>; Assert(unk00 == 255);
+    ubyte unk01 <hidden=true>; Assert(unk01 == 15);
+    ubyte unk02 <hidden=true>; Assert(unk02 == 0 || unk02 == 15); // 0 when VPO, 15 when FPO
+    ubyte unk03 <hidden=true>; Assert(unk03 == 17);
+    uint headerSize; // Always 0x20 on VPO files
+    ubyte unk08;
+    ubyte entryCount;
+    ushort unk0A <hidden=true>; Assert(unk0A == 0);
+    int unk0C;
+
+    int unk10 <hidden=true>; Assert(unk10 == 0);
+    int unk14 <hidden=true>; Assert(unk14 == 0);
+    int unk18 <hidden=true>; Assert(unk18 == 0);
+    int unk1C <hidden=true>; Assert(unk1C == 0);
+
+    if (headerSize > 0x20)
+    {
+        UnkHeaderEntry entries[entryCount];
+        Align(0x10);
+    }
+} UnkHeader <bgcolor=cLtRed>;
+
+//------------------------------------------------
+
+UnkHeader unkHeader;
+#include "NVBinary.bt"

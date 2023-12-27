@@ -1,0 +1,121 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.2 Binary Template
+//
+//      File: MOFR.bt
+//   Authors: WarpZephyr
+//   Version: 1.0.0
+//   Purpose: Reading FromSoftware rpcsetting.bin files.
+//  Category: Audio
+// File Mask: rpcsetting.bin
+//  ID Bytes: 4D 4F 46 52
+//   History: 
+//------------------------------------------------
+
+BigEndian();
+
+//------------------------------------------------
+
+typedef struct
+{
+    char magic[4]; Assert(magic == "MOFR");
+    short unk04;
+    short unk06;
+    int mapHeaderOffset;
+    int propertyHeaderOffset;
+    int unk10;
+} Header <bgcolor=cLtRed>;
+
+typedef struct
+{
+    ubyte unk00;
+    ubyte unk01;
+    ubyte unk02;
+    ubyte unk03;
+
+    float unk04;
+    float unk08;
+    float unk0C;
+
+    int nameOffset;
+    
+    local quad end = FTell();
+    FSeek(nameOffset);
+    string name;
+
+    FSeek(end);
+} Map <bgcolor=cAqua, read=ReadMap, optimize=false>;
+
+string ReadMap(Map& map)
+{
+    return map.name;
+}
+
+typedef struct
+{
+    int count;
+    int unk04;
+    int offset;
+    int unk0C;
+
+    FSeek(offset);
+    Map maps[count];
+} MapsHeader <bgcolor=cLtAqua>;
+
+typedef struct
+{
+    float value_1;
+    float value_2;
+} Property <bgcolor=cYellow, read=ReadProperty>;
+
+string ReadProperty(Property& property)
+{
+    local string str;
+    return SPrintf(str, "%0.0f %0.0f", property.value_1, property.value_2);
+}
+
+typedef struct
+{
+    int unk00;
+    int count;
+    int offset;
+    
+    FSeek(offset);
+    Property properties[count];
+} PropertyGroup <bgcolor=cGreen, read=ReadPropertyGroup, optimize=false>;
+
+string ReadPropertyGroup(PropertyGroup& group)
+{
+    local string str;
+    return SPrintf(str, "Count: %d", group.propertyCount);
+}
+
+typedef struct
+{
+    int count;
+    int offset04;
+    
+    local quad end = FTell();
+    FSeek(offset04);
+    PropertyGroup propertyGroups[count];
+    FSeek(end);
+} PropertyGroupEntry <bgcolor=cGreen, optimize=false>;
+
+typedef struct
+{
+    int entryCount;
+    int entriesOffset;
+    int unk08;
+    
+    FSeek(entriesOffset);
+    PropertyGroupEntry entries[entryCount];
+} PropertyHeader <bgcolor=cLtGreen, optimize=false>;
+
+//------------------------------------------------
+
+Header header;
+
+FSeek(header.mapHeaderOffset);
+MapsHeader mapsHeader;
+
+FSeek(header.propertyHeaderOffset);
+PropertyHeader propertyHeader;

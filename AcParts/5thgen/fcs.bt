@@ -1,0 +1,38 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.2 Binary Template
+//
+//      File: fcs.bt
+//   Authors: WarpZephyr
+//   Version: 1.0.0
+//   Purpose: Armored Core Verdict Day FCS Parts.
+//  Category: Games
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+BigEndian();
+
+//------------------------------------------------
+
+typedef struct
+{
+    Null unk00[212];
+    ushort unkD4;
+    ushort lock_jamming_resist;
+    Null unkD8[28];
+    ubyte max_sub_units;
+    ubyte max_jammers;
+    Null unkF6[30];
+    ubyte unk114;
+    ubyte unk115;
+    Null unk116[2];
+    ushort unk118;
+    ushort unk11A;
+    ushort lockon_range;
+    ushort lockon_size;
+    ushort lockon_size_2; Assert(lockon_size_2 == lockon_size);
+    ushort lockon_size_3; // Assumed from 4thgen having 4 parts to lock range
+    ushort lock_computation;
+    ushort missile_lock_computation;
+} FCS <bgcolor=cYellow>;

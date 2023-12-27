@@ -13,46 +13,6 @@
 
 BigEndian();
 
-enum <ubyte> LegType
-{
-    TwoLegs = 0,
-    Reverse_Joint_Type = 1,
-    Four_Legs_Type = 2,
-    Tank_Type = 3,
-};
-
-enum <ubyte> Motion
-{
-    Two_Legs_Middle = 0,
-    Reverse_Joint = 1,
-    Four_Legs = 2,
-    Tank = 3,
-    Two_Legs_Light = 4,
-    Two_Legs_Heavy = 5,
-    Two_Legs_Light_Alternate = 6,
-};
-
-//------------------------------------------------
-
-void AssertLegType(LegType Leg_Type)
-{
-    Assert(Leg_Type == TwoLegs
-        || Leg_Type == Reverse_Joint
-        || Leg_Type == Four_Legs
-        || Leg_Type == Tank);
-}
-
-void AssertMotion(Motion Motion_Type)
-{
-    Assert(Motion_Type == Two_Legs_Middle
-        || Motion_Type == Reverse_Joint
-        || Motion_Type == Four_Legs
-        || Motion_Type == Tank
-        || Motion_Type == Two_Legs_Light
-        || Motion_Type == Two_Legs_Heavy
-        || Motion_Type == Two_Legs_Light_Alternate);
-}
-
 //-------------------------------------------------
 
 typedef struct 

@@ -1,0 +1,54 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.2 Binary Template
+//
+//      File: PDATA.bt
+//   Authors: WarpZephyr
+//   Version: 
+//   Purpose: Armored Core For Answer player data save file.
+//  Category: 
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+BigEndian();
+
+enum <byte> Rank
+{
+    NotCompleted = -1,
+    E = 0,
+    D = 1,
+    C = 2,
+    B = 3,
+    A = 4,
+    S = 5,
+    SS = 6
+};
+
+//------------------------------------------------
+
+typedef struct
+{
+    wchar_t playerName[13];
+    ubyte unkData[38];
+    Rank total_rank;
+    ubyte levels_completed; // Seems to include Arena and Mission completions
+    ubyte collared_rank;
+    ubyte orca_rank;
+    int coamCount;
+    float PlayTimeSeconds; // Play time is in seconds, with HH : MM : SS as the formatting in game.
+    ubyte reserved[256];
+} PDATA <bgcolor=cLtRed, read=ReadPDATA>;
+
+string ReadPDATA(PDATA& data)
+{
+    string str;
+    float hours = data.PlayTimeSeconds / 3600;
+    float minutes = (data.PlayTimeSeconds / 60) % 60;
+    float seconds = data.PlayTimeSeconds % 60;
+    return SPrintf(str, "Name: %s | Coam: %i | Playtime: %2i : %2i : %2i", data.playerName, data.coamCount, hours, minutes, seconds);
+}
+
+//------------------------------------------------
+
+PDATA data;

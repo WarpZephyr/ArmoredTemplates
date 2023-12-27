@@ -1,0 +1,624 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.2 Binary Template
+//
+//      File: Event.bt
+//   Authors: WarpZephyr
+//   Version: 1.1.1
+//   Purpose: Armored Core 4 MSB Events.
+//  Category: Maps
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+enum <int> EventType
+{
+    EventTypeScript = 5,        // Appears to specify the name of the mission event script for this MSB.
+    EventTypeEffect = 100,      // Events of this type have names that sound like effect names.
+    EventTypeFilter = 101,      // Always named filter in one way or another. Seems to be the bulk of visual settings.
+    EventTypeDummyLeader = 200, // Was named dummy leader
+    EventTypeBGM = 400,         // Holds the ID of the BGM to play for a map.
+    EventTypeRev = 401,         // Always named Rev. Revision?
+    EventTypeSFX = 500,         // Always named SFX.
+};
+
+// EventFilter Sub Sub Structs
+// TODO: Clean up.
+//------------------------------------------------
+
+typedef struct
+{
+    int unk00;
+    float unk04;
+    float unk08;
+    float unk0C;
+    float unk10;
+    float unk14;
+    float unk18;
+    float unk1C;
+    float unk20;
+    float unk24;
+    float unk28;
+    float unk2C;
+    Null null[80];
+} EventFilterUnk0428;
+
+typedef struct
+{
+    int unk00;
+    float unk04;
+    float unk08;
+    float unk0C;
+    ubyte unk10;
+    Null null[111];
+} EventFilterUnk1438;
+
+typedef struct
+{
+    int unk00;
+    float unk04;
+    float unk08;
+    int unk0C;
+    float unk10;
+    float unk14;
+    float unk18;
+    float unk1C;
+    float unk20;
+    int unk24;
+    int unk28;
+    Null null[20];
+} EventFilterUnk1490;
+
+typedef struct
+{
+    int unk00;
+    float unk04;
+    float unk08;
+    float unk0C;
+    int unk10;
+    Null null[12];
+} EventFilterUnk1494;
+
+// EventFilter Sub Structs
+// TODO: Clean up.
+//------------------------------------------------
+
+typedef struct
+{
+    ubyte unk00;
+    ubyte unk01;
+    ubyte unk02;
+    ubyte unk03;
+    float globalDrawDistance;
+    float globalWaterLevel;
+    float unk0C;
+    float unk10;
+    short unk14;
+    short unk16;
+    float unk18;
+    float unk1C;
+    float unk20;
+    short unk24;
+    short unk26;
+    int unk28;
+    int unk2C;
+    int unk30;
+    float unk34;
+    float unk38;
+    short unk3C[17];
+    Null null[418];
+} EventFilterUnk00;
+
+typedef struct
+{
+    local quad start = FTell();
+
+    // Read Data
+    int unk00;
+    float unk04;
+    float unk08;
+    float unk0C;
+    float unk10;
+    float unk14;
+    float unk18;
+    float unk1C;
+    float unk20;
+    int unk24;
+    int offset28;
+    Null null[468];
+
+    // Get Offset Structs
+    FSeek(start + offset28);
+    EventFilterUnk0428 eventFilterUnk0428;
+} EventFilterUnk04;
+
+typedef struct
+{
+    int unk00;
+    float unk04;
+    float unk08;
+    int unk0C;
+    float red;
+    float green;
+    float blue;
+    float brightness1; // Brightness, Contrast, Gamma, Luminosity, Bloom, Exposure?
+    float unk20;
+    float brightness2; // Brightness, Contrast, Gamma, Luminosity, Bloom, Exposure?
+    float lightContrast; // Maybe?
+    float unk2C;
+    float unk30;
+    float unk34;
+    float unk38;
+    float unk3C;
+    float unk40;
+    float unk44;
+    int unk48;
+    float unk4C;
+    float unk50;
+    float unk54;
+    float unk58;
+    float unk5C;
+    float unk60;
+    float unk64;
+    Null null[408];
+} EventFilterUnk08;
+
+typedef struct
+{
+    int unk00;
+    float unk04;
+    float unk08;
+    float unk0C;
+    float unk10;
+    float unk14;
+    float unk18;
+    float unk1C;
+    float unk20;
+    float unk24;
+    float unk28;
+    float unk2C;
+    float unk30;
+    float unk34;
+    float unk38;
+    float unk3C;
+    float unk40;
+    float unk44;
+    int unk48;
+    float unk4C;
+    float unk50;
+    float unk54;
+    float unk58;
+    float unk5C;
+    float unk60;
+    Null null[412];
+} EventFilterUnk0C;
+
+typedef struct
+{
+    int unk00;
+    float unk04;
+    float unk08;
+    float unk0C;
+    float unk10;
+    int unk14;
+    Null null[488];
+} EventFilterUnk10;
+
+typedef struct
+{
+    local quad start = FTell();    
+
+    // Read Data
+    int unk00;
+    float unk04;
+    float unk08;
+    float unk0C;
+    float unk10;
+    float unk14;
+    float unk18;
+    float unk1C;
+    float unk20;
+    float unk24;
+    float unk28;
+    int unk2C;
+    float unk30;
+    int unk34;
+    uint offsets38[22];
+    uint offset90;
+    uint offset94;
+    Null null[360];
+    
+    // Get Offset Structs
+    if (offsets38[0] > 0)
+    {
+        struct
+        {
+            local int i <hidden=true>;
+            for (i = 0; i < 22; i++)
+            {
+                if (offsets38[i] > 0)
+                {
+                    FSeek(start + offsets38[i]);
+                    EventFilterUnk1438 eventFilterUnk1438;
+                }
+            }
+        } eventFilterUnk1438s;
+    }
+
+    if (offset90 > 0)
+    {
+        FSeek(start + offset90);
+        EventFilterUnk1490 eventFilterUnk1490;
+    }
+
+    if (offset94 > 0)
+    {
+        FSeek(start + offset94);
+        EventFilterUnk1494 eventFilterUnk1494;
+    }
+} EventFilterUnk14;
+
+typedef struct
+{
+    float unk00;
+    float unk04;
+    float unk08;
+    float unk0C;
+    float unk10;
+    float unk14;
+    float unk18;
+    float unk1C;
+    float unk20;
+    int unk24;
+    float unk28;
+    Null null[468];
+} EventFilterUnk18;
+
+typedef struct
+{
+    float unk00;
+    float unk04;
+    float unk08;
+    float unk0C;
+    float unk10;
+    float unk14;
+    float unk18;
+    float unk1C;
+    float unk20;
+    float unk24;
+    float unk28;
+    float unk2C;
+    float unk30;
+    float unk34;
+    float unk38;
+    float unk3C;
+    float unk40;
+    float unk44;
+    Null null[440];
+} EventFilterUnk1C;
+
+typedef struct
+{
+    int unk00;
+    float unk04;
+    float unk08;
+    float unk0C;
+    float unk10;
+    float unk14;
+    float unk18;
+    Null null[484];
+} EventFilterUnk20;
+
+typedef struct
+{
+    Null null_1[12];
+    float unk0C;
+    int unk10;
+    int unk14;
+    Null null_2[104];
+} EventFilterUnk24;
+
+typedef struct
+{
+    float unk00;
+    float unk04;
+    float unk08;
+    float unk0C;
+    float unk10;
+    float unk14;
+    float unk18;
+    float unk1C;
+    float unk20;
+    int unk24;
+    float unk28;
+    float unk2C;
+    float unk30;
+    float unk34;
+
+    Null null[456];
+} EventFilterUnk28;
+
+typedef struct
+{
+    int unk00;
+    int unk04;
+    int unk08;
+    int unk0C;
+    int unk10;
+    int unk14;
+    int unk18;
+    int unk1C;
+    int unk20;
+    int unk30;
+    int unk34;
+    int unk38;
+    int unk3C;
+    int unk40;
+    int unk44;
+    int unk48;
+    int unk4C;
+    int unk50;
+    int unk54;
+    float unk58;
+    float unk5C;
+    float unk60;
+    float unk64;
+    float unk68;
+    float unk6C;
+    float unk70;
+    Null null[408];
+} EventFilterUnk2C;
+
+typedef struct
+{
+    short unk00;
+    short unk02;
+    float unk04;
+    float unk08;
+    float unk0C;
+    float unk10;
+    float unk14;
+    float unk18;
+    short unk1C;
+    Null null[482];
+} EventFilterUnk30;
+
+typedef struct
+{
+    float unk00;
+    float unk04;
+    float unk08;
+    float unk0C;
+    float unk10;
+    float unk14;
+    float unk18;
+    float unk1C;
+    float unk20;
+    float unk24;
+    float unk28;
+    float unk2C;
+    float unk30;
+    Null null[12];
+} EventFilterUnk34;
+
+// EventType Structs
+//------------------------------------------------
+
+typedef struct
+{
+    short unk00;
+    short unk02;
+    short unk04;
+    short unk06;
+    byte unk08;
+    byte unk09;
+    byte unk0A;
+    byte unk0B;
+    byte unk0C;
+    byte unk0D;
+    byte unk0E;
+    byte unk0F;
+    short unk10;
+    byte unk12;
+    byte unk13;
+    byte unk14;
+    byte unk15;
+    byte unk16;
+    byte unk17;
+    int unk18;
+    int unk1C;
+    int unk20;
+    int unk24;
+    int unk28;
+    int unk2C;
+    int unk30;
+    int unk34;
+    short unk38;
+    short unk3A;
+    short unk3C;
+    short unk3E;
+    short unk40;
+    short unk42;
+    short unk44;
+    short unk46;
+    short unk48;
+    short unk4A;
+    short unk4C;
+    Null null[434];
+} EventEffect;
+
+typedef struct
+{
+    local quad start = FTell();
+
+    // Read Data
+    int offset00;
+    int offset04;
+    int offset08;
+    int offset0C;
+    int offset10;
+    int offset14;
+    int offset18;
+    int offset1C;
+    int offset20;
+    int offset24;
+    int offset28;
+    int offset2C;
+    int offset30;
+    int offset34;
+    Null null[456];
+    
+    // Get Offset Structs
+    FSeek(start + offset00);
+    EventFilterUnk00 eventFilterUnk00;
+
+    FSeek(start + offset04);
+    EventFilterUnk04 eventFilterUnk04;
+
+    FSeek(start + offset08);
+    EventFilterUnk08 eventFilterUnk08;
+
+    FSeek(start + offset0C);
+    EventFilterUnk0C eventFilterUnk0C;
+
+    FSeek(start + offset10);
+    EventFilterUnk10 eventFilterUnk10;
+
+    FSeek(start + offset14);
+    EventFilterUnk14 eventFilterUnk14;
+
+    FSeek(start + offset18);
+    EventFilterUnk18 eventFilterUnk18;
+
+    FSeek(start + offset1C);
+    EventFilterUnk1C eventFilterUnk1C;
+
+    FSeek(start + offset20);
+    EventFilterUnk20 eventFilterUnk20;
+
+    if(offset24 > 0)
+    {
+        FSeek(start + offset24);
+        EventFilterUnk24 eventFilterUnk24;
+    }
+
+    if(offset28 > 0)
+    {
+        FSeek(start + offset28);
+        EventFilterUnk28 eventFilterUnk28;
+    }
+
+    if(offset2C > 0)
+    {
+        FSeek(start + offset2C);
+        EventFilterUnk2C eventFilterUnk2C;
+    }
+
+    if (offset30 > 0)
+    {
+        FSeek(start + offset30);
+        EventFilterUnk30 eventFilterUnk30;
+    }
+
+    if (offset34 > 0)
+    {
+        FSeek(start + offset34);
+        EventFilterUnk34 eventFilterUnk34;
+    }
+} EventFilter;
+
+typedef struct
+{
+    local quad start = FTell();
+
+    // Read Data
+    int offsetUnk;
+    int offsetScript;
+    int unk08; // Count?
+    Null null[20];
+
+    // Get Offset Structs
+    FSeek(start + offsetUnk);
+    string unk;
+    
+    FSeek(start + offsetScript);
+    string script;
+} EventDummyLeader;
+
+typedef struct
+{
+    int bgmID;
+    int unk04;
+    int unk08;
+    Null null[52];
+} EventBGM;
+
+typedef struct
+{
+    int unk00;
+    Null null[60];
+} EventRev;
+
+typedef struct
+{
+    int unk00;
+    int unk04;
+    int unk08;
+    int unk0C;
+    Null null[48];
+} EventSFX;
+
+// Main Struct
+//------------------------------------------------
+
+typedef struct
+{
+    local quad start = FTell();
+    
+    // Read Data
+    int nameOffset;
+    int uniqueID;
+    EventType type;
+    int id;
+    int typeDataOffset;
+    
+    // Get Offset Structs
+    FSeek(start + nameOffset);
+    string name;
+    
+    if (typeDataOffset > 0)
+    {
+        Assert(type != EventTypeScript);
+        FSeek(start + typeDataOffset);
+        switch (type)
+        {
+            case EventTypeEffect: EventEffect effect; break;
+            case EventTypeFilter: EventFilter filter; break;
+            case EventTypeDummyLeader: EventDummyLeader dummyLeader; break;
+            case EventTypeBGM: EventBGM bgm; break;
+            case EventTypeRev: EventRev rev; break;
+            case EventTypeSFX: EventSFX sfx; break;
+            default: Assert(false);
+        }
+    }
+} Event <read=ReadEvent>;
+
+string ReadEvent(Event& event)
+{
+    string str;
+    string type;
+    
+    switch (event.type)
+    {
+        case EventTypeScript: type = "Script"; break;
+        case EventTypeEffect: type = "Effect"; break;
+        case EventTypeFilter: type = "Filter"; break;
+        case EventTypeDummyLeader: type = "DummyLeader"; break;
+        case EventTypeBGM: type = "BGM"; break;
+        case EventTypeRev: type = "Rev"; break;
+        case EventTypeSFX: type = "SFX"; break;
+        default: type = "UnknownType";
+    }
+
+    return SPrintf(str, "ID: %d | %s | %s", event.id, type, event.name);
+}

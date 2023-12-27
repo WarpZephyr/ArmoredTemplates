@@ -1,0 +1,109 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.2 Binary Template
+//
+//      File: acvparts.bt
+//   Authors: WarpZephyr
+//   Version: 1.0.0
+//   Purpose: Armored Core Verdict Day AcParts
+//  Category: Games
+// File Mask: acvparts.bin
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+typedef struct
+{
+    ubyte null; Assert(null == 0);
+} Null <optimize=false>;
+
+#include "head.bt"
+#include "core.bt"
+#include "arm.bt"
+#include "leg.bt"
+#include "fcs.bt"
+#include "generator.bt"
+#include "booster.bt"
+#include "armunit.bt"
+#include "ultimateweapon.bt"
+#include "shoulderunit.bt"
+#include "reconunit.bt"
+BigEndian();
+
+//------------------------------------------------
+
+typedef struct
+{
+    int unk00 <hidden=true>; Assert(unk00 == 0);
+    ushort head_count;
+    ushort core_count;
+    ushort arm_count;
+    ushort leg_count;
+    ushort fcs_count;
+    ushort generator_count;
+    ushort booster_count;
+    ushort unk0E_count;
+    ushort unk10_count;
+    ushort unk12_count;
+    ushort arm_unit_count;
+    ushort ultimate_weapon_count;
+    ushort shoulder_unit_count;
+    ushort recon_unit_count;
+    Null unk20[20] <hidden=true>;
+} Header <bgcolor=cLtRed>;
+
+typedef struct
+{
+    ushort id;
+    ushort model_id;
+    int price;
+    short weight;
+    short energy_cost;
+    ubyte category;
+    ubyte unk0D;
+    ubyte unk0E;
+    ubyte sub_category;
+    short unk10;
+    short unk12;
+    float unk14;
+    float unk18;
+    float unk1C;
+
+    switch (category)
+    {
+        case 0: Head stats; break;
+        case 1: Core stats; break;
+        case 2: Arm stats; break;
+        case 3: Leg stats; break;
+        case 4: FCS stats; break;
+        case 5: Generator stats; break;
+        case 6: Booster stats; break;
+        case 7: Assert(false); break;
+        case 8: Assert(false); break;
+        case 9: Assert(false); break;
+        case 10: ArmUnit stats; break;
+        case 11: UltimateWeapon stats; break;
+        case 12: ShoulderUnit stats; break;
+        case 13: ReconUnit stats; break;
+        default: Assert(false); break;
+    }
+} Part <read=ReadPart, optimize=false>;
+
+string ReadPart(Part &part) {
+    local string str;
+    return SPrintf(str, "ID: %d \\ Model ID: %d \\ Sub Category: %d", part.id, part.model_id, part.sub_category);
+}
+
+//------------------------------------------------
+
+Header header;
+Part heads[header.head_count] <bgcolor=cLtGreen>;
+Part cores[header.core_count] <bgcolor=cGreen>;
+Part arms[header.arm_count] <bgcolor=cDkGreen>;
+Part legs[header.leg_count] <bgcolor=cLtYellow>;
+Part fcs[header.fcs_count] <bgcolor=cYellow>;
+Part generators[header.generator_count] <bgcolor=cDkYellow>;
+Part boosters[header.booster_count] <bgcolor=cLtAqua>;
+Part arm_units[header.arm_unit_count] <bgcolor=cAqua>;
+Part ultimate_weapons[header.ultimate_weapon_count] <bgcolor=cDkAqua>;
+Part shoulder_units[header.shoulder_unit_count] <bgcolor=cLtBlue>;
+Part recon_units[header.recon_unit_count] <bgcolor=cBlue>;

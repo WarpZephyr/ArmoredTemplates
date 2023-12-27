@@ -29,6 +29,20 @@ string ReadColorRGBA(ColorRGBA& color)
     return SPrintf(str, "RGBA: [%d %d %d %d]", color.Red, color.Blue, color.Green, color.Alpha);
 }
 
+typedef struct
+{
+    ubyte Blue;
+    ubyte Red;
+    ubyte Green;
+    ubyte Alpha;
+} ColorBGRA <bgcolor=cLtGreen, read=ReadColorBGRA>;
+
+string ReadColorBGRA(ColorBGRA& color)
+{
+    string str;
+    return SPrintf(str, "RGBA: [%d %d %d %d]", color.Red, color.Blue, color.Green, color.Alpha);
+}
+
 byte ColorEmptyRGBA(ColorRGBA& color)
 {
     if(color.Red == 0&& color.Blue == 0 && color.Green == 0 && color.Alpha == 0)

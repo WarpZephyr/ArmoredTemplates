@@ -1,0 +1,100 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.2 Binary Template
+//
+//      File: HNAV.bt
+//   Authors: WarpZephyr
+//   Version: 1.0.0
+//   Purpose: HNAV navigation files.
+//  Category: Games
+// File Mask: *.hnav
+//  ID Bytes: 48 4E 41 56
+//   History: 
+//------------------------------------------------
+
+BigEndian();
+
+//------------------------------------------------
+
+typedef struct
+{
+    char magic[4]; Assert(magic == "HNAV");
+    char version[4]; Assert(version == "0002");
+    ubyte unk08;
+    ubyte unk09;
+    ubyte unk0A;
+    ubyte unk0B;
+    int unk0C;
+    int offset10;
+    int offset14;
+    int unk18;
+    int unk1C;
+} Header <bgcolor=cLtRed>;
+
+typedef struct
+{
+    float x;
+    float y;
+    float z;
+} Vector3;
+
+typedef struct
+{
+    ubyte unk00;
+} UnkA <bgcolor=cLtGreen>;
+
+typedef struct
+{
+    short index;
+    ubyte unk00[16];
+} UnkB_A_A <bgcolor=cDkYellow>;
+
+typedef struct
+{
+    short unk00;
+    short unk02;
+
+    short count1;
+    UnkB_A_A unkB_A_A[count1];
+    
+    short count2;
+    int unk1;
+    int offsets[count2];
+} UnkB_A <bgcolor=cYellow>;
+
+typedef struct
+{
+    int index;
+    short unk04;
+    short unk06; Assert(unk06 == 0);
+} UnkB_B <bgcolor=cYellow>;
+
+typedef struct
+{
+    local quad start = FTell();
+
+    int count;
+    int offsets[count]; // Local
+
+    FSeek(start + offsets[0]);
+    UnkB_A unkB_A;
+    
+    struct
+    {
+        local int i <hidden=true>;
+        for (i = 1; i < count - 1; i++)
+        {
+            FSeek(start + offsets[i]);
+            UnkB_B unkB_B;
+        }
+    } unkB_Bs;
+} UnkB <bgcolor=cLtYellow>;
+
+//------------------------------------------------
+
+Header header;
+
+FSeek(header.offset10);
+UnkA unkA;
+
+FSeek(header.offset14);
+UnkB unkB;

@@ -1,0 +1,103 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.2 Binary Template
+//
+//      File: AllWeapon.bt
+//   Authors: WarpZephyr
+//   Version: 1.0.0
+//   Purpose: Armored Core Last Raven allweapon.bin
+//  Category: Games
+// File Mask: allweapon.bin
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+LittleEndian();
+
+//------------------------------------------------
+
+typedef struct
+{
+    ubyte null; Assert(null == 0);
+} Null <bgcolor=cBlack, optimize=false>;
+
+typedef struct
+{
+    int count;
+    int unk04 <hidden=true>; Assert(unk04 == 0);
+    int unk08 <hidden=true>; Assert(unk08 == 0);
+    int unk0C <hidden=true>; Assert(unk0C == 0);
+} Header <bgcolor=cLtRed>;
+
+typedef struct
+{
+    int unk00;
+    short unk04;
+    short unk06;
+
+    ubyte unk08;
+    ubyte unk09;
+    ubyte unk0A;
+    ubyte unk0B;
+
+    ubyte unk0C;
+    ubyte unk0D;
+    ubyte unk0E;
+    ubyte unk0F;
+    
+    short unk10;
+    byte unk12;
+    byte unk13;
+    
+    byte unk14;
+    ubyte unk15;
+    ushort unk16;
+    ushort unk18;
+    ushort unk1A;
+    ushort unk1C;
+    ushort unk1E;
+
+    ubyte unk20;
+    ubyte unk21;
+    ubyte unk22;
+    ubyte unk23;
+    Null unk24[28];
+    ushort unk40;
+    ushort unk42;
+    uint unk44;
+    ushort unk48;
+    ushort unk4A;
+    ushort unk4C;
+    ushort unk4E;
+    ushort unk50;
+    ushort unk52;
+    float unk54;
+    float unk58;
+    float unk5C;
+    float unk60;
+    float unk64;
+    float unk68;
+    float unk6C;
+    
+    ushort unk70;
+    ushort unk72;
+    float unk74;
+    float unk78;
+    uint unk7C;
+
+    ushort unk80;
+    ushort unk82;
+    float unk84;
+
+    ushort unk88;
+    ushort unk8A;
+    float unk8C;
+    
+    ushort unk90;
+    ushort unk92;
+    Null unk94[12];
+} Weapon <bgcolor=cLtGreen, optimize=false>;
+
+//------------------------------------------------
+
+Header header;
+Weapon weapons[header.count];

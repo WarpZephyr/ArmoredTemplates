@@ -1,0 +1,29 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.2 Binary Template
+//
+//      File: Tree.bt
+//   Authors: WarpZephyr
+//   Version: 1.1.1
+//   Purpose: Armored Core Verdict Day Trees.
+//  Category: Maps
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+typedef struct
+{
+    Vector3 boundingBoxMin;
+    int childOffset1;
+    Vector3 boundingBoxMax;
+    int unk1C <hidden=true>; Assert(unk1C == 0);
+    Vector3 origin;
+    int childOffset2;
+    float unk30;
+    int partCount;
+
+    if (partCount > 0)
+    {
+        short partIndices[partCount];
+    }
+} Tree;

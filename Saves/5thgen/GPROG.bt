@@ -1,0 +1,42 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.2 Binary Template
+//
+//      File: GPROG.bt
+//   Authors: WarpZephyr
+//   Version: 1.0.0
+//   Purpose: Armored Core Verdict Day Game Progress Data
+//  Category: Games
+// File Mask: GPROG.DAT
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+BigEndian();
+
+//------------------------------------------------
+
+typedef struct
+{
+    ubyte unk00;
+    ubyte unk01;
+    ubyte unk02;
+    ubyte unk03;
+    ushort unk04;
+    ubyte unk06;
+    ubyte unk07;
+    ushort unk08;
+    ubyte unk0A;
+    ubyte unk0B;
+    ushort unk0C;
+    ubyte unk0D;
+    ubyte unk0E;
+    ushort unk10;
+    ubyte unk12;
+    ubyte unk13;
+    int unk14; // Other au value?
+    int au_count;
+} Header <bgcolor=cLtRed>;
+
+//------------------------------------------------
+
+Header header;

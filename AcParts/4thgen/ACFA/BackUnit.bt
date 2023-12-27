@@ -18,10 +18,10 @@ BigEndian();
 typedef struct
 {
     WeaponComponent weapon;
-    ubyte unk54; Assert(unk54 == 1);
-    ubyte unk55; Assert(unk55 == 0);
-    ushort unk56; Assert(unk56 == 0);
-    ushort unk58; Assert(unk58 == 0);
+    ubyte unk54; // Unknown, always 1
+    ubyte unk55; // Unknown, always 0
+    ushort unk56; // Unknown, always 0
+    ushort unk58; // Unknown, always 0
     RadarComponent Radar;
     uint Horizontal_Thrust;
     uint Vertical_Thrust;
@@ -32,14 +32,14 @@ typedef struct
     uint Quick_Boost_EN_Cost;
     uint unk84; // Something to do with boosters I am 99% sure
     ushort Assault_Cannon_Attack;
-    ushort unk8A;
+    ushort unk8A; // Unknown, always 0
     ushort Assault_Cannon_Impact;
     ushort AC_Attenuation;
     ushort AC_Penetration;
-    ushort unk92;
+    ushort unk92; // Unknown, always 0
     BackUnitType Back_Unit_Type; AssertBackUnitType(Back_Unit_Type);
     DisplayType Display_Type; AssertDisplayType(Display_Type);
     bool TakesBothSlots; AssertBool(TakesBothSlots);
-    ubyte unk97;
+    ubyte unk97; // Unknown, always 0, 1, 2, or 3, is very likely a type.
     PAComponent primal_armor;
 } Back_Unit <bgcolor=cDkAqua>;

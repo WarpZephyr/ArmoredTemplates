@@ -1,0 +1,20 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.2 Binary Template
+//
+//      File: REGU.bt
+//   Authors: WarpZephyr
+//   Version: 1.0.0
+//   Purpose: Armored Core 5thgen regulation save files
+//  Category: Games
+// File Mask: REGU.DAT
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+BigEndian();
+
+//------------------------------------------------
+
+Assert(FileSize() == 256004);
+int reg_size;
+#include "BND3.bt"

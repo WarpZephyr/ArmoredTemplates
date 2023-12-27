@@ -1,0 +1,117 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.2 Binary Template
+//
+//      File: MissionReward.bt
+//   Authors: WarpZephyr
+//   Version: 1.0.0
+//   Purpose: ACFA MissionReward.bin binary file.
+//  Category: 
+// File Mask: MissionReward.bin
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+BigEndian();
+
+enum <short> RewardType
+{
+    Part = 1,
+    FRS = 3,
+    Design = 4,
+    Emblem = 5,
+    UNK_CONDITION = 6,
+    UNK_SEVEN = 7,
+    UNK_EIGHT = 8
+};
+
+//------------------------------------------------
+
+typedef struct
+{
+    int entry_count;
+    int unlock_entry_count;
+    int reward_entry_count;
+    int unk0C <hidden=true>; Assert(unk0C == 0);
+} Header <bgcolor=cLtRed>;
+
+typedef struct
+{
+    int unk00; Assert(unk00 == 1 || unk00 == 2);
+    int unlock_index;
+    int reward_count;
+    int reward_start_index;
+} Entry <bgcolor=cLtGreen, read=ReadEntry, optimize=false>;
+
+string ReadEntry(Entry& entry)
+{
+    local string str;
+    return SPrintf(str, "%i %i %i", entry.unk00, entry.unlock_index, entry.reward_start_index);
+}
+
+typedef struct
+{
+    short unk00;
+    short rank;
+    short unk04;
+    short unk06;
+} Unlock <bgcolor=cGreen, read=ReadUnlock, optimize=false>;
+
+string ReadUnlock(Unlock& entry)
+{
+    local string str;
+    return SPrintf(str, "%i %i %i %i", entry.unk00, entry.rank, entry.unk04, entry.unk06);
+}
+
+typedef struct
+{
+    RewardType reward_type;
+    switch (reward_type)
+    {
+        case Part:
+            short category_id;
+            short part_id;
+            break;
+        case FRS:
+            short amount;
+            short frs_id;
+            break;
+        case Design:
+            short design_id;
+            short unk04 <hidden=true>; Assert(unk04 == 0);
+            break;
+        case Emblem:
+            short emblem_id;
+            short unk04 <hidden=true>; Assert(unk04 == 0);
+            break;
+        case UNK_CONDITION:
+            short boolean; Assert(boolean == 0 || boolean == 1);
+            short unk04 <hidden=true>; Assert(unk04 == 0);
+            break;
+        case UNK_SEVEN:
+            short unk_id;
+            short unk04 <hidden=true>; Assert(unk04 == 0);
+            break;
+        case UNK_EIGHT:
+            short unk_id;
+            short unk04 <hidden=true>; Assert(unk04 == 0);
+            break;
+        default:
+            short unk02;
+            short unk04;
+            break;
+    }
+    
+    short unk06 <hidden=true>; Assert(unk06 == 0);
+} Reward <bgcolor=cDkGreen, read=ReadReward, optimize=false>;
+
+string ReadReward(Reward& entry)
+{
+    return EnumToString(entry.reward_type);
+}
+
+//------------------------------------------------
+
+Header header;
+Entry entries[header.entry_count];
+Unlock unlock_entries[header.unlock_entry_count];
+Reward reward_entries[header.reward_entry_count];

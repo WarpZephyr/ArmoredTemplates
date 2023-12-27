@@ -1,0 +1,56 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.2 Binary Template
+//
+//      File: BankSet.bt
+//   Authors: WarpZephyr
+//   Version: 1.0.0
+//   Purpose: Reading FromSoftware bankset.bin files.
+//  Category: Audio
+// File Mask: bankset.bin,acvbankset.bin
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+BigEndian();
+
+//------------------------------------------------
+
+typedef struct
+{
+    int count;
+    int strsOffset1;
+    int strsOffset2;
+    int strsOffset3;
+} Header <bgcolor=cLtRed>;
+
+typedef struct
+{
+    int index;
+    int unk04; Assert(unk04 == 0 || unk04 == 1);
+    int strOffset1;
+    int strOffset2;
+    int strOffset3;
+
+    local quad end = FTell();
+    FSeek(header.strsOffset1 + strOffset1);
+    string str1;
+    
+    FSeek(header.strsOffset2 + strOffset2);
+    string str2;
+
+    FSeek(header.strsOffset3 + strOffset3);
+    string str3;
+
+    FSeek(end);
+} Bank <bgcolor=cLtGreen, read=ReadBank, optimize=false>;
+
+string ReadBank(Bank& bank)
+{
+    local string str;
+    return SPrintf(str, "%s", bank.str1);
+}
+
+//------------------------------------------------
+
+Header header;
+Bank banks[header.count];

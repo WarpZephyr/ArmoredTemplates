@@ -1,0 +1,103 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.2 Binary Template
+//
+//      File: ultimateweapon.bt
+//   Authors: WarpZephyr
+//   Version: 1.0.0
+//   Purpose: Armored Core Verdict Day Ultimate Weapon Parts.
+//  Category: Games
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+BigEndian();
+
+enum <int> Motion
+{
+    GrindBlade = 1,
+    MassBlade = 3,
+    GigaCannon = 6,
+    LegionPulse = 8,
+    GigaMissile = 10,
+    MegaBlade = 60
+};
+
+//------------------------------------------------
+
+typedef struct
+{
+    float charging_capacity;
+    float unk04; Assert(unk04 == 0);
+    float unk08;
+    float unk0C;
+    float unk10;
+    float unk14;
+    float unk18;
+    float unk1C;
+    float unk20;
+    float unk24;
+    float unk28;
+    float unk2C;
+    float unk30;
+    float unk34;
+    float unk38; // Stops forward movement when set to 0, does not appear to do much otherwise
+    Null unk3C[120];
+    int unkB4;
+    Null unkB8[28];
+    short operational_time_drain;
+    short unkD6;
+    short unkD8;
+    short unkDA;
+    short unkDC;
+    short operational_frames; // (operational_frames / 60) / operational_time_drain = operational time
+    short unkE0;
+    short unkE2;
+    short unkE4;
+    short unkE6;
+    Null unkE8[44];
+    short unk114;
+    short unk116;
+    short unk118;
+    short unk11A; Assert(unk11A == 0);
+    int bullet_id;
+    int sfx_id;
+    int landing_sfx_id;
+    float unk128;
+    int unk12C;
+    short unk130;
+    short unk132;
+    short unk134;
+    short unk136;
+    short unk138;
+    short unk13A;
+    short unk13C;
+    short unk13E;
+    float unk140;
+    float unk144;
+    float unk148;
+    float unk14C;
+    short unk150;
+    short unk152;
+    short unk154;
+    short unk156;
+    short unk158;
+    short unk15A;
+    short unk15C;
+    short unk15E;
+    short unk160;
+    short unk162;
+    short unk164;
+    short unk166;
+    short unk168;
+    short unk16A;
+    float uw_attack_power;
+    float impact_force;
+    int unk174;
+    int unk178;
+    int unk17C;
+    Motion attack_type;
+    short unk184; // Affects animation time?
+    short unk186;
+    int unk188;
+} UltimateWeapon <bgcolor=cDkAqua>;

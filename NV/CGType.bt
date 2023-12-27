@@ -1,0 +1,585 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.2 Binary Template
+//
+//      File: CGType.bt
+//   Authors: WarpZephyr
+//   Version: 1.0.0
+//   Purpose: NVBinary parameter data types enum.
+//  Category: Shaders
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+enum <uint> CGType
+{
+    CG_UNKNOWN_TYPE = 0,
+    CG_STRUCT = 1,
+    CG_ARRAY = 2,
+    CG_TYPE_START_ENUM = 1024,
+    CG_HALF = 1025,
+    CG_HALF2 = 1026,
+    CG_HALF3 = 1027,
+    CG_HALF4 = 1028,
+    CG_HALF1x1 = 1029,
+    CG_HALF1x2 = 1030,
+    CG_HALF1x3 = 1031,
+    CG_HALF1x4 = 1032,
+    CG_HALF2x1 = 1033,
+    CG_HALF2x2 = 1034,
+    CG_HALF2x3 = 1035,
+    CG_HALF2x4 = 1036,
+    CG_HALF3x1 = 1037,
+    CG_HALF3x2 = 1038,
+    CG_HALF3x3 = 1039,
+    CG_HALF3x4 = 1040,
+    CG_HALF4x1 = 1041,
+    CG_HALF4x2 = 1042,
+    CG_HALF4x3 = 1043,
+    CG_HALF4x4 = 1044,
+    CG_FLOAT = 1045,
+    CG_FLOAT2 = 1046,
+    CG_FLOAT3 = 1047,
+    CG_FLOAT4 = 1048,
+    CG_FLOAT1x1 = 1049,
+    CG_FLOAT1x2 = 1050,
+    CG_FLOAT1x3 = 1051,
+    CG_FLOAT1x4 = 1052,
+    CG_FLOAT2x1 = 1053,
+    CG_FLOAT2x2 = 1054,
+    CG_FLOAT2x3 = 1055,
+    CG_FLOAT2x4 = 1056,
+    CG_FLOAT3x1 = 1057,
+    CG_FLOAT3x2 = 1058,
+    CG_FLOAT3x3 = 1059,
+    CG_FLOAT3x4 = 1060,
+    CG_FLOAT4x1 = 1061,
+    CG_FLOAT4x2 = 1062,
+    CG_FLOAT4x3 = 1063,
+    CG_FLOAT4x4 = 1064,
+    CG_SAMPLER1D = 1065,
+    CG_SAMPLER2D = 1066,
+    CG_SAMPLER3D = 1067,
+    CG_SAMPLERRECT = 1068,
+    CG_SAMPLERCUBE = 1069,
+    CG_FIXED = 1070,
+    CG_FIXED2 = 1071,
+    CG_FIXED3 = 1072,
+    CG_FIXED4 = 1073,
+    CG_FIXED1x1 = 1074,
+    CG_FIXED1x2 = 1075,
+    CG_FIXED1x3 = 1076,
+    CG_FIXED1x4 = 1077,
+    CG_FIXED2x1 = 1078,
+    CG_FIXED2x2 = 1079,
+    CG_FIXED2x3 = 1080,
+    CG_FIXED2x4 = 1081,
+    CG_FIXED3x1 = 1082,
+    CG_FIXED3x2 = 1083,
+    CG_FIXED3x3 = 1084,
+    CG_FIXED3x4 = 1085,
+    CG_FIXED4x1 = 1086,
+    CG_FIXED4x2 = 1087,
+    CG_FIXED4x3 = 1088,
+    CG_FIXED4x4 = 1089,
+    CG_HALF1 = 1090,
+    CG_FLOAT1 = 1091,
+    CG_FIXED1 = 1092,
+    CG_INT = 1093,
+    CG_INT1 = 1094,
+    CG_INT2 = 1095,
+    CG_INT3 = 1096,
+    CG_INT4 = 1097,
+    CG_INT1x1 = 1098,
+    CG_INT1x2 = 1099,
+    CG_INT1x3 = 1100,
+    CG_INT1x4 = 1101,
+    CG_INT2x1 = 1102,
+    CG_INT2x2 = 1103,
+    CG_INT2x3 = 1104,
+    CG_INT2x4 = 1105,
+    CG_INT3x1 = 1106,
+    CG_INT3x2 = 1107,
+    CG_INT3x3 = 1108,
+    CG_INT3x4 = 1109,
+    CG_INT4x1 = 1110,
+    CG_INT4x2 = 1111,
+    CG_INT4x3 = 1112,
+    CG_INT4x4 = 1113,
+    CG_BOOL = 1114,
+    CG_BOOL1 = 1115,
+    CG_BOOL2 = 1116,
+    CG_BOOL3 = 1117,
+    CG_BOOL4 = 1118,
+    CG_BOOL1x1 = 1119,
+    CG_BOOL1x2 = 1120,
+    CG_BOOL1x3 = 1121,
+    CG_BOOL1x4 = 1122,
+    CG_BOOL2x1 = 1123,
+    CG_BOOL2x2 = 1124,
+    CG_BOOL2x3 = 1125,
+    CG_BOOL2x4 = 1126,
+    CG_BOOL3x1 = 1127,
+    CG_BOOL3x2 = 1128,
+    CG_BOOL3x3 = 1129,
+    CG_BOOL3x4 = 1130,
+    CG_BOOL4x1 = 1131,
+    CG_BOOL4x2 = 1132,
+    CG_BOOL4x3 = 1133,
+    CG_BOOL4x4 = 1134,
+    CG_STRING = 1135,
+    CG_PROGRAM_TYPE = 1136,
+    CG_TEXTURE = 1137
+};
+
+typedef struct(string type, int nrows, int ncols)
+{
+    switch (type)
+    {
+        case "HALF":
+            hfloat rows[nrows];
+            hfloat columns[ncols];
+            break;
+        case "FLOAT":
+            float rows[nrows];
+            float columns[ncols];
+            break;
+        case "FIXED":
+            ushort rows[nrows];
+            ushort columns[ncols];
+            Warning("Fixed point precision read is not yet supported");
+            break;
+        case "INT":
+            int rows[nrows];
+            int columns[ncolumns];
+            break;
+        case "BOOL":
+            int rows[nrows];
+            int columns[ncolumns];
+            break;
+        default:
+            Assert(false);
+    }
+} Matrix;
+
+typedef struct(string type, int ncols)
+{
+    switch (type)
+    {
+        case "HALF":
+            hfloat coordinates[ncols];
+            break;
+        case "FLOAT":
+            float coordinates[ncols];
+            break;
+        case "FIXED":
+            ushort coordinates[ncols];
+            Warning("Fixed point precision read is not yet supported");
+            break;
+        case "INT":
+            int coordinates[ncols];
+            break;
+        case "BOOL":
+            int coordinates[ncols];
+            break;
+        default:
+            Assert(false);
+    }
+} Vector;
+
+typedef struct(string type)
+{
+    switch (type)
+    {
+        case "HALF":
+            hfloat scalar;
+            break;
+        case "FLOAT":
+            float scalar;
+            break;
+        case "FIXED":
+            ushort scalar;
+            Warning("Fixed point precision read is not yet supported");
+            break;
+        case "INT":
+            int scalar;
+            break;
+        case "BOOL":
+            int scalar;
+            break;
+        default:
+            Assert(false);
+    }
+} Scalar;
+
+typedef struct(CGType type)
+{
+    switch(type)
+    {
+        case CG_UNKNOWN_TYPE:
+            Warning("Type was null");
+            Assert(false);
+            break;
+        case CG_STRUCT:
+            ubyte struct_marker <bgcolor=cBlack>;
+            Warning("Struct read not supported yet");
+            break;
+        case CG_ARRAY:
+            ubyte array_marker <bgcolor=cBlack>;
+            Warning("Array read not supported yet");
+            break;
+        case CG_TYPE_START_ENUM:
+            Warning("Type was the starting type");
+            Assert(false);
+            break;
+        case CG_HALF:
+            Scalar halfScalar("HALF");
+            break;
+        case CG_HALF2:
+            Vector half2("HALF", 2);
+            break;
+        case CG_HALF3:
+            Vector half3("HALF", 3);
+            break;
+        case CG_HALF4:
+            Vector half4("HALF", 4);
+            break;
+        case CG_HALF1x1:
+            Matrix half1x1("HALF", 1, 1);
+            break;
+        case CG_HALF1x2:
+            Matrix half1x2("HALF", 1, 2);
+            break;
+        case CG_HALF1x3:
+            Matrix half1x3("HALF", 1, 3);
+            break;
+        case CG_HALF1x4:
+            Matrix half1x4("HALF", 1, 4);
+            break;
+        case CG_HALF2x1:
+            Matrix half2x1("HALF", 2, 1);
+            break;
+        case CG_HALF2x2:
+            Matrix half2x2("HALF", 2, 2);
+            break;
+        case CG_HALF2x3:
+            Matrix half2x3("HALF", 2, 3);
+            break;
+        case CG_HALF2x4:
+            Matrix half2x4("HALF", 2, 4);
+            break;
+        case CG_HALF3x1:
+            Matrix half3x1("HALF", 3, 1);
+            break;
+        case CG_HALF3x2:
+            Matrix half3x2("HALF", 3, 2);
+            break;
+        case CG_HALF3x3:
+            Matrix half3x3("HALF", 3, 3);
+            break;
+        case CG_HALF3x4:
+            Matrix half3x4("HALF", 3, 4);
+            break;
+        case CG_HALF4x1:
+            Matrix half4x1("HALF", 4, 1);
+            break;
+        case CG_HALF4x2:
+            Matrix half4x2("HALF", 4, 2);
+            break;
+        case CG_HALF4x3:
+            Matrix half4x3("HALF", 4, 3);
+            break;
+        case CG_HALF4x4:
+            Matrix half4x4("HALF", 4, 4);
+            break;
+        case CG_FLOAT:
+            Scalar floatScalar("FLOAT");
+            break;
+        case CG_FLOAT2:
+            Vector float2("FLOAT", 2);
+            break;
+        case CG_FLOAT3:
+            Vector float3("FLOAT", 3);
+            break;
+        case CG_FLOAT4:
+            Vector float4("FLOAT", 4);
+            break;
+        case CG_FLOAT1x1:
+            Matrix float1x1("FLOAT", 1, 1);
+            break;
+        case CG_FLOAT1x2:
+            Matrix float1x2("FLOAT", 1, 2);
+            break;
+        case CG_FLOAT1x3:
+            Matrix float1x3("FLOAT", 1, 3);
+            break;
+        case CG_FLOAT1x4:
+            Matrix float1x4("FLOAT", 1, 4);
+            break;
+        case CG_FLOAT2x1:
+            Matrix float2x1("FLOAT", 2, 1);
+            break;
+        case CG_FLOAT2x2:
+            Matrix float2x2("FLOAT", 2, 2);
+            break;
+        case CG_FLOAT2x3:
+            Matrix float2x3("FLOAT", 2, 3);
+            break;
+        case CG_FLOAT2x4:
+            Matrix float2x4("FLOAT", 2, 4);
+            break;
+        case CG_FLOAT3x1:
+            Matrix float3x1("FLOAT", 3, 1);
+            break;
+        case CG_FLOAT3x2:
+            Matrix float3x2("FLOAT", 3, 2);
+            break;
+        case CG_FLOAT3x3:
+            Matrix float3x3("FLOAT", 3, 3);
+            break;
+        case CG_FLOAT3x4:
+            Matrix float3x4("FLOAT", 3, 4);
+            break;
+        case CG_FLOAT4x1:
+            Matrix float4x1("FLOAT", 4, 1);
+            break;
+        case CG_FLOAT4x2:
+            Matrix float4x2("FLOAT", 4, 2);
+            break;
+        case CG_FLOAT4x3:
+            Matrix float4x3("FLOAT", 4, 3);
+            break;
+        case CG_FLOAT4x4:
+            Matrix float4x4("FLOAT", 4, 4);
+            break;
+        case CG_SAMPLER1D:
+            ubyte sampler1d_marker <bgcolor=cBlack>;
+            Warning("Sampler1D read not supported yet");
+            break;
+        case CG_SAMPLER2D:
+            ubyte sampler2d_marker <bgcolor=cBlack>;
+            Warning("Sampler2D read not supported yet");
+            break;
+        case CG_SAMPLER3D:
+            ubyte sampler3d_marker <bgcolor=cBlack>;
+            Warning("Sampler3D read not supported yet");
+            break;
+        case CG_SAMPLERRECT:
+            ubyte samplerrect_marker <bgcolor=cBlack>;
+            Warning("SamplerRect read not supported yet");
+            break;
+        case CG_SAMPLERCUBE:
+            ubyte samplercube_marker <bgcolor=cBlack>;
+            Warning("SamplerCube read not supported yet");
+            break;
+        case CG_FIXED:
+            Scalar fixedScalar("FIXED");
+            break;
+        case CG_FIXED2:
+            Vector fixed2("FIXED", 2);
+            break;
+        case CG_FIXED3:
+            Vector fixed3("FIXED", 3);
+            break;
+        case CG_FIXED4:
+            Vector fixed4("FIXED", 4);
+            break;
+        case CG_FIXED1x1:
+            Matrix fixed1x1("FIXED", 1, 1);
+            break;
+        case CG_FIXED1x2:
+            Matrix fixed1x2("FIXED", 1, 2);
+            break;
+        case CG_FIXED1x3:
+            Matrix fixed1x3("FIXED", 1, 3);
+            break;
+        case CG_FIXED1x4:
+            Matrix fixed1x4("FIXED", 1, 4);
+            break;
+        case CG_FIXED2x1:
+            Matrix fixed2x1("FIXED", 2, 1);
+            break;
+        case CG_FIXED2x2:
+            Matrix fixed2x2("FIXED", 2, 2);
+            break;
+        case CG_FIXED2x3:
+            Matrix fixed2x3("FIXED", 2, 3);
+            break;
+        case CG_FIXED2x4:
+            Matrix fixed2x4("FIXED", 2, 4);
+            break;
+        case CG_FIXED3x1:
+            Matrix fixed3x1("FIXED", 3, 1);
+            break;
+        case CG_FIXED3x2:
+            Matrix fixed3x2("FIXED", 3, 2);
+            break;
+        case CG_FIXED3x3:
+            Matrix fixed3x3("FIXED", 3, 3);
+            break;
+        case CG_FIXED3x4:
+            Matrix fixed3x4("FIXED", 3, 4);
+            break;
+        case CG_FIXED4x1:
+            Matrix fixed4x1("FIXED", 4, 1);
+            break;
+        case CG_FIXED4x2:
+            Matrix fixed4x2("FIXED", 4, 2);
+            break;
+        case CG_FIXED4x3:
+            Matrix fixed4x3("FIXED", 4, 3);
+            break;
+        case CG_FIXED4x4:
+            Matrix fixed4x4("FIXED", 4, 4);
+            break;
+        case CG_HALF1:
+            Vector half1("HALF", 1);
+            break;
+        case CG_FLOAT1:
+            Vector float1("FLOAT", 1);
+            break;
+        case CG_FIXED1:
+            Vector fixed1("FIXED", 1);
+            break;
+        case CG_INT:
+            Scalar intScalar("INT");
+            break;
+        case CG_INT1:
+            Vector int1("INT", 1);
+            break;
+        case CG_INT2:
+            Vector int2("INT", 2);
+            break;
+        case CG_INT3:
+            Vector int3("INT", 3);
+            break;
+        case CG_INT4:
+            Vector int4("INT", 4);
+            break;
+        case CG_INT1x1:
+            Matrix int1x1("INT", 1, 1);
+            break;
+        case CG_INT1x2:
+            Matrix int1x2("INT", 1, 2);
+            break;
+        case CG_INT1x3:
+            Matrix int1x3("INT", 1, 3);
+            break;
+        case CG_INT1x4:
+            Matrix int1x4("INT", 1, 4);
+            break;
+        case CG_INT2x1:
+            Matrix int2x1("INT", 2, 1);
+            break;
+        case CG_INT2x2:
+            Matrix int2x2("INT", 2, 2);
+            break;
+        case CG_INT2x3:
+            Matrix int2x3("INT", 2, 3);
+            break;
+        case CG_INT2x4:
+            Matrix int2x4("INT", 2, 4);
+            break;
+        case CG_INT3x1:
+            Matrix int3x1("INT", 3, 1);
+            break;
+        case CG_INT3x2:
+            Matrix int3x2("INT", 3, 2);
+            break;
+        case CG_INT3x3:
+            Matrix int3x3("INT", 3, 3);
+            break;
+        case CG_INT3x4:
+            Matrix int3x4("INT", 3, 4);
+            break;
+        case CG_INT4x1:
+            Matrix int4x1("INT", 4, 1);
+            break;
+        case CG_INT4x2:
+            Matrix int4x2("INT", 4, 2);
+            break;
+        case CG_INT4x3:
+            Matrix int4x3("INT", 4, 3);
+            break;
+        case CG_INT4x4:
+            Matrix int4x4("INT", 4, 4);
+            break;
+        case CG_BOOL:
+            Scalar boolScalar("BOOL");
+            break;
+        case CG_BOOL1:
+            Vector bool1("BOOL", 1);
+            break;
+        case CG_BOOL2:
+            Vector bool2("BOOL", 2);
+            break;
+        case CG_BOOL3:
+            Vector bool3("BOOL", 3);
+            break;
+        case CG_BOOL4:
+            Vector bool4("BOOL", 4);
+            break;
+        case CG_BOOL1x1:
+            Matrix bool1x1("BOOL", 1, 1);
+            break;
+        case CG_BOOL1x2:
+            Matrix bool1x2("BOOL", 1, 2);
+            break;
+        case CG_BOOL1x3:
+            Matrix bool1x3("BOOL", 1, 3);
+            break;
+        case CG_BOOL1x4:
+            Matrix bool1x4("BOOL", 1, 4);
+            break;
+        case CG_BOOL2x1:
+            Matrix bool2x1("BOOL", 2, 1);
+            break;
+        case CG_BOOL2x2:
+            Matrix bool2x2("BOOL", 2, 2);
+            break;
+        case CG_BOOL2x3:
+            Matrix bool2x3("BOOL", 2, 3);
+            break;
+        case CG_BOOL2x4:
+            Matrix bool2x4("BOOL", 2, 4);
+            break;
+        case CG_BOOL3x1:
+            Matrix bool3x1("BOOL", 3, 1);
+            break;
+        case CG_BOOL3x2:
+            Matrix bool3x2("BOOL", 3, 2);
+            break;
+        case CG_BOOL3x3:
+            Matrix bool3x3("BOOL", 3, 3);
+            break;
+        case CG_BOOL3x4:
+            Matrix bool3x4("BOOL", 3, 4);
+            break;
+        case CG_BOOL4x1:
+            Matrix bool4x1("BOOL", 4, 1);
+            break;
+        case CG_BOOL4x2:
+            Matrix bool4x2("BOOL", 4, 2);
+            break;
+        case CG_BOOL4x3:
+            Matrix bool4x3("BOOL", 4, 3);
+            break;
+        case CG_BOOL4x4:
+            Matrix bool4x4("BOOL", 4, 4);
+            break;
+        case CG_STRING:
+            string str;
+            break;
+        case CG_PROGRAM_TYPE:
+            ubyte program_marker <bgcolor=cBlack>;
+            Warning("Program read not supported yet");
+            break;
+        case CG_TEXTURE:
+            ubyte texture_marker <bgcolor=cBlack>;
+            Warning("Texture read not supported yet");
+            break;
+        default:
+            Assert(false);
+
+    }
+} DefaultValue;

@@ -20,9 +20,9 @@ typedef struct
 {
     ushort unk00;
     ushort unk02 <hidden=true>; Assert(unk02 == 0);
-    ushort DesignCount;
+    ushort design_count;
     ushort unk04 <hidden=true>; Assert(unk04 == 0);
-    FSkip(320);
+    ubyte padding[320] <hidden=true, bgcolor=cBlack>;
 } Header <bgcolor=cRed>;
 
 //------------------------------------------------

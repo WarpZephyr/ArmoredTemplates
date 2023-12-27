@@ -1,0 +1,163 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.2 Binary Template
+//
+//      File: HMD.bt
+//   Authors: WarpZephyr
+//   Version: 1.0.0
+//   Purpose: Armored Core Model HMD files
+//  Category: Games
+// File Mask: *.hmd
+//  ID Bytes: 10 00 01 13
+//   History: 
+//------------------------------------------------
+
+BigEndian();
+
+local int HMD_MAGIC = 0x10000113;
+
+//------------------------------------------------
+
+typedef struct
+{
+    float x;
+    float y;
+    float z;
+} Vector3;
+
+typedef struct
+{
+    float x;
+    float y;
+    float z;
+    float w;
+} Vector4;
+
+typedef struct
+{
+    int magic; Assert(magic == HMD_MAGIC);
+    int unk04;
+    int fileSize;
+    int textureCount;
+    int entryCount;
+    int unk14;
+    int unk18;
+    int unk1C;
+    int textureOffset;
+    int dataOffset;
+    int unk28;
+    int version <format=hex>;
+} Header <bgcolor=cLtRed>;
+
+typedef struct
+{
+    int nameOffset;
+    int nameEndOffset;
+
+    local quad pos = FTell();
+    FSeek(nameOffset);
+    string name;
+    FSeek(pos);
+} Texture <bgcolor=cLtGreen, optimize=false>;
+
+struct UnkMember;
+
+typedef struct
+{
+    short unk00;
+    short unk02;
+    int offsetChild1;
+    int offsetChild2;
+    int unk0C; Assert(unk0C == 0);
+    local quad pos = FTell();
+
+    if (offsetChild1 != 0)
+    {
+        FSeek(offsetChild1);
+        UnkMember child1;
+        FSeek(pos);
+    }
+
+    if (offsetChild2 != 0)
+    {
+        FSeek(offsetChild2);
+        UnkMember child2;
+        FSeek(pos);
+    }
+
+    Vector4 unk10;
+    Vector4 unk20;
+    Vector4 unk30;
+    Vector4 unk40;
+
+    local int count = 8;
+
+    if (unk00 > 0)
+    {
+        short indices[count] <bgcolor=cRed>;
+    }
+} UnkMember <bgcolor=cDkGreen, optimize=false>;
+
+typedef struct
+{
+    Vector4 unk00;
+    Vector4 unk10;
+    Vector4 unk20;
+    short index;
+    short unkIndex;
+    short parentIndex;
+    short childIndex;
+    short nextSiblingIndex;
+    short unk3A; Assert(unk3A == 0);
+    short unk3C; Assert(unk3C == 0);
+    short unk3E; Assert(unk3E == 0);
+    int unk40; Assert(unk40 == 0);
+
+    int unkMemberOffset;
+    
+    int countVectors1;
+    int offsetVectors1;
+
+    int countVectors2;
+    int offsetVectors2;
+
+    int countIndices;
+    int offsetIndices;
+    
+    local quad pos = FTell();
+
+    if (unkMemberOffset != 0)
+    {
+        FSeek(unkMemberOffset);
+        UnkMember unkMember;
+    }
+
+    if (countVectors1 > 0)
+    {
+        FSeek(offsetVectors1);
+        Vector4 unkVectors1[countVectors1];
+    }
+
+    if (countVectors2 > 0)
+    {
+        FSeek(offsetVectors2);
+        Vector4 unkVectors2[countVectors2];
+    }
+
+    if (countIndices > 0)
+    {
+        FSeek(offsetIndices);
+        int unkIndices[countIndices];
+    }
+
+    FSeek(pos);
+} UnkEntry <bgcolor=cGreen, optimize=false>;
+
+//------------------------------------------------
+
+Header header;
+
+FSeek(header.textureOffset);
+Texture textures[header.textureCount];
+
+FSeek(header.dataOffset);
+UnkEntry unkEntries[header.entryCount];

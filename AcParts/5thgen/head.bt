@@ -1,0 +1,36 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.2 Binary Template
+//
+//      File: head.bt
+//   Authors: WarpZephyr
+//   Version: 1.0.0
+//   Purpose: Armored Core Verdict Day Head Parts.
+//  Category: Games
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+BigEndian();
+
+//------------------------------------------------
+
+typedef struct
+{
+    float ce_defense;
+    Null unk04[208];
+    short scanning_performance;
+    short anti_jam_performance;
+    short unkD8;
+    short hacking_speed;
+    short hacking_range;
+    Null unkDE[54];
+    short ke_defense;
+    short te_defense;
+    short ap;
+    short unk11A;
+    short stability_computation;
+    short unk11E;
+    short camera_performance;
+    short unk122;
+} Head <bgcolor=cLtGreen>;

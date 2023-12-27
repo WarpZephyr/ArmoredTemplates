@@ -1,0 +1,149 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.2 Binary Template
+//
+//      File: BND0.bt
+//   Authors: WarpZephyr, Dropoff
+//   Version: 1.2.0
+//   Purpose: FromSoftware Binder archives in several games including but not limited to ACLR, ACNB, ACFF PSP, MWC.
+//  Category: Archives
+// File Mask: *.BIN,*.bin,*.BND,*.bnd,*.dat,*.DAT
+//  ID Bytes: 42 4E 44 00
+//   History: 
+//------------------------------------------------
+
+LittleEndian();
+
+// Used for asserting file offsets are not invalid
+local byte HEADER_SIZE = 32;
+local byte FILE_ENTRY_SIZE = 16;
+
+// Helper Function
+//------------------------------------------------
+
+void Align(int align)
+{
+    if (FTell() % align > 0) {
+        FSkip(align - (FTell() % align));
+    }
+}
+
+// Enum
+//------------------------------------------------
+
+enum <ushort> FILE_PATH_MODE
+{
+    NO_NAMES = 0,
+    NAMES_NO_OFFSET = 1,
+    PATH_NAMES = 2,
+    NAMES_OFFSET = 3
+};
+
+// Structs
+//------------------------------------------------
+
+typedef struct 
+{
+    char magic[4]; Assert(magic == "BND\0");
+    uint unk04 <hidden=true>; Assert(unk04 == 0xFFFF);
+    ubyte rawFormat <format=binary>; Assert(rawFormat == 0xD3 || rawFormat == 0xCA);
+    ubyte unk09 <hidden=true>; Assert(unk09 == 0);
+    ubyte unk0A <hidden=true>; Assert(unk0A == 0);
+    ubyte unk0B <hidden=true>; Assert(unk0B == 0);
+    uint fileSize;
+    uint fileCount;
+    uint namesOffset;
+    ushort alignment_size;
+    ubyte file_path_mode;
+    ubyte unk1B;
+    uint unk1C <hidden=true>; Assert(unk1C == 0);
+} Header <bgcolor=cLtRed, read=ReadHeader, optimize=false>;
+
+string ReadHeader(Header& header)
+{    
+    local string names;
+    switch(header.file_path_mode)
+    {
+        case NO_NAMES: names = "false"; break;
+        case NAMES_NO_OFFSET: names = "true"; break;
+        case PATH_NAMES: names = "true"; break;
+        case NAMES_OFFSET: names = "true"; break;
+        default: Assert(false);
+    }
+
+    string str;
+    SPrintf(str, "File Count: %i | Names: %s | Archive Size: %i | Alignment: %i", header.fileCount, names, header.fileSize, header.alignment_size);
+    return str;
+}
+
+typedef struct
+{
+    uint id;
+    uint offset; Assert(offset > HEADER_SIZE + (FILE_ENTRY_SIZE * header.fileCount));
+    uint size;
+    uint nameOffset;
+
+    local quad end = FTell();
+    FSeek(offset);
+    Align(header.alignment_size);
+    ubyte data[size];
+
+    if(nameOffset != 0)
+    {
+        FSeek(nameOffset);
+        string name;
+    }
+
+    FSeek(end);
+} File <bgcolor=cLtGreen, read=ReadFile, optimize=false>;
+
+string ReadFile(File& file)
+{
+    local string name;
+    switch(header.file_path_mode)
+    {
+        case NO_NAMES: name = "None"; break;
+        case NAMES_NO_OFFSET: name = file.name; break;
+        case PATH_NAMES: name = file.name; break;
+        case NAMES_OFFSET: name = file.name; break;
+        default: Assert(false);
+    }
+
+    local string str;
+    SPrintf(str, "ID: %i | Name: %s | Size: %i", file.id, name, file.size);
+    return str;
+}
+
+typedef struct
+{
+    string name;
+} FileName <read=ReadName>;
+
+string ReadName(FileName& name)
+{
+    return name.name;
+}
+
+// Read
+//------------------------------------------------
+
+Header header;
+if (header.fileCount > 0)
+{
+    if(header.namesOffset != 0 && header.file_path_mode == NAMES_OFFSET)
+    {
+        local quad entryStart = FTell();
+        FSeek(header.namesOffset);
+        struct
+        {
+            string path;
+            local int i;
+            for(i = 0; i < header.fileCount; i++)
+            {
+                FileName fileName;
+            }
+        } FileNames <bgcolor=cLtAqua>;
+        FSeek(entryStart);
+    }
+
+    File files[header.fileCount];
+}

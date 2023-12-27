@@ -1,0 +1,148 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.1 Binary Template
+//
+//      File: AssemMenu.bt
+//   Authors: WarpZephyr
+//   Version: 
+//   Purpose: Reading AssemMenu.
+//  Category: 
+// File Mask: assemmenu.bin
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+BigEndian();
+local ubyte HEADER_SIZE = 36;
+local quad TEXT_START_OFFSET = 0;
+
+enum <ushort> StatImprovement
+{
+    Default = 0,
+
+    // When the new stat is greater than the old stat it is an improvement
+    GreaterThan = 1,
+    
+    // When the new stat is less than the old stat it is an improvement  
+    LessThan = 2
+};
+
+//------------------------------------------------
+
+typedef struct
+{
+    uint textEntryCount;
+    uint menuEntryCount;
+    uint entryCount3;
+    uint descriptionEntryCount;
+    uint entryCount6;
+    uint statEntryCount;
+    uint unk18; Assert(unk18 == 0);
+    uint unk1C; Assert(unk1C == 0);
+    uint unk20; Assert(unk20 == 0);
+
+    local uint size1 <hidden=true> = textEntryCount * 8;
+    local uint size2 <hidden=true> = menuEntryCount * 8;
+    local uint size3 <hidden=true> = entryCount3 * 8;
+    local uint size4 <hidden=true> = statEntryCount * 8;
+    local uint size5 <hidden=true> = descriptionEntryCount * 16;
+    local uint size6 <hidden=true> = entryCount6 * 8;
+    TEXT_START_OFFSET = HEADER_SIZE+size1+size2+size3+size4+size5+size6;
+} Header <bgcolor=cLtRed>;
+
+typedef struct
+{
+    uint id;
+    uint offset;
+
+    local quad pos <hidden=true> = FTell();
+    FSeek(offset + TEXT_START_OFFSET);
+    wstring str;
+    ushort padding; Assert(padding == 0);
+    FSeek(pos);
+} TextEntry <bgcolor=cLtGreen, read=ReadTextEntry, optimize=false>;
+
+wstring ReadTextEntry(TextEntry& entry)
+{
+    string str;
+    return SPrintf(str, "%i | %s", entry.id, entry.str);
+}
+
+typedef struct
+{
+    ushort id;
+
+    // The number of text entries that will appear up to the max the menu supports
+    ushort count; Assert(count >= 0 && count <= 26);
+    uint startEntry;
+} MenuEntry <bgcolor=cGreen, read=ReadMenuEntry, optimize=false>;
+
+string ReadMenuEntry(MenuEntry& entry)
+{
+    string str;
+    return SPrintf(str, "%i \\ %i \\ %i", entry.id, entry.count, entry.startEntry);
+}
+
+typedef struct
+{
+    ushort id;
+    ushort count;
+    uint startEntry;
+} Entry3 <bgcolor=cDkGreen, read=ReadEntry3, optimize=false>;
+
+string ReadEntry3(Entry3& entry)
+{
+    string str;
+    return SPrintf(str, "%i \\ %i \\ %i", entry.id, entry.count, entry.startEntry);
+}
+
+typedef struct
+{
+    ushort id;
+    ushort unk02;
+    StatImprovement improvementType;
+    ushort unk06 <hidden=true>; Assert(unk06 == 0);
+} StatEntry <bgcolor=cLtYellow, read=ReadStatEntry, optimize=false>;
+
+string ReadStatEntry(StatEntry& entry)
+{
+    string str;
+    return SPrintf(str, "%i \\ %i \\ %i", entry.id, entry.unk02, entry.improvementType);
+}
+
+typedef struct
+{
+    ushort id;
+    ushort textID; Assert(textID == id + 10000);
+    ushort statEntryID;
+    ushort unk06 <hidden=true>; Assert(unk06 == 0);
+    uint unk08 <hidden=true>; Assert(unk08 == 0);
+    uint unk0C <hidden=true>; Assert(unk0C == 0);
+} DescriptionEntry <bgcolor=cYellow, read=ReadDescriptionEntry, optimize=false>;
+
+string ReadDescriptionEntry(DescriptionEntry& entry)
+{
+    string str;
+    return SPrintf(str, "%i \\ %i \\ %i", entry.id, entry.textID, entry.statEntryID);
+}
+
+typedef struct
+{
+    uint unk00; Assert(unk00 >= 0 && unk00 <= 5);
+    uint menuEntryID;
+} Entry6 <bgcolor=cDkYellow, read=ReadEntry6, optimize=false>;
+
+string ReadEntry6(Entry6& entry)
+{
+    string str;
+    return SPrintf(str, "%i \\ %i", entry.unk00, entry.menuEntryID);
+}
+
+//------------------------------------------------
+
+Header header;
+TextEntry textEntries[header.textEntryCount];
+MenuEntry menuEntries[header.menuEntryCount];
+Entry3 entries3[header.entryCount3];
+StatEntry statEntries[header.statEntryCount];
+DescriptionEntry descriptionEntries[header.descriptionEntryCount];
+Entry6 entries6[header.entryCount6];

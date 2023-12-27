@@ -16,6 +16,7 @@ BigEndian();
 
 enum <byte> ColorPattern
 {
+    Unknown = -1,
     Solid = 0,
     Pattern2 = 1,
     Pattern3 = 2,
@@ -32,7 +33,7 @@ enum <byte> ColorPattern
 
 void AssertColorPattern(ColorPattern pattern)
 {
-    Assert(pattern > -1 && pattern < Pattern12);
+    Assert(pattern > -2 && pattern < 12);
 }
 
 //------------------------------------------------
@@ -53,8 +54,8 @@ typedef struct
     ColorPattern BackUnitRight; AssertColorPattern(BackUnitRight);
     ColorPattern BackUnitLeft; AssertColorPattern(BackUnitLeft);
     ColorPattern ShoulderUnit; AssertColorPattern(ShoulderUnit);
-    ColorPattern HangarUnitRight; AssertColorPattern(HangarUnitRight);
-    ColorPattern HangarUnitLeft; AssertColorPattern(HangarUnitLeft);
+    ColorPattern HangerUnitRight; AssertColorPattern(HangerUnitRight);
+    ColorPattern HangerUnitLeft; AssertColorPattern(HangerUnitLeft);
     ColorPattern AllHeadStabilizers; AssertColorPattern(AllHeadStabilizers);
     ColorPattern AllCoreStabilizers; AssertColorPattern(AllCoreStabilizers);
     ColorPattern AllArmStabilizers; AssertColorPattern(AllArmStabilizers);
@@ -85,8 +86,8 @@ string ReadPatternSelection(PatternSelection& selection)
             selection.AllStabilizers, selection.Head, selection.Core,
             selection.ArmRight, selection.ArmLeft, selection.Legs,
             selection.ArmUnitRight, selection.ArmUnitLeft, selection.BackUnitRight,
-            selection.BackUnitLeft, selection.ShoulderUnit, selection.HangarUnitRight,
-            selection.HangarUnitLeft, selection.AllHeadStabilizers, selection.AllCoreStabilizers,
+            selection.BackUnitLeft, selection.ShoulderUnit, selection.HangerUnitRight,
+            selection.HangerUnitLeft, selection.AllHeadStabilizers, selection.AllCoreStabilizers,
             selection.AllArmStabilizers, selection.AllLegStabilizers, selection.HeadTopStabilizer,
             selection.HeadRightSideStabilizer, selection.HeadLeftSideStabilizer, selection.CoreUpperRightSideStabilizer,
             selection.CoreUpperLeftSideStabilizer, selection.CoreLowerRightSideStabilizer, selection.CoreLowerLeftSideStabilizer,
@@ -141,16 +142,16 @@ typedef struct
     ColorSet LegsBackStabilizerColor;
     ColorSet LegsUpperRightSideStabilizerColor;
     ColorSet LegsUpperLeftSideStabilizerColor;
-    ColorSet Unk1;
-    ColorSet Unk2;
+    ColorSet LegsUpperRightBackStabilizerColor;
+    ColorSet LegsUpperLeftBackStabilizerColor;
     ColorSet LegsMiddleRightSideStabilizerColor;
     ColorSet LegsMiddleLeftSideStabilizerColor;
-    ColorSet Unk3;
-    ColorSet Unk4;
+    ColorSet LegsMiddleRightBackStabilizerColor;
+    ColorSet LegsMiddleLeftBackStabilizerColor;
     ColorSet LegsLowerRightSideStabilizerColor;
     ColorSet LegsLowerLeftSideStabilizerColor;
-    ColorSet Unk5;
-    ColorSet Unk6;
+    ColorSet LegsLowerRightBackStabilizerColor;
+    ColorSet LegsLowerLeftBackStabilizerColor;
 } AllLegStabilizerColorSets <bgcolor=cLtGreen>;
 
 typedef struct

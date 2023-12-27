@@ -1,0 +1,125 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.2 Binary Template
+//
+//      File: Model.bt
+//   Authors: WarpZephyr
+//   Version: 1.1.0
+//   Purpose: Armored Core Verdict Day Models.
+//  Category: Maps
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+enum <int> ModelType
+{
+    ModelTypeMapPiece = 0,
+    ModelTypeObject = 1,
+    ModelTypeEnemy = 2,
+    ModelTypeDummy = 4,
+};
+
+// Sub Structs
+//------------------------------------------------
+
+typedef struct
+{
+    
+    byte unk00;
+    byte unk01;
+    byte unk02;
+    byte unk03;
+
+    // Bools?
+    ubyte unk04; Assert(unk04 == 0 || unk04 == 1);
+    ubyte unk05; Assert(unk05 == 0 || unk05 == 1);
+    ubyte unk06; Assert(unk06 == 0 || unk06 == 1);
+    ubyte unk07; Assert(unk07 == 0 || unk07 == 1);
+
+    byte unk08;
+    byte unk09;
+    byte unk0A;
+    byte unk0B;
+    int unk0C;
+    short unk10;
+    byte unk12;
+    byte unk13;
+    short unk14;
+    short unk16;
+    
+    // ?
+    Null null[40];
+} ModelUnk14;
+
+typedef struct
+{
+    // References a row ID in a param
+    short rowID;
+
+    // 0 = Object
+    // 100 = Dummy
+    short unk02;
+} ModelRowReference;
+
+// Main Struct
+//------------------------------------------------
+
+typedef struct
+{
+    local quad start = FTell();
+
+    // Read Data
+    int nameOffset <format=hex>;
+    ModelType type;
+    int id;
+    int resourceOffset <format=hex>;
+    int instanceCount;
+    int offset14; Assert(offset14 > 0);
+    int rowReferenceOffset;
+    
+    // Get Offset Structs
+    FSeek(start + nameOffset);
+    string name;
+
+    FSeek(start + resourceOffset);
+    string resourcePath;
+
+    FSeek(start + offset14);
+    ModelUnk14 modelUnk14;
+
+    if (rowReferenceOffset != 0)
+    {
+        FSeek(start + rowReferenceOffset);
+        ModelRowReference rowReference;
+        
+        if (type == ModelTypeObject)
+        {
+            Assert(rowReference.unk02 == 0);
+        }
+        else if (type == ModelTypeDummy)
+        {
+            Assert(rowReference.unk02 == 100);
+        }
+        else
+        {
+            Assert(false);
+        }
+    }
+} Model <read=ReadModel>;
+
+string ReadModel(Model& model)
+{
+    local string str;
+    local string type;
+    
+    switch (model.type)
+    {
+        case ModelTypeMapPiece: type = "Map"; break;
+        case ModelTypeObject: type = "Object"; break;
+        case ModelTypeEnemy: type = "Enemy"; break;
+        case ModelTypeDummy: type = "Dummy"; break;
+        default: type = "UnknownType"; break;
+    }
+
+    return SPrintf(str, "ID: %d | Instances: %d | %s | %s", model.id, model.instanceCount, type, model.name);
+}

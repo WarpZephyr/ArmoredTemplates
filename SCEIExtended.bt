@@ -1,0 +1,28 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.2 Binary Template
+//
+//      File: SCEIExtension.bt
+//   Authors: WarpZephyr
+//   Version: 1.0.0
+//   Purpose: Extended header padding in some SCEI files in Armored Core Last Raven
+//  Category: Audio
+// File Mask: *
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+LittleEndian();
+
+//------------------------------------------------
+
+typedef struct
+{
+    int offset_headers;
+    int offset_data;
+    int size_headers;
+    int size_data;
+} ExtendedHeader <bgcolor=cLtRed>;
+
+ExtendedHeader extended_header;
+FSeek(extended_header.offset_headers);
+#include "SCEI.bt"

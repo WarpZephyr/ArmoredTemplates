@@ -1,0 +1,95 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.1 Binary Template
+//
+//      File: Accel.bt
+//   Authors: WarpZephyr
+//   Version: 
+//   Purpose: Reading Accel.bin
+//  Category: 
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+enum VERSION
+{
+    ACLR,
+    ACFA
+};
+local VERSION version = ACFA;
+switch (version)
+{
+    case ACLR:
+        LittleEndian();
+        break;
+    case ACFA:
+        BigEndian();
+        break;
+}
+
+enum <uint> KeyBind
+{
+    LeftStickUp = 17,
+    LeftStickDown = 18,
+    LeftStickLeft = 19,
+    LeftStickRight = 20, 
+};
+
+//------------------------------------------------
+
+typedef struct
+{
+    uint AccelEntryCount;
+    uint unk04;
+    uint unk08; Assert(unk08 == 0);
+    uint unk0C; Assert(unk0C == 0);
+} Header <bgcolor=cLtRed>;
+
+typedef struct
+{
+    KeyBind key;
+    ushort messageHandlerID;
+    short unk06;
+} AccelKeyEntry <bgcolor=cGreen, read=ReadAccelKeyEntry>;
+
+string ReadAccelKeyEntry(AccelKeyEntry &keyEntry)
+{
+     string str;
+     return SPrintf( str, "%d \t\\ %d \\ %d", 
+        keyEntry.key, keyEntry.messageHandlerID, keyEntry.unk06);
+}
+
+typedef struct
+{
+    uint accelID;
+    uint keyCount;
+    switch (version)
+    {
+        case ACLR:
+            ushort accelKeyEntryOffset;
+            ushort unk0A <hidden=true>; Assert(unk0A == 0);
+            break;
+        case ACFA:
+            ushort unk08 <hidden=true>; Assert(unk08 == 0);
+            ushort accelKeyEntryOffset;
+            break;
+    }
+    uint unk10 <hidden=true>; Assert(unk10 == 0);
+
+    if (keyCount > 0)
+    {
+        local quad pos = FTell();
+        FSeek(accelKeyEntryOffset);
+        AccelKeyEntry keyEntries[keyCount];
+        FSeek(pos);
+    }
+} AccelEntry <bgcolor=cLtGreen, read=ReadAccelEntry, optimize=false>;
+
+wstring ReadAccelEntry(AccelEntry &accelEntry) {
+     string str;
+     return SPrintf( str, "%d \t\\ %d \\ %d", 
+        accelEntry.accelID, accelEntry.keyCount, accelEntry.accelKeyEntryOffset);
+}
+
+Header header;
+AccelEntry accelEntries[header.AccelEntryCount];

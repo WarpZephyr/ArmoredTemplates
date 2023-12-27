@@ -1,0 +1,44 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.2 Binary Template
+//
+//      File: AcConflictInfo.bt
+//   Authors: WarpZephyr
+//   Version: 
+//   Purpose: Figuring out AcConflictInfo.bin
+//  Category: 
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+BigEndian();
+
+//------------------------------------------------
+
+typedef struct
+{
+    int entryCount;
+    int unk04; Assert(unk04 == 0);
+    int unk08; Assert(unk04 == 0);
+    int unk0C; Assert(unk04 == 0);
+} Header <bgcolor=cLtRed>;
+
+typedef struct
+{
+    byte category;
+    byte blockCategory;
+    short partID;
+    short blockedPartID;
+    short unk06; Assert(unk06 == 0);
+} Entry <bgcolor=cLtGreen, read=ReadEntry, optimize=false>;
+
+string ReadEntry(Entry& entry)
+{
+    string str;
+    return SPrintf(str, "%i %i ID: %i Blocked: %i", entry.category, entry.blockCategory, entry.partID, entry.blockedPartID);
+}
+
+//------------------------------------------------
+
+Header header;
+Entry entries[header.entryCount];

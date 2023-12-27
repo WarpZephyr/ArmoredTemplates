@@ -1,0 +1,49 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.2 Binary Template
+//
+//      File: booster.bt
+//   Authors: WarpZephyr
+//   Version: 1.0.0
+//   Purpose: Armored Core Verdict Day Booster Parts.
+//  Category: Games
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+BigEndian();
+
+//------------------------------------------------
+
+typedef struct
+{
+    float boost_ignition_efficiency;
+    float high_boost_power;
+    float high_boost_energy_consumption;
+    float high_boost_ignition_efficiency;
+    float unk10;
+    float unk14;
+    float unk18;
+    float unk1C;
+    float high_boost_initial_power;
+    Null unk24[176];
+    short high_boost_max_charge_time;
+    short unkD6;
+    int max_power_timing;
+    short unkDC;
+    short high_boost_acceleration_time;
+    short unkE0;
+    short unkE2;
+    Null unkE4[12];
+    short time_to_max_acceleration;
+    short unkF2;
+    short unkF4;
+    short unkF6;
+    ubyte unkF8;
+    ubyte unkF9;
+    ubyte initial_ignition_efficiency;
+    ubyte unkFB;
+    Null unkFC[24];
+    int boost_power;
+    Null unk118[24];
+} Booster <bgcolor=cLtAqua>;

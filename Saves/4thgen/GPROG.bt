@@ -12,10 +12,14 @@
 //------------------------------------------------
 
 BigEndian();
-local ulong NORMAL_MISSION_COUNT = 42;
-local ulong HARD_MISSION_COUNT = 42;
-local ulong COLLARED_MATCH_COUNT = 30;
-local ulong ORCA_MATCH_COUNT = 12;
+local uint MISSION_COUNT = 42;
+local uint NORMAL_MISSION_COUNT = 42;
+local uint HARD_MISSION_COUNT = 42;
+local uint COLLARED_MATCH_COUNT = 30;
+local uint ORCA_MATCH_COUNT = 12;
+local uint RESERVED_PART_COUNT = 1024;
+local uint RESERVED_DESIGN_COUNT = 80;
+local uint RESERVED_EMBLEM_COUNT = 64;
 
 enum <ushort> PartUnlockStatus
 {
@@ -29,153 +33,153 @@ enum <ubyte> PartCategory
 {
     Head = 0,
     Core = 1,
+    Arms = 2,
+    Legs = 3,
+    FCS = 4,
+    Generator = 5,
+    MainBooster = 6,
+    BackBooster = 7,
+    SideBooster = 8,
+    OveredBooster = 9,
+    RightArmUnit = 10,
+    LeftArmUnit = 11,
+    RightBackUnit = 12,
+    LeftBackUnit = 13,
+    ShoulderUnit = 14
+};
+
+enum <byte> MissionRankingType
+{
+    NotCompleted = -1,
+    E = 0,
+    D = 1,
+    C = 2,
+    B = 3,
+    A = 4,
+    S = 5
+};
+
+enum <ubyte> Bool
+{
+    False = 0,
+    True = 1
 };
 
 //------------------------------------------------
 
 typedef struct
 {
-    short unk00;
-    short unk02;
-    FSkip(72);
-} Header <bgcolor=cRed>;
+    short game_completions;
+    Bool show_intro;
+    ubyte unk03;
+    int story_count;
+    short story_ids[MISSION_COUNT];
+    int free_count;
+    short free_ids[MISSION_COUNT];
+} Missions <bgcolor=cRed>;
 
 typedef struct
 {
-    short unk00;
-    short unk02;
-    short unk04;
-    short unk06;
-    short unk08;
-    short unk0A;
-    short unk0C;
-    short unk0E;
-    int completedMissions;
-} PlayerData <bgcolor=cLtGreen>;
-
-typedef struct
-{
-    short missionIndex; // Why tho?
-} Struct2 <bgcolor=cGreen, read=ReadStruct2>;
-
-string ReadStruct2(Struct2 &struct2)
-{
-    string str;
-    return SPrintf(str, "%i", struct2.missionIndex);
-}
-
-typedef struct
-{
-    byte missionRanking;
+    MissionRankingType mission_ranking;
 } MissionRanking <bgcolor=cDkGreen, read=ReadMissionRanking, optimize=false>;
 
 string ReadMissionRanking(MissionRanking &ranking)
 {
-    string str;
-    switch(ranking.missionRanking)
-    {
-        case -1: str = "Not completed"; break;
-        case 0: str = "E rank"; break;
-        case 1: str = "D rank"; break;
-        case 2: str = "C rank"; break;
-        case 3: str = "B rank"; break;
-        case 4: str = "A rank"; break;
-        case 5: str = "S rank"; break;
-        default: Assert(false); break; // Not a save file
-    }
-    return str;
+    return EnumToString(ranking.mission_ranking);
 }
 
 typedef struct
 {
-    byte matchWon;
+    MissionRanking rankings_normal[NORMAL_MISSION_COUNT];
+    MissionRanking rankings_hard[HARD_MISSION_COUNT];
+} Rankings;
+
+typedef struct
+{
+    Bool match_won;
 } Match <bgcolor=cLtBlue, read=ReadMatch, optimize=false>;
 
 string ReadMatch(Match &match)
 {
-    string str;
-    switch(match.matchWon)
-    {
-        case 0: str = "Match not won"; break;
-        case 1: str = "Match won"; break;
-        default: Assert(false); break; // Not a save file
-    }
-    return str;
+    return "Match Won: " + EnumToString(match.match_won);
 }
 
 typedef struct
 {
     ubyte unk00;
-    Match matchesWonCollared[COLLARED_MATCH_COUNT];
-    Match matchesWonOrca[ORCA_MATCH_COUNT];
+    Match matches_won_collared[COLLARED_MATCH_COUNT];
+    Match matches_won_orca[ORCA_MATCH_COUNT];
     ubyte unk2B;
-    uint unk2C <hidden=true>; Assert(unk2C == 0);
-    ubyte unkFlag;
-    ubyte orcaUnlocked;
-    ushort unk32 <hidden=true>; Assert(unk32 == 0);
-    uint unk34 <hidden=true>; Assert(unk34 == 0);
-    uint unk38 <hidden=true>; Assert(unk38 == 0);
-    uint unk3C <hidden=true>; Assert(unk3C == 0);
+    ubyte unk2C;
+    ubyte unk2D;
+    ubyte unk2E;
+    ubyte unk2F;
+    Bool arena_unlocked;
+    Bool orca_arena_unlocked;
+    ubyte unk32;
+    ubyte unk33;
+    ubyte unk34;
+    ubyte unk35;
+    ubyte unk36;
+    ubyte unk37;
+    ubyte unk38;
+    ubyte unk39;
+    ubyte unk3A;
+    ubyte unk3B;
+    ubyte unk3C;
+    ubyte unk3D;
+    ubyte unk3E;
+    ubyte unk3F;
 } Matches <bgcolor=cBlue, read=ReadMatches>;
 
 string ReadMatches(Matches &matches)
 {
-    string str;
-    switch(matches.orcaUnlocked)
+    local string str;
+    local string arena_unlock;
+    local string orca_arena_unlock;
+    switch(matches.arena_unlocked)
     {
-        case 0: str = "Orca Hidden"; break;
-        case 1: str = "Orca Unlocked"; break;
+        case 0: arena_unlock = "Arena Hidden"; break;
+        case 1: arena_unlock = "Arena Unlocked"; break;
         default: Assert(false); break; // Not a save file
     }
-    return str;
+
+    switch(matches.orca_arena_unlocked)
+    {
+        case 0: orca_arena_unlock = "Orca Arena Hidden"; break;
+        case 1: orca_arena_unlock = "Orca Arena Unlocked"; break;
+        default: Assert(false); break; // Not a save file
+    }
+
+    return SPrintf(str, "%s | %s", arena_unlock, orca_arena_unlock);
 }
 
 typedef struct
 {
-    MissionRanking missionRankingsNormal[NORMAL_MISSION_COUNT];
-    MissionRanking missionRankingsHard[HARD_MISSION_COUNT];
-    Matches matches;
-} Rankings <read=ReadRankings>;
-
-string ReadRankings(Rankings &rankings)
-{
-    return ReadMatches(rankings.matches);
-}
-
-typedef struct
-{
-    ubyte partCategory;
+    PartCategory part_category;
     ubyte unk01 <hidden=true>; Assert(unk01 == 0);
-    ushort partID;
-    PartUnlockStatus partUnlockStatus;
+    ushort part_id;
+    PartUnlockStatus part_unlock_status;
 } Part <bgcolor=cYellow, read=ReadPart, optimize=false>;
 
 string ReadPart(Part &part)
 {
     string str;
-    string unlockStatus;
-    switch(part.partUnlockStatus)
-    {
-        case Hidden:
-            unlockStatus = "Hidden";
-            break;
-        case InShop:
-            unlockStatus = "InShop";
-            break;
-        case Owned:
-            unlockStatus = "Owned";
-            break;
-        default:
-            Assert(false);
-            break;
-    }
-    return SPrintf(str, "%i / %i / %s", part.partCategory, part.partID, unlockStatus);
+    string unlock_status;
+    return SPrintf(str, "%i / %i / %s", part.part_category, part.part_id, EnumToString(part.part_unlock_status));
 }
 
 typedef struct
 {
     int count;
-    Part parts[count];
+    if (count < RESERVED_PART_COUNT)
+    {
+        Part parts[RESERVED_PART_COUNT];
+    }
+    else
+    {
+        Part parts[count];
+    }
 } Parts <bgcolor=cLtYellow, read=ReadParts>;
 
 string ReadParts(Parts &parts)
@@ -184,10 +188,56 @@ string ReadParts(Parts &parts)
     return SPrintf(str, "%i", parts.count);
 }
 
+typedef struct
+{
+    int count;
+    short design_ids[count];
+    if (count < RESERVED_DESIGN_COUNT)
+    {
+        short reserved_design_id_space[RESERVED_DESIGN_COUNT - count];
+    }
+} Designs <bgcolor=cDkYellow, read=ReadDesigns>;
+
+string ReadDesigns(Designs &design_ids)
+{
+    string str;
+    return SPrintf(str, "%i", design_ids.count);
+}
+
+typedef struct
+{
+    int count;
+    ubyte emblem_ids[count];
+    if (count < RESERVED_EMBLEM_COUNT)
+    {
+        ubyte reserved_emblem_id_space[RESERVED_EMBLEM_COUNT - count];
+    }
+} Emblems <bgcolor=cLtAqua>;
+
+typedef struct
+{
+    int count;
+    ubyte unk_ids[count];
+} UnkIDs <bgcolor=cDkAqua>;
+
+typedef struct
+{
+    int frs_amount;
+    int count;
+
+    if (count > 0)
+    {
+        ubyte frs_ids[count];
+    }
+} FRS <bgcolor=cGreen>;
+
 //------------------------------------------------
 
-Header header;
-PlayerData playerData;
-Struct2 struct2[42];
+Missions missions;
 Rankings rankings;
+Matches matches;
 Parts parts;
+Designs designs;
+ubyte unkData[40] <bgcolor=cBlack>;
+Emblems emblems;
+FRS frs;

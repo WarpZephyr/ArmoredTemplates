@@ -1,0 +1,117 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.2 Binary Template
+//
+//      File: AISD.bt
+//   Authors: WarpZephyr
+//   Version: 1.0.0
+//   Purpose: Armored Core 5th generation UNAC files.
+//  Category: Games
+// File Mask: *.bin
+//  ID Bytes: 41 49 53 44
+//   History: 
+//------------------------------------------------
+
+BigEndian();
+
+//------------------------------------------------
+
+struct Parts;
+struct PartIDs;
+struct Tuning;
+
+typedef struct
+{
+    ubyte null; Assert(null == 0);
+} Null <bgcolor=cBlack, optimize=false>;
+
+typedef struct
+{
+    char magic[4]; Assert(magic == "AISD");
+    int unk04;
+    short unk08;
+    short unk0A;
+    int unk0C;
+    wchar_t combatType[24];
+} Header <bgcolor=cLtRed>;
+
+typedef struct
+{
+    int unk00;
+    int unk04;
+    int unk08;
+    int unk0C;
+    wchar_t designName[24];
+    wchar_t designerName[24];
+    wchar_t unk70[24];
+    wchar_t unkA0[24];
+    quad creationTimeStamp; // In microseconds, starting from 01/01/01 00:00:00
+    quad unkD8 <hidden=true>; Assert(unkD8 == 0);
+    quad unkE0 <hidden=true>; Assert(unkE0 == 0);
+    Parts parts;
+} UnacDesign <bgcolor=cLtGreen>;
+
+typedef struct
+{
+    PartIDs equipped_parts;
+    Null null_1[30];
+    Tuning part_tunes;
+    ushort unk76;
+    Null null_2[40];
+} Parts;
+
+typedef struct
+{
+    ushort head;
+    ushort core;
+    ushort arms;
+    ushort legs;
+    ushort fcs;
+    ushort generator;
+    ushort boosters;
+    ushort unk0E; // back_booster?
+    ushort unk10; // side_booster?
+    ushort recon_unit;
+    ushort arm_unit_right;
+    ushort arm_unit_left;
+    ushort ultimate_weapon;
+    ushort unk1A; // back_unit_left?
+    ushort shoulder_unit;
+    ushort bay_unit_right;
+    ushort bay_unit_left;
+    ushort unk22; // stabilizer_head_top?
+    ushort unk24; // stabilizer_head_right?
+    ushort unk26; // stabilizer_head_left?
+    ushort unk28; // stabilizer_core_right_upper?
+    ushort unk2A; // stabilizer_core_left_upper?
+    ushort unk2C; // stabilizer_core_right_lower?
+    ushort unk2E; // stabilizer_core_left_lower?
+    ushort unk30; // stabilizer_arm_right?
+    ushort unk32; // stabilizer_arm_left?
+    ushort unk34; // stabilizer_legs_back?
+    ushort unk36; // stabilizer_legs_right_upper?
+    ushort unk38; // stabilizer_legs_left_upper?
+    ushort unk3A; // stabilizer_legs_right_upper_back?
+    ushort unk3C; // stabilizer_legs_left_upper_back?
+    ushort unk3E; // stabilizer_legs_right_middle?
+    ushort unk40; // stabilizer_legs_left_middle?
+    ushort unk42; // stabilizer_legs_right_middle_back?
+    ushort unk44; // stabilizer_legs_left_middle_back?
+    ushort unk46; // stabilizer_legs_right_lower?
+    ushort unk48; // stabilizer_legs_left_lower?
+    ushort unk4A; // stabilizer_legs_right_lower_back?
+    ushort unk4C; // stabilizer_legs_left_lower_back?
+} PartIDs <bgcolor=cYellow>;
+
+typedef struct
+{
+    ushort weapon_arm_tune;
+    ushort arm_unit_left_tune;
+    ushort arm_unit_right_tune;
+    ushort bay_unit_left_tune;
+    ushort bay_unit_right_tune;
+} Tuning <bgcolor=cDkYellow>;
+
+//------------------------------------------------
+
+Header header;
+UnacDesign design;

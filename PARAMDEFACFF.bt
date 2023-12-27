@@ -1,0 +1,93 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.2 Binary Template
+//
+//      File: PARAMDEFACFF.bt
+//   Authors: WarpZephyr
+//   Version: 1.0.0
+//   Purpose: Armored Core Formula Front param definitions.
+//  Category: Spreadsheets
+// File Mask: *.def
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+#include "Util.bt"
+LittleEndian();
+
+//------------------------------------------------
+
+typedef struct {
+    int fileSize <format=hex>;
+    // Header size, or just a short fields offset? Who knows.
+    short headerSize <format=hex>; Assert(headerSize == 0x30 || headerSize == 0xFF);
+    // Incremented when the actual param data structure changes (sometimes)
+    short dataVersion;
+    short fieldCount;
+    short fieldSize <format=hex>;
+    char paramID[0x20] <bgcolor=cRed>;
+    int unk2C <hidden=true>; Assert(unk2C == 0);
+} Header <bgcolor=cLtRed>;
+
+
+typedef struct (char editorType[8])
+{
+    local char type[8] = editorType;
+    switch (type)
+    {
+        case "u8":
+        case "s8":
+        case "u16":
+        case "s16":
+        case "u32": // Sometimes u32 has s32 values; other times it has u32 values. Cool!
+        case "s32": int value; break;
+        case "f32": float value; break;
+        case "dummy8":
+        case "fixstr":
+        case "fixstrW": int dummy; Assert(!dummy); break;
+        default: Assert(false);
+    }
+    
+    int pad <hidden=true>; Assert(!pad);
+} EditorValue <read=ReadEditorValue>;
+
+string ReadEditorValue(EditorValue &value)
+{
+    string str;
+    switch (value.type)
+    {
+        case "u8":
+        case "s8":
+        case "u16":
+        case "s16":
+        case "u32":
+        case "s32": return SPrintf(str, "%i", value.value);
+        case "f32": return SPrintf(str, "%f", value.value);
+        case "dummy8":
+        case "fixstr":
+        case "fixstrW": return "";
+        default: Assert(False);
+    }
+}
+
+typedef struct
+{
+    char name[0x40] <bgcolor=cGreen>;
+    char type[0x8] <bgcolor=cGreen>;
+    char format[0x8] <bgcolor=cGreen>;
+    float defaultValue;
+    float minimum;
+    float maximum;
+    float increment;
+    int unk60;
+    int unk64;
+} Field <read=ReadField, bgcolor=cLtGreen, optimize=false>;
+
+string ReadField(Field &field)
+{
+    return field.type + " | " + field.name;
+}
+
+//------------------------------------------------
+
+Header header;
+Field fields[header.fieldCount];

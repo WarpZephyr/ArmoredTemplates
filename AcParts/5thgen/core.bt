@@ -1,0 +1,42 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.2 Binary Template
+//
+//      File: core.bt
+//   Authors: WarpZephyr
+//   Version: 1.0.0
+//   Purpose: Armored Core Verdict Day Core Parts.
+//  Category: Games
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+BigEndian();
+
+//------------------------------------------------
+
+typedef struct
+{
+    float ce_defense;
+    float energy_conductivity;
+    float unk08;
+    float unk0C;
+    float thermal_resistance;
+    Null unk14[160];
+    int unkB4;
+    Null unkB8[60];
+    ubyte max_recon_units;
+    ubyte unkF5;
+    ubyte unkF6;
+    ubyte unkF7;
+    Null unkF8[28];
+    short ke_defense;
+    short te_defense;
+    short ap;
+    short unk11A;
+    int unk11C;
+    ubyte unk120;
+    ubyte unk121;
+    ubyte unk122;
+    ubyte unk123;
+} Core <bgcolor=cGreen>;

@@ -1,0 +1,365 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.2 Binary Template
+//
+//      File: Point.bt
+//   Authors: WarpZephyr
+//   Version: 1.1.5
+//   Purpose: Armored Core V Points.
+//  Category: Maps
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+enum <int> PointType
+{
+    PointTypeCapture = 0,              // Only ever named capture in ACVD, has no type data
+    PointTypeRoute = 1,                // Points referenced in the route param.
+    PointTypeAction = 50,              // Seems to reference trigger or action bounds
+    PointTypeOperationalArea = 100,    // An area the player can be in without failure
+    PointTypeWarningArea = 101,        // An area the player can be in with a warning
+    PointTypeNormalArea = 102,         // An area the player can be in without interruption
+    PointTypeSpawn = 200,              // A spawn point
+    PointTypeScrapCollection = 250,    // Scrap part collection points
+    PointTypeSave = 260,               // A save point?
+    PointTypeCollisionAvoidance = 270, // AI collision avoidance?   
+    PointTypeCommunicationArea = 280,  // An area for communication?
+    PointTypeWaterSurface = 400,       // Water surface change?
+    PointTypeSFX = 500,                // An SFX point?
+    PointTypeGen = 650,                // A generator?
+    PointTypeSubmersion = 850,         // AC submersion return start and end points?
+    PointTypeSound = 1000,             // A sound trigger volume?
+    PointTypeReverb = 1100,            // A sound reverb volume?
+    PointTypeLight = 1300,             // A light point?
+    PointTypeSpot = 1310,              // A spot?
+    PointTypeLanding = 2000,           // A landing?
+    PointTypeDebugNavigation = 3000,   // Debug navigation?
+    PointTypeLoadMeasurement = 3100,   // Load measurement?
+    PointTypeUnused = -1               // Unused points?
+};
+
+// PointType Structs
+//------------------------------------------------
+
+typedef struct
+{
+    int level;
+    ubyte unk04;
+    ubyte unk05;
+    Null null[26];
+} PointArea;
+
+typedef struct
+{
+    byte unk00;
+    byte unk01;
+    byte unk02;
+    byte unk03;
+} PointSpawn;
+
+typedef struct
+{
+    byte unk00;
+    byte unk01;
+    byte unk02;
+    byte unk03;
+} PointScrapCollection;
+
+typedef struct
+{
+    float unk00; // Water surface level?
+} PointWaterSurface;
+
+typedef struct
+{
+    int sfxID;
+} PointSFX;
+
+typedef struct
+{
+    int unk00; // A generator ID of some kind?
+} PointGen;
+
+typedef struct
+{
+    byte unk00;
+    byte unk01;
+    byte unk02;
+    byte unk03;
+    int soundID;
+} PointSound;
+
+typedef struct
+{
+    int unk00;
+} PointReverb;
+
+typedef struct
+{
+    byte unk00;
+    byte unk01;
+    byte unk02;
+    byte unk03;
+    float unk04;
+    float unk08;
+    float unk0C;
+    float unk10;
+    float unk14;
+    float unk18;
+    float unk1C;
+    float unk20;
+    float unk24;
+    float unk28;
+} PointLight;
+
+typedef struct
+{
+    byte unk00;
+    byte unk01;
+    byte unk02;
+    byte unk03;
+    float unk04;
+    float unk08;
+    float unk0C;
+    float unk10;
+    float unk14;
+    float unk18;
+    float unk1C;
+    float unk20;
+    float unk24;
+    float unk28;
+    float unk2C;
+    float unk30;
+    float unk34;
+    float unk38;
+} PointSpot;
+
+typedef struct
+{
+    byte unk00;
+    byte unk01;
+    byte unk02;
+    byte unk03;
+} PointLanding;
+
+// Sub Structs
+//------------------------------------------------
+
+typedef struct
+{
+    short unk00;
+    short unk02;
+} PointUnk1;
+
+typedef struct
+{
+    short unk00;
+    short unk02;
+} PointUnk2;
+
+typedef struct
+{
+    byte unk00;
+    byte unk01;
+    byte unk02;
+    byte unk03;
+} PointUnk3;
+
+typedef struct
+{
+    int unk00;
+    int unk04; // Remaining size? End offset?
+    int unk08;
+    int unk0C;
+} PointUnk4;
+
+// Main Struct
+//------------------------------------------------
+
+typedef struct
+{
+    local quad start = FTell();
+    
+    // Read Data
+    int nameOffset; Assert(nameOffset > 0);
+    int uniqueID;
+    PointType pointType;
+    int id;
+    ShapeType shapeType;
+    Vector3 position;
+    Vector3 rotation;
+    int offsetUnk1; Assert(offsetUnk1 > 0);
+    int offsetUnk2; Assert(offsetUnk2 > 0);
+    int pointID;
+    int shapeDataOffset;
+    int offsetArea;
+    int offsetSpawn;
+    int offset4C <hidden=true>; Assert(offset4C == 0);
+    int offsetWaterSurface;
+    int offsetSFX;
+    int offset58 <hidden=true>; Assert(offset58 == 0);
+    int offset5C <hidden=true>; Assert(offset5C == 0);
+    int offset60 <hidden=true>; Assert(offset60 == 0);
+    int offsetUnk3; Assert(offsetUnk3 > 0);
+    int offsetGen;
+    int offsetReverb;
+    int offsetUnk4; Assert(offsetUnk4 > 0);
+    int offset74 <hidden=true>; Assert(offset74 == 0);
+    int offset78 <hidden=true>; Assert(offset78 == 0);
+    int offsetScrapCollection;
+    int offsetSound;
+    int offsetLanding;
+
+    // Get Offset Structs
+    FSeek(start + nameOffset);
+    string name;
+    
+    FSeek(start + offsetUnk1);
+    PointUnk1 unk1;
+    
+    FSeek(start + offsetUnk2);
+    PointUnk2 unk2;
+
+    if (shapeDataOffset > 0)
+    {
+        Assert(shapeType != ShapeTypePoint);
+        FSeek(start + shapeDataOffset);
+        switch (shapeType)
+        {
+            case ShapeTypeCircle: ShapeCircle circle; break;
+            case ShapeTypeSphere: ShapeSphere sphere; break;
+            case ShapeTypeCylinder: ShapeCylinder cylinder; break;
+            case ShapeTypeRect: ShapeRect rect; break;
+            case ShapeTypeBox: ShapeBox box; break;
+            case ShapeTypeComposite: // Not known to be supported in ACV.
+            default: Assert(false);
+        }
+    }
+
+    if (offsetArea > 0)
+    {
+        Assert(pointType == PointTypeOperationalArea
+            || pointType == PointTypeWarningArea
+            || pointType == PointTypeNormalArea);
+        FSeek(start + offsetArea);
+        PointArea area;
+    }
+
+    if (offsetSpawn > 0)
+    {
+        Assert(pointType == PointTypeSpawn);
+        FSeek(start + offsetSpawn);
+        PointSpawn spawn;
+    }
+
+    if (offsetWaterSurface > 0)
+    {
+        Assert(pointType == PointTypeWaterSurface);
+        FSeek(start + offsetWaterSurface);
+        PointWaterSurface waterSurface;
+    }
+
+    if (offsetSFX > 0)
+    {
+        Assert(pointType == PointTypeSFX);
+        FSeek(start + offsetSFX);
+        PointSFX sfx;
+    }
+
+    FSeek(start + offsetUnk3);
+    PointUnk3 unk3;
+
+    if (offsetGen > 0)
+    {
+        Assert(pointType == PointTypeGen);
+        FSeek(start + offsetGen);
+        PointGen gen;
+    }
+
+    if (offsetReverb > 0)
+    {
+        Assert(pointType == PointTypeReverb);
+        FSeek(start + offsetReverb);
+        PointReverb reverb;
+    }
+
+    FSeek(start + offsetUnk4);
+    PointUnk4 unk4;
+
+    if (offsetScrapCollection > 0)
+    {
+        Assert(pointType == PointTypeScrapCollection);
+        FSeek(start + offsetScrapCollection);
+        PointScrapCollection scrapCollection;
+    }
+
+    if (offsetSound > 0)
+    {
+        Assert(pointType == PointTypeSound);
+        FSeek(start + offsetSound);
+        PointSound sound;
+    }
+
+    if (offsetLanding > 0)
+    {
+        Assert(pointType == PointTypeLanding);
+        FSeek(start + offsetLanding);
+        PointLanding landing;
+    }
+} Point <read=ReadPoint>;
+
+string ReadPoint(Point& point)
+{
+    local string str;
+    local string shape;
+    local string type;
+    local string name = "";
+
+    switch (point.shapeType)
+    {
+        case ShapeTypeNone: shape = "NoShape"; break;
+        case ShapeTypePoint: shape = "Point"; break;
+        case ShapeTypeCircle: shape = "Circle"; break;
+        case ShapeTypeSphere: shape = "Sphere"; break;
+        case ShapeTypeCylinder: shape = "Cylinder"; break;
+        case ShapeTypeRect: shape = "Rect"; break;
+        case ShapeTypeBox: shape = "Box"; break;
+        case ShapeTypeComposite: shape = "Composite"; break;
+        default: shape = "UnknownShape";
+    }
+
+    switch (point.pointType)
+    {
+        case PointTypeCapture: type = "Capture"; break;
+        case PointTypeRoute: type = "Route"; break;
+        case PointTypeAction: type = "Action"; break;
+        case PointTypeOperationalArea: type = "OperationalArea"; break;
+        case PointTypeWarningArea: type = "WarningArea"; break;
+        case PointTypeNormalArea: type = "Area"; break;
+        case PointTypeSpawn: type = "Spawn"; break;
+        case PointTypeScrapCollection: type = "ScrapCollection"; break;
+        case PointTypeSave: type = "Save"; break;
+        case PointTypeCollisionAvoidance: type = "CollisionAvoidance"; break;
+        case PointTypeCommunicationArea: type = "CommunicationArea"; break;
+        case PointTypeWaterSurface: type = "WaterSurface"; break;
+        case PointTypeSFX: type = "SFX"; break;
+        case PointTypeGen: type = "Gen"; break;
+        case PointTypeSubmersion: type = "Submersion"; break;
+        case PointTypeSound: type = "Sound"; break;
+        case PointTypeReverb: type = "Reverb"; break;
+        case PointTypeLight: type = "Light"; break;
+        case PointTypeSpot: type = "Spot"; break;
+        case PointTypeLanding: type = "Landing"; break;
+        case PointTypeDebugNavigation: type = "DebugNavigation"; break;
+        case PointTypeLoadMeasurement: type = "LoadMeasurement"; break;
+        case PointTypeUnused: type = "Unused"; break;
+        default: type = "UnknownType";
+    }
+
+    if (point.name != name)
+    {
+        name = " | " + point.name;
+    }
+    
+    return SPrintf(str, "ID: %d | %s | %s%s", point.id, shape, type, name);
+}
