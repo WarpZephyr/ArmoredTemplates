@@ -1,0 +1,27 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.2 Binary Template
+//
+//      File: TNAM
+//   Authors: WarpZephyr
+//   Version: 1.0.0
+//   Purpose: MenuResource texture names, containing only names.
+//  Category: Dantelion
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+typedef struct
+{
+    int nameOffset <format=hex, hidden=true>;
+    
+    local quad pos <hidden=true> = FTell();
+    FSeek(offsetsStr + nameOffset);
+    string name;
+    FSeek(pos);
+} TNAMEntry <read=ReadTNAMEntry, optimize=false>;
+
+string ReadTNAMEntry(TNAMEntry& entry)
+{
+    return entry.name;
+}

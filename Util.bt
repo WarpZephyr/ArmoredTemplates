@@ -2,32 +2,56 @@
 //--- 010 Editor v9.0.1 Binary Template
 //
 //      File: Util.bt
-//   Authors: TKGP
-//   Version: 
-//   Purpose: Utility types and functions for SoulsTemplates
+//   Authors: WarpZephyr
+//   Version: 1.0.1
+//   Purpose: Utility types and functions for ArmoredTemplates
 //  Category: 
 // File Mask: 
 //  ID Bytes: 
 //   History: 
 //------------------------------------------------
 
-#ifndef _SOULSTEMPLATES_UTIL
-    #define _SOULSTEMPLATES_UTIL
+#ifndef _ARMOREDTEMPLATES_UTIL
+#define _ARMOREDTEMPLATES_UTIL
 
-void Align(int align) {
-    if (FTell() % align > 0) {
+typedef struct
+{
+    ubyte null; Assert(null == 0);
+} NullC <bgcolor=cBlack, optimize=false>;
+
+typedef struct
+{
+    ubyte null; Assert(null == 0);
+} Null <optimize=false>;
+
+quad GetAlign(quad position, quad align)
+{
+    return align - (position % align);
+}
+
+quad GetAlignPosition(quad position, quad align)
+{
+    return position + GetAlign(position, align);
+}
+
+void Align(int align)
+{
+    if (FTell() % align > 0)
+    {
         FSkip(align - (FTell() % align));
     }
 }
 
-void AlignRelative(int base, int align) {
+void AlignRelative(int base, int align)
+{
     local int offset = (FTell() - base) % align;
     if (offset) {
         FSkip(align - offset);
     }
 }
 
-ubyte ReverseBits(ubyte value) {
+ubyte ReverseBits(ubyte value)
+{
     return
         ((value & 0b00000001) << 7) |
         ((value & 0b00000010) << 5) |
@@ -39,72 +63,109 @@ ubyte ReverseBits(ubyte value) {
         ((value & 0b10000000) >> 7);
 }
 
-typedef struct {
+typedef struct
+{
+    ubyte red;
+    ubyte green;
+    ubyte blue;
+} ColorRGB <bgcolor=cLtGreen, read=ReadColorRGB>;
+
+string ReadColorRGB(ColorRGB& color)
+{
+    return Str("<%d,%d,%d>", color.red, color.green, color.blue);
+}
+
+typedef struct
+{
+    ubyte red;
+    ubyte green;
+    ubyte blue;
+    ubyte alpha;
+} ColorRGBA <read=ReadColorRGBA>;
+
+string ReadColorRGBA(ColorRGBA& color)
+{
+    return Str("<%d,%d,%d,%d>", color.red, color.green, color.blue, color.alpha);
+}
+
+ubyte ColorEmptyRGBA(ColorRGBA& color)
+{
+    if (color.Red == 0
+    && color.Green == 0
+    && color.Blue == 0
+    && color.Alpha == 0)
+    {
+        return 1;
+    }
+
+    return 0;
+}
+
+typedef struct
+{
     float x;
     float y;
 } Vector2 <read=ReadVector2>;
 
-string ReadVector2(Vector2& vec) {
-    string str;
-    SPrintf(str, "<%7.2f, %7.2f>", vec.x, vec.y);
-    return str;
+string ReadVector2(Vector2& vec)
+{
+    return Str("<%7.2f, %7.2f>", vec.x, vec.y);
 }
 
-string ReadVector2Fmt(Vector2& vec, int width, int precision) {
-    string fmt;
+string ReadVector2Fmt(Vector2& vec, int width, int precision)
+{
+    local string fmt <hidden=true>;
     SPrintf(fmt, "<%%%d.%df, %%%d.%df>",
         width, precision, width, precision);
     
-    string str;
-    return SPrintf(str, fmt, vec.x, vec.y);
+    return Str(fmt, vec.x, vec.y);
 }
 
-
-typedef struct {
+typedef struct
+{
     float x;
     float y;
     float z;
 } Vector3 <read=ReadVector3>;
 
-string ReadVector3(Vector3& vec) {
-    string str;
-    SPrintf(str, "<%7.2f, %7.2f, %7.2f>", vec.x, vec.y, vec.z);
-    return str;
+string ReadVector3(Vector3& vec)
+{
+    return Str("<%7.2f, %7.2f, %7.2f>", vec.x, vec.y, vec.z);
 }
 
-string ReadVector3Fmt(Vector3& vec, int width, int precision) {
-    string fmt;
+string ReadVector3Fmt(Vector3& vec, int width, int precision)
+{
+    local string fmt <hidden=true>;
     SPrintf(fmt, "<%%%d.%df, %%%d.%df, %%%d.%df>",
         width, precision, width, precision, width, precision);
     
-    string str;
-    return SPrintf(str, fmt, vec.x, vec.y, vec.z);
+    return Str(fmt, vec.x, vec.y, vec.z);
 }
 
-typedef struct {
+typedef struct
+{
     float x;
     float y;
     float z;
     float w;
 } Vector4 <read=ReadVector4>;
 
-string ReadVector4(Vector4& vec) {
-    string str;
-    SPrintf(str, "<%7.2f, %7.2f, %7.2f, %7.2f>", vec.x, vec.y, vec.z, vec.w);
-    return str;
+string ReadVector4(Vector4& vec)
+{
+    return Str("<%7.2f, %7.2f, %7.2f, %7.2f>", vec.x, vec.y, vec.z, vec.w);
 }
 
-string ReadVector4Fmt(Vector4& vec, int width, int precision) {
-    string fmt;
+string ReadVector4Fmt(Vector4& vec, int width, int precision)
+{
+    local string fmt <hidden=true>;
     SPrintf(fmt, "<%%%d.%df, %%%d.%df, %%%d.%df, %%%d.%df>",
         width, precision, width, precision, width, precision, width, precision);
     
-    string str;
-    return SPrintf(str, fmt, vec.x, vec.y, vec.z, vec.w);
+    return Str(fmt, vec.x, vec.y, vec.z, vec.w);
 }
 
-
-typedef struct (int longOffset, int unicode) {
+typedef struct (int longOffset, int unicode)
+{
     if (longOffset)
         quad offset <format=hex>;
     else
@@ -119,66 +180,141 @@ typedef struct (int longOffset, int unicode) {
     FSeek(pos);
 } OffsetString <read=ReadOffsetString>;
 
-wstring ReadOffsetString(OffsetString& os) {
+wstring ReadOffsetString(OffsetString& os)
+{
     return os.str;
 }
 
-typedef struct {
+typedef struct
+{
     string str;
 } WrappedString <read=ReadWrappedString>;
 
-string ReadWrappedString(WrappedString& ws) {
+string ReadWrappedString(WrappedString& ws)
+{
     return ws.str;
 }
 
-typedef struct {
+typedef struct
+{
     wstring str;
 } WrappedWString <read=ReadWrappedWString>;
 
-string ReadWrappedWString(WrappedWString& wws) {
+string ReadWrappedWString(WrappedWString& wws)
+{
     return wws.str;
 }
 
-
-typedef struct {
+typedef struct
+{
     if (VARINT_LONG)
         quad val;
     else
         int val;
 } Varint <read=ReadVarint>;
 
-string ReadVarint(Varint& v) {
-    string s;
-    SPrintf(s, "%Xh | %d", v.val, v.val);
-    return s;
+string ReadVarint(Varint& v)
+{
+    return Str("%Xh | %d", v.val, v.val);
 }
 
-int FourCCToInt(string fourCC) {
+int FourCCToInt(string fourCC)
+{
     return fourCC[0] | ((int)fourCC[1] << 8) | ((int)fourCC[2] << 16) | ((int)fourCC[3] << 24);
 }
 
-string IntToFourCC(int value) {
-    string str;
-    return SPrintf(str, "%c%c%c%c",
+string IntToFourCC(int value)
+{
+    return Str("%c%c%c%c",
         value & 0xff, value >> 8 & 0xff, value >> 16 & 0xff, value >> 24 & 0xff);
 }
 
-int64 EightCCToInt64(string eightCC) {
+int64 EightCCToInt64(string eightCC)
+{
     return eightCC[0] | ((int64)eightCC[1] << 8) | ((int64)eightCC[2] << 16) | ((int64)eightCC[3] << 24)
     | ((int64)eightCC[4] << 32) | ((int64)eightCC[5] << 40) | ((int64)eightCC[6] << 48) | ((int64)eightCC[7] << 56);
 }
 
-string Int64ToEightCC(int64 value) {
-    string str;
-    return SPrintf(str, "%c%c%c%c%c%c%c%c",
+string Int64ToEightCC(int64 value)
+{
+    return Str("%c%c%c%c%c%c%c%c",
         value & 0xff, value >> 8 & 0xff, value >> 16 & 0xff, value >> 24 & 0xff,
         value >> 32 & 0xff, value >> 40 & 0xff, value >> 48 & 0xff, value >> 56 & 0xff);
 }
 
-string FormatColor(ubyte color[]) {
-    string str;
-    return SPrintf(str, "[%3i,%3i,%3i,%3i]",
-        color[0], color[1], color[2], color[3]);
+string FormatColor3(ubyte color[])
+{
+    return Str("<%3d,%3d,%3d>", color[0], color[1], color[2]);
+}
+
+string FormatColor4(ubyte color[])
+{
+    return Str("<%3d,%3d,%3d,%3d>", color[0], color[1], color[2], color[3]);
+}
+
+// Get the index a char appears at in a string of the specified length, or -1 if it never does.
+int GetCharIndexFixed(string str, char c, int len)
+{
+    local int i <hidden=true> = 0;
+    for (i; i < len; i++)
+    {
+        if (str[i] == c)
+        {
+            return i;
+        }
+    }
+
+    return -1;
+}
+
+// Get the index a char appears at in a string, or -1 if it never does.
+// Uses Strlen to get the length of the string.
+int GetCharIndex(string str, char c)
+{
+    return GetCharIndexFixed(str, c, Strlen(str));
+}
+
+// Remove all trailing zeros in a decimal that don't need to be there.
+string TrimDecimalZeros(string str)
+{
+    // Get string length
+    local int len <hidden=true> = Strlen(str);
+
+    // Get the index of the dot char and return if it isn't found.
+    local int dotIndex <hidden=true> = GetCharIndexFixed(str, '.', len);
+    if (dotIndex == -1)
+    {
+        return str;
+    }
+    
+    // Calculate indexes
+    // The first decimal number index is the num after the decimal
+    // i is the current index going backwards
+    // eI is the end index, or where we will set null
+    local int firstDecIndex <hidden=true> = dotIndex + 1;
+    local int i <hidden=true> = len - 1;
+    local int eI <hidden=true> = len;
+    
+    // Loop through the string backwards until the first decimal number index,
+    // Break if a value is not the 0 char
+    // Subtract from the end index otherwise
+    for (i; i > firstDecIndex; i--)
+    {
+        if (str[i] != '0')
+        {
+            break;
+        }
+    
+        eI--;
+    }
+
+    // If the end index changed at all set it to null to set the new string length
+    if (eI < len)
+    {
+        str[eI] = 0;
+    }
+
+    return str;
 }
 
 #endif

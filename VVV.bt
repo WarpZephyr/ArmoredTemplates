@@ -1,0 +1,74 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.2 Binary Template
+//
+//      File: VVV.bt
+//   Authors: WarpZephyr
+//   Version: 1.0.0
+//   Purpose: Armored Core 2 Another Age VVV audio archives.
+//  Category: Archive
+// File Mask: *.VVV
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+BigEndian();
+local int ALIGNMENT = 0x800;
+
+//------------------------------------------------
+
+void Align(int alignment)
+{
+    local quad pos = FTell();
+    local quad remainder = pos % alignment;
+    if (remainder > 0)
+    {
+        FSkip(alignment - remainder);
+    }
+}
+
+//------------------------------------------------
+
+typedef struct
+{
+    char magic[4]; Assert(magic == "VAGp");
+    uint version;
+    uint unk08 <hidden=true>; Assert(unk08 == 0);
+    uint waveformDataSize;
+    uint sampleRate;
+    uint unk14 <hidden=true>; Assert(unk14 == 0);
+    uint unk18 <hidden=true>; Assert(unk18 == 0);
+    ushort unk1C <hidden=true>; Assert(unk1C == 0);
+    ubyte channelCount;
+    ubyte unk1F <hidden=true>; Assert(unk1F == 0);
+    char trackName[0x10];
+    uint unk30 <hidden=true>; Assert(unk30 == 0);
+    uint unk34 <hidden=true>; Assert(unk34 == 0);
+    uint unk38 <hidden=true>; Assert(unk38 == 0);
+    uint unk3C <hidden=true>; Assert(unk3C == 0);
+    ubyte data[waveformDataSize];
+} VAGp <bgcolor=cLtGreen, read=ReadVAGp, optimize=false>;
+
+string ReadVAGp(VAGp& sound)
+{
+    return sound.trackName;
+}
+
+//------------------------------------------------
+
+struct 
+{
+    while (!FEof())
+    {
+        // I don't like having to do this but I can't see any other way.
+        while (!FEof() && ReadString(FTell(), 4) != "VAGp")
+        {
+            Align(ALIGNMENT);
+            FSkip(ALIGNMENT);
+        }
+        
+        if (!FEof())
+        {
+            VAGp file;
+        }
+    }
+} Files;

@@ -3,15 +3,14 @@
 //
 //      File: T.bt
 //   Authors: WarpZephyr
-//   Version: 
+//   Version: 1.1.0
 //   Purpose: Armored Core T archive files
-//  Category: 
-// File Mask: 
+//  Category: Archive
+// File Mask: *.T
 //  ID Bytes: 
 //   History: 
 //------------------------------------------------
 
-#include "../Util.bt"
 LittleEndian();
 #define BLOCK_SIZE 0x800
 
@@ -19,43 +18,42 @@ LittleEndian();
 
 typedef struct
 {
-    short fileCount;
-    short unk04;
+    short file_num;
+    short start_block; // Guess
 } Header <bgcolor=cLtRed, optimize=false>;
 
-typedef struct
+typedef struct (short previous_block)
 {
-    ushort block_count;
-} FileEntry <bgcolor=cLtGreen, read=ReadFileEntry>;
+    short next_block;
 
-string ReadFileEntry(FileEntry& entry)
+    local int block_count <hidden=true> = next_block - previous_block;
+    
+    if (block_count > 0)
+    {
+        // Seek to and get file, then seek back to the next header.
+        local quad next_header_offset <hidden=true> = FTell();
+        FSeek(previous_block * BLOCK_SIZE);
+        ubyte data[block_count * BLOCK_SIZE];
+        FSeek(next_header_offset);
+    }
+} File <bgcolor=cLtGreen, read=ReadFile>;
+
+string ReadFile(File& file)
 {
-    local string str;
-    return SPrintf(str, "%d", entry.block_count);
+    return Str("%d | %d", file.next_block, file.block_count);
 }
-
-typedef struct (int length)
-{
-    ubyte data[length];
-} File <bgcolor=cAqua>;
 
 //------------------------------------------------
 
 Header header;
-FileEntry entries[header.fileCount];
-Align(BLOCK_SIZE);
 
 struct
 {
-    local int i = 0;
-    local int length = 0;
-    for (i = 0; i < header.fileCount; i++)
+    local short previous_block <hidden=true> = header.start_block;
+    local int i <hidden=true>;    
+    for (i = 0; i < header.file_num; i++)
     {
-        length = (entries[i].block_count * BLOCK_SIZE) - FTell();
-
-        Printf("%i\n", length);
-
-        if (length > 0)
-            File file(length);
+        File file(previous_block);
+        previous_block = file.next_block;
     }
 } Files;

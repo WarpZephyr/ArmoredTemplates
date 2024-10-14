@@ -16,11 +16,23 @@ BigEndian();
 //------------------------------------------------
 
 // Only present on FPO files
+// MicroCoding patching of some kind?
 typedef struct
 {
-    int unk00;
-    int unk04;
-} UnkHeaderEntry;
+    // An index of some kind?
+    // Usually increasing one-by-one, but not always.
+    int index;
+
+    // Appears to be an offset into microCode starting from start of the file?
+    // Usually decreasing (with a minimum of 32 between them?), but not always.
+    int microCodeOffset; 
+} UnkHeaderEntry <read=ReadUnkHeaderEntry>;
+
+string ReadUnkHeaderEntry(UnkHeaderEntry& entry)
+{
+    local string str;
+    return SPrintf(str, "%d | %d", entry.index, entry.microCodeOffset);
+}
 
 typedef struct
 {

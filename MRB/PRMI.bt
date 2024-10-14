@@ -1,0 +1,27 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.2 Binary Template
+//
+//      File: FSPR.bt
+//   Authors: WarpZephyr
+//   Version: 1.0.0
+//   Purpose: MenuResource PRMI.
+//  Category: Dantelion
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+typedef struct
+{
+    // Button IDs of some kind?
+    // They usually match up nicely with FMG IDs in stuff like linehelp.fmg.
+    int unk00;
+    int unk04;
+    int unk08;
+    int unk0C;
+} PRMIEntry <read=ReadPRMIEntry, optimize=false>;
+
+string ReadPRMIEntry(PRMIEntry& entry)
+{
+    return Str("%d | %d | %d | %d", entry.unk00, entry.unk04, entry.unk08, entry.unk0C);
+}

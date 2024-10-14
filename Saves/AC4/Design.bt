@@ -1,0 +1,187 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.2 Binary Template
+//
+//      File: Design.bt
+//   Authors: WarpZephyr
+//   Version: 1.1.1
+//   Purpose: Armored Core 4 design structures.
+//  Category: Saves
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+#define _ACCOLORSET_NO_CALL
+
+#ifndef _DESIGN_ENCODING_AUTO
+#define _DESIGN_ENCODING_AUTO
+
+// Auto detect based on file size
+// 7,856 means 2 byte encoding is being used (US)
+// 7,760 means 1 byte encoding is being used (JP)
+local ubyte _DESIGN_ENCODING_WIDE <hidden=true> = 0;
+local quad _DESDOC_FILE_SIZE <hidden=true> = FileSize();
+if (_DESDOC_FILE_SIZE == 7856)
+{
+    _DESIGN_ENCODING_WIDE = 1;
+}
+
+#endif
+
+#include "Util.bt"
+#include "AcColorSet.bt"
+#include "Emblem.bt"
+
+//------------------------------------------------
+
+typedef struct
+{
+    ushort head;
+    ushort core;
+    ushort arms;
+    ushort legs;
+    ushort fcs;
+    ushort generator;
+    ushort main_booster;
+    ushort back_booster;
+    ushort side_booster;
+    ushort overed_booster;
+    ushort right_arm_unit;
+    ushort left_arm_unit;
+    ushort right_back_unit;
+    ushort left_back_unit;
+    ushort shoulder_unit;
+    ushort right_hangar_Unit;
+    ushort left_hangar_Unit;
+    ushort head_top_stabilizer;
+    ushort head_right_stabilizer;
+    ushort head_left_stabilizer;
+    ushort core_upper_right_stabilizer;
+    ushort core_upper_left_stabilzier;
+    ushort core_lower_right_stabilizer;
+    ushort core_lower_left_stabilizer;
+    ushort arm_right_stabilizer;
+    ushort arm_left_stabilizer;
+    ushort legs_back_stabilizer;
+    ushort legs_upper_right_stabilizer;
+    ushort legs_upper_left_stabilizer;
+    ushort legs_upper_right_back_stabilizer;
+    ushort legs_upper_left_back_stabilizer;
+    ushort legs_middle_right_stabilizer;
+    ushort legs_middle_left_stabilizer;
+    ushort legs_middle_right_back_stabilizer;
+    ushort legs_middle_left_back_stabilizer;
+    ushort legs_lower_right_stabilizer;
+    ushort legs_lower_left_stabilizer;
+    ushort legs_lower_right_back_stabilizer;
+    ushort legs_lower_left_back_stabilizer;
+} Parts <bgcolor=cLtGreen>;
+
+typedef struct
+{
+    ubyte en_output;
+    ubyte en_capacity;
+    ubyte kp_ouput;
+    ubyte load;
+    ubyte en_weapon_skill;
+    ubyte maneuverability;
+    ubyte firing_stability;
+    ubyte aim_precision;
+    ubyte lock_speed;
+    ubyte missile_lock_speed;
+    ubyte radar_refresh_rate;
+    ubyte ecm_resistance;
+    ubyte rectification_head;
+    ubyte rectification_core;
+    ubyte rectification_arm;
+    ubyte rectification_leg;
+    ubyte horizontal_thrust_main;
+    ubyte vertical_thrust;
+    ubyte horizontal_thrust_side;
+    ubyte Horizontal_thrust_back;
+    ubyte quick_boost_main;
+    ubyte quick_boost_side;
+    ubyte quick_boost_back;
+    ubyte boost_overed;
+    ubyte mobility;
+    ubyte braking_ability;
+    ubyte turning_ability;
+    ubyte jumping_ability;
+    ubyte stability_head;
+    ubyte stability_impact;
+    ubyte stability_landing;
+    ubyte stability_firing;
+} Tuning <bgcolor=cYellow>;
+
+typedef struct
+{
+    Emblem image;
+    ubyte width;
+    ubyte height;
+    ubyte unk86;
+    ubyte unk87;
+    Vector3 rotation;
+    Vector3 position;
+    float scale;
+} DecalLayer <bgcolor=cBlue, optimize=false>;
+
+typedef struct
+{
+    DecalLayer layers[8];
+} Decal <bgcolor=cBlue>;
+
+typedef struct
+{
+    Decal head;
+    Decal core;
+    Decal arm_right;
+    Decal arm_left;
+    Decal legs;
+} Decals;
+
+typedef struct
+{
+    if (exists(_DESIGN_ENCODING_WIDE) && _DESIGN_ENCODING_WIDE == 0)
+    {
+        char design_name[48];
+        char designer_name[48];
+    }
+    else
+    {
+        wchar_t design_name[48];
+        wchar_t designer_name[48];
+    }
+
+    Parts parts;
+    Tuning tuning;
+    ushort unk12C;
+    AcColorSet colors;
+    Decals decals;
+    Emblem emblem;
+    ubyte protect : 1;
+    ubyte category : 7;
+    ubyte unk1EAD;
+    ubyte unk1EAE;
+    ubyte unk1EAF;
+} Design <bgcolor=cLtGreen, read=ReadDesign, optimize=false>;
+
+wstring ReadDesign(Design& design)
+{
+    if (exists(_DESIGN_ENCODING_WIDE) && _DESIGN_ENCODING_WIDE == 0)
+    {
+        return StringToWString(design.design_name);
+    }
+    else
+    {
+        return design.design_name;
+    }
+}
+
+//------------------------------------------------
+
+// For design files like ACDES
+// define _DESIGN_NO_CALL to prevent calling while using in DESDOC saves
+#ifndef _DESIGN_NO_CALL
+BigEndian();
+Design design;
+#endif

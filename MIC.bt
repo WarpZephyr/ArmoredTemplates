@@ -1,0 +1,69 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.2 Binary Template
+//
+//      File: MIC.bt
+//   Authors: WarpZephyr
+//   Version: 1.0.0
+//   Purpose: ACLR PSP MIC files
+//  Category: Games
+// File Mask: *.mic
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+LittleEndian();
+
+//------------------------------------------------
+
+typedef struct
+{
+    int fileSize;
+    int count;
+    int vectorsOffset;
+    int unk0C;
+} Header <bgcolor=cLtRed>;
+
+typedef struct
+{
+    int unk00;
+    int unk04;
+    int unk08;
+    int unk0C;
+    int unk10;
+    int unk14;
+    int unk18;
+    int unk1C;
+    ubyte bytes[64];
+} SubUnk80 <bgcolor=cLtYellow, optimize=false>;
+
+typedef struct
+{
+    local quad start <hidden=true> = FTell();
+    int size;
+    ubyte unk04;
+    ubyte unk05;
+    ubyte unk06;
+    ubyte unk07;
+    int count;
+    int unk0C;
+    SubUnk80 subUnk80s[count];
+    Assert(size == (FTell() - start));
+} Unk80 <bgcolor=cLtGreen, optimize=false>;
+
+//------------------------------------------------
+
+Header header;
+
+struct
+{
+    local quad next <hidden=true>;
+    local int i <hidden=true> = 0;
+    for (i; i < header.count; i++)
+    {
+        int offset <hidden=true>;
+        next = FTell();
+        FSeek(offset);
+        Unk80 unk80s;
+        FSeek(next);
+    }
+} Unk80s <bgcolor=cLtGreen>;

@@ -1,0 +1,46 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.1 Binary Template
+//
+//      File: Colors.bt
+//   Authors: WarpZephyr
+//   Version: 
+//   Purpose: Color helper functions and structs.
+//  Category: 
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+#ifndef _ARMORED_TEMPLATES_COLORS
+#define _ARMORED_TEMPLATES_COLORS
+#include "..\..\Util.bt"
+
+typedef struct
+{
+    ColorRGBA Main;
+    ColorRGBA Sub1;
+    ColorRGBA Hidden_Support;
+    ColorRGBA Sub2;
+    ColorRGBA Hidden_Joint;
+    ColorRGBA Glow;
+} ColorSet <bgcolor=cLtGreen, read=ReadColorSet>;
+
+string FormatColorSetColor(byte index, ColorRGBA& color)
+{
+    local string str;
+    return SPrintf(str, "%d: %d/%d/%d/%d", index, color.red, color.green, color.blue, color.alpha);
+}
+
+string ReadColorSet(ColorSet& colorset)
+{
+    string str;
+    return SPrintf(str, "%s %s %s %s %s %s", 
+            FormatColorSetColor(1, colorset.Main),
+            FormatColorSetColor(2, colorset.Sub1),
+            FormatColorSetColor(3, colorset.Hidden_Support),
+            FormatColorSetColor(4, colorset.Sub2),
+            FormatColorSetColor(5, colorset.Hidden_Joint),
+            FormatColorSetColor(6, colorset.Glow));
+}
+
+#endif

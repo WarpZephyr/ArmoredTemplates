@@ -1,0 +1,22 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.2 Binary Template
+//
+//      File: STR.bt
+//   Authors: WarpZephyr
+//   Version: 1.0.0
+//   Purpose: MenuResource strings.
+//  Category: Dantelion
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+typedef struct
+{
+    string str;
+} STREntry <read=ReadSTREntry, optimize=false>;
+
+string ReadSTREntry(STREntry& entry)
+{
+    return entry.str;
+}

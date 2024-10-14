@@ -36,13 +36,14 @@ typedef uint64 bool64;
 typedef int64 sbool64;
 typedef double fbool64;
 
-enum <ubyte> FiringMode
+
+enum <ubyte> FiringMode // prog
 {
-    Automatic = 0,
-    Single = 1,
-    Cannon = 2,
-    LaserBlade = 4,
-    PileBlade = 5
+    Automatic = 0,      // GUN
+    Single = 1,         // MIS
+    Cannon = 2,         // CAN
+    LaserBlade = 4,     // BLD
+    PileBlade = 5       // PILE
 };
 
 enum <ubyte> DisplayType
@@ -149,7 +150,7 @@ enum <ushort> WeaponSubCategoryIDType
 
 enum <ushort> BackSubCategoryIDType
 {
-    MISSLE = 0,
+    MISSILE = 0,
     HI_SPEED_MISSILE = 1,
     HI_ACT_MISSILE = 2,
     VERTICAL_MISSLE = 3,
@@ -424,7 +425,7 @@ void AssertWeaponSubCategoryIDType(WeaponSubCategoryIDType& type)
 
 void AssertBackSubCategoryIDType(BackSubCategoryIDType& type)
 {
-    Assert(type == MISSLE
+    Assert(type == MISSILE
         || type == HI_SPEED_MISSILE
         || type == HI_ACT_MISSILE
         || type == VERTICAL_MISSLE

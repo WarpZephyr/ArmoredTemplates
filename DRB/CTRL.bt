@@ -1,0 +1,257 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.1 Binary Template
+//
+//      File: CTRL.bt
+//   Authors: WarpZephyr
+//   Version: 1.0.1
+//   Purpose: DRB controls, indicates behavior.
+//  Category: Dantelion
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+typedef struct
+{
+    int unk00;
+} Static;
+
+typedef struct
+{
+    int sceneID;
+    short unk04;
+    byte unk06;
+    byte unk07;
+    int unk08;
+    int unk0C;
+    int unk10;
+    int unk14;
+    short unk16;
+    byte unk17;
+    byte unk18;
+} Button;
+
+typedef struct
+{
+    int unk00;
+} Cursor;
+
+typedef struct
+{
+    int unk00;
+    int unk04;
+    int unk08;
+} ListCtrl;
+
+typedef struct
+{
+    int unk00;
+    int unk04;
+    int unk08;
+    int unk0C;
+    int unk10;
+} GridCtrl;
+
+typedef struct
+{
+    int unk00;
+    short unk04;
+    short unk06;
+    int unk08;
+    int unk0C;
+    int unk10;
+    int unk14;
+    int unk18;
+    int unk22;
+    int unk26;
+} SliderCtrl;
+
+typedef struct
+{
+    int unk00;
+    short unk02;
+    short unk04;
+    int unk08;
+    int unk0C;
+    int unk10;
+    int unk14;
+} ComboBoxCtrl;
+
+typedef struct
+{
+    int unk00;
+    int unk04;
+    int unk08;
+    int unk0C;
+    int unk10;
+    int unk14;
+} ChildDialogCtrl;
+
+typedef struct
+{
+    int unk00 <hidden=true>; Assert(unk00 == 0);
+} LineHelpCtrl;
+
+typedef struct
+{
+    int unk00 <hidden=true>; Assert(unk00 == 0);
+} DmeCtrlScrollText;
+
+typedef struct
+{
+    // Always the same for all the ctrls in a group
+    int unk00;
+    // These 5 seem like indices, they're never above like 70
+    int unk04;
+    int unk08;
+    int unk0C;
+    int unk10;
+    int unk14;
+    int textID;
+} FrpgMenuDlgObjContentsHelpItem;
+
+typedef struct
+{
+    int unk00;
+    int unk04;
+    int unk08;
+    int unk0C;
+    int unk10;
+    int unk14;
+    byte unk18;
+    byte unk19; Assert(unk19 == 0);
+    short unk1A;
+} AnimButton;
+
+typedef struct
+{
+    int unk00;
+    int unk04;
+    int unk08;
+    int unk0C;
+    int unk10;
+    int unk14;
+    int unk18;
+    short unk1C;
+    short unk1E;
+    byte unk20; Assert(unk20 == 0 || unk20 == 1);
+    byte unk21; Assert(unk21 == 0);
+    short unk22;
+    short unk24; Assert(unk24 == 0);
+} VScrollTextArea;
+
+typedef struct
+{
+    int unk00; Assert(unk00 == 0);
+} SimpleAnimCtrl;
+
+typedef struct
+{
+    int unk00; Assert(unk00 == 0);
+    short unk02; Assert(unk02 == 1);
+    short unk04;
+    short unk06;
+    short unk08;
+    short unk0A;
+    short unk0C;
+} AnimPlayerObj;
+
+typedef struct
+{
+    short unk00;
+} AnimSoundCtrl;
+
+typedef struct
+{
+    int unk00;
+    int unk04;
+} ButtonHelpCtrl;
+
+//------------------------------------------------
+
+typedef struct
+{
+    int typeOffset <format=hex, hidden=true>;
+    int ctprOffset <format=hex, hidden=true>;
+    
+    local quad pos <hidden=true> = FTell();
+    FSeek(offsets.str + typeOffset);
+    wstring type;
+
+    FSeek(offsets.ctpr + ctprOffset);
+    switch (type)
+    {
+        case "Static":
+            Static control;
+            break;
+        case "Button":
+            Button control;
+            break;
+        case "Cursor":
+            Cursor control;
+            break;
+        case "ListCtrl":
+            ListCtrl control;
+            break;
+        case "GridCtrl":
+            GridCtrl control;
+            break;
+        case "SliderCtrl":
+            SliderCtrl control;
+            break;
+        case "ComboBoxCtrl":
+            ComboBoxCtrl control;
+            break;
+        case "ChildDialogCtrl":
+            ChildDialogCtrl control;
+            break;
+        case "LineHelpCtrl":
+            LineHelpCtrl control;
+            break;
+        case "DmeCtrlScrollText":
+            DmeCtrlScrollText control;
+            break;
+        case "FrpgMenuDlgObjContentsHelpItem":
+            FrpgMenuDlgObjContentsHelpItem control;
+            break;
+        case "AnimButton":
+            AnimButton control;
+            break;
+        case "VScrollTextArea":
+            VScrollTextArea control;
+            break;
+        case "SimpleAnimCtrl":
+            SimpleAnimCtrl control;
+            break;
+        case "AnimPlayerObj":
+            AnimPlayerObj control;
+            break;
+        case "AnimSoundCtrl":
+            AnimSoundCtrl control;
+            break;
+        case "ButtonHelpCtrl":
+            ButtonHelpCtrl control;
+            break;
+        default:
+            Assert(false);
+            break;
+    }
+
+    FSeek(pos);
+} CTRLEntry <read=ReadCTRLEntry, optimize=false>;
+
+wstring ReadCTRLEntry(CTRLEntry& entry)
+{
+    string str;
+    switch (entry.type)
+    {
+        case "FrpgMenuDlgObjContentsHelpItem":
+            SPrintf(str, "%s %2i %2i %2i %2i %2i %2i %6i", entry.type,
+                entry.control.unk00, entry.control.unk04, entry.control.unk08, entry.control.unk0C, entry.control.unk10, entry.control.unk14, entry.control.textID);
+            break;
+        default:
+            str = entry.type;
+            break;
+    }
+    return str;
+}

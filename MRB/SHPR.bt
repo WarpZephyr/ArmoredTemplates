@@ -1,0 +1,249 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.2 Binary Template
+//
+//      File: SHPR.bt
+//   Authors: WarpZephyr
+//   Version: 1.0.0
+//   Purpose: MenuResource shape data.
+//  Category: Dantelion
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+enum <byte> BLENDMODE
+{   
+    BLEND_NONE = -1, // I would assume?
+    BLEND_OPAQUE = 0,
+    BLEND_ALPHA = 1,
+    BLEND_ADD = 2,
+    BLEND_SUBTRACT = 3,
+    BLEND_UNK_4 = 4
+};
+
+enum <byte> ALIGNMENT
+{
+    TOP_LEFT = 0,
+    RIGHT = 1,
+    HCENTER = 2,
+    BOTTOM = 4,
+    VCENTER = 8,
+    UNK9 = 9
+};
+
+enum <byte> TEXTTYPE
+{
+    LITERAL = 0,
+    FMG = 1,
+    DYNAMIC = 2,
+    UNK3 = 3
+};
+
+typedef struct
+{
+    short leftEdge;
+    short topEdge;
+    short rightEdge;
+    short bottomEdge;
+} ShprNull;
+
+// Mono - Single Color
+typedef struct
+{
+    short leftEdge;
+    short topEdge;
+    short rightEdge;
+    short bottomEdge;
+    
+    if (VERSION == VER_ACFF_DIFF_MONORECT)
+    {
+        short unk08;
+        short unk0A;
+    }
+    
+    BLENDMODE blendMode; Assert(blendMode >= BLEND_OPAQUE && blendMode <= BLEND_UNK_4);
+    if (VERSION == VER_ACFF_DIFF_MONORECT)
+    {
+        byte unk0E;
+        byte unk0F;
+    }
+    else
+    {
+        byte unk09;
+        byte unk0A;
+    }
+    
+    byte thickness;
+    ubyte paletteColor[4];
+    ubyte customColor[4];
+} MonoRect;
+
+// Gouraud - Multi Color
+typedef struct
+{
+    short leftEdge;
+    short topEdge;
+    short rightEdge;
+    short bottomEdge;
+    BLENDMODE blendMode;
+    byte unk09;
+    byte unk0A;
+    byte thickness;
+    ubyte topLeftColor[4];
+    ubyte topRightColor[4];
+    ubyte bottomRightColor[4];
+    ubyte bottomLeftColor[4];
+} GouraudRect;
+
+// Mono - Single Color
+typedef struct
+{
+    short leftEdge;
+    short topEdge;
+    short rightEdge;
+    short bottomEdge;
+    BLENDMODE blendMode; Assert(blendMode >= BLEND_OPAQUE && blendMode <= BLEND_UNK_4);
+    byte unk09;
+    byte unk0A;
+    byte thickness;
+    ubyte paletteColor[4];
+    ubyte customColor[4];
+} MonoFrame;
+
+// Gouraud - Multi Color
+typedef struct
+{
+    short leftEdge;
+    short topEdge;
+    short rightEdge;
+    short bottomEdge;
+    byte blendMode;
+    byte unk09;
+    byte unk0A;
+    byte thickness;
+    ubyte topLeftColor[4];
+    ubyte topRightColor[4];
+    ubyte bottomRightColor[4];
+    ubyte bottomLeftColor[4];
+} GouraudFrame;
+
+// No Gouraud, so Mono Single Color
+typedef struct
+{
+    short leftEdge;
+    short topEdge;
+    short rightEdge;
+    short bottomEdge;
+    short texLeftEdge;
+    short texTopEdge;
+    short texRightEdge;
+    short texBottomEdge;
+    short textureIndex;
+    // 1-8 - confirmed nothing
+    //  10 - rotate 90 degrees clockwise
+    //  20 - rotate 180 degrees
+    //  40 - flip vertical
+    //  80 - flip horizontal
+    ubyte flags <format=hex>;
+    BLENDMODE blendMode; Assert(blendMode >= BLEND_OPAQUE && blendMode <= BLEND_UNK_4);
+
+    ubyte paletteColor[4];
+    ubyte customColor[4];
+} Sprite;
+
+typedef struct
+{
+    short leftEdge;
+    short topEdge;
+    short rightEdge;
+    short bottomEdge;
+    short texLeftEdge;
+    short texTopEdge;
+    short texRightEdge;
+    short texBottomEdge;
+    short textureIndex;
+
+    // May be wrong about these last two, could just be a -1 short.
+    // 1-8 - confirmed nothing
+    //  10 - rotate 90 degrees clockwise
+    //  20 - rotate 180 degrees
+    //  40 - flip vertical
+    //  80 - flip horizontal
+    ubyte flags <format=hex>;
+    BLENDMODE blendMode; Assert(blendMode >= BLEND_NONE && blendMode <= BLEND_UNK_4);
+} SimpleSprite;
+
+// Gouraud - Multi Color
+typedef struct
+{
+    short leftEdge;
+    short topEdge;
+    short rightEdge;
+    short bottomEdge;
+    short texLeftEdge;
+    short texTopEdge;
+    short texRightEdge;
+    short texBottomEdge;
+    short textureIndex;
+    // 1-8 - confirmed nothing
+    //  10 - rotate 90 degrees clockwise
+    //  20 - rotate 180 degrees
+    //  40 - flip vertical
+    //  80 - flip horizontal
+    ubyte flags <format=hex>;
+    BLENDMODE blendMode; Assert(blendMode >= BLEND_OPAQUE && blendMode <= BLEND_UNK_4);
+    
+    ubyte topLeftColor[4];
+    ubyte topRightColor[4];
+    ubyte bottomRightColor[4];
+    ubyte bottomLeftColor[4];
+} GouraudSprite;
+
+typedef struct
+{
+    float x;
+    float y;
+    float width;
+    float height;
+    int fsprIndex;
+    int unk14;
+    ubyte color[4];
+    int unk1C <hidden=true>; Assert(unk1C == 0);
+} FormSprite;
+
+typedef struct
+{
+    short leftEdge;
+    short topEdge;
+    short rightEdge;
+    short bottomEdge;
+    BLENDMODE blendMode; Assert(blendMode >= BLEND_OPAQUE && blendMode <= BLEND_SUBTRACT);
+    byte unk09;
+    short lineSpacing;
+    ubyte paletteColor[4];
+    if (VERSION == VER_ACLR)
+    {
+        ubyte customColor[4]; // Maybe?
+    }
+    short fontSize; // 0-?: different sizes of menu font
+    ALIGNMENT alignment; Assert(alignment >= 0 || alignment <= 9);
+    TEXTTYPE textType; Assert(textType >= 0 && textType <= 3);
+    int textOffset;
+    int unk18;
+    int unk1C;
+
+    switch (textType)
+    {
+        case LITERAL:
+            int unk20;
+            string text;
+            break;
+        case FMG:
+            int charLength;
+            int textID;
+            break;
+        case DYNAMIC:
+            int charLength;
+            break;
+    }
+} StaticText;

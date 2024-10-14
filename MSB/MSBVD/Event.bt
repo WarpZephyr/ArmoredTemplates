@@ -125,8 +125,7 @@ typedef struct
 
 typedef struct
 {
-    short unk00;
-    short unk02;
+    ColorRGBA skyColor;
     float globalDrawDistance;
     float unk08;
     float unk0C;
@@ -160,7 +159,7 @@ typedef struct
     short unk52;
     short unk54;
     short unk56;
-    float unk58;
+    float selfIllumination;
     float unk5C;
     Null null[416];
 } EventSceneUnk00;
@@ -215,7 +214,7 @@ typedef struct
     float unk5C;
     float unk60;
     Null null[28];
-} EventSceneUnk08;
+} EventSceneLighting;
 
 typedef struct
 {
@@ -346,14 +345,13 @@ typedef struct
     float unk10;
     float unk14;
     float unk18;
-    short unk1C;
-    short unk1E;
+    ubyte unk1C;
+    ubyte unk1D;
+    ubyte unk1E;
+    ubyte unk1F;
     float unk20;
     float unk24;
-    ubyte unk28;
-    ubyte unk29;
-    ubyte unk2A;
-    ubyte unk2B;
+    float unk28;
     float unk2C;
     float unk30;
     float unk34;
@@ -430,7 +428,8 @@ typedef struct
 
 typedef struct
 {
-    short unk00;
+    ubyte id;
+    ubyte unk01;
     short unk02;
     BloomPoint bloom_point_1;
     BloomPoint bloom_point_2;
@@ -492,7 +491,7 @@ typedef struct
     // Read Data
     int offset00;
     int offset04;
-    int offset08;
+    int offsetLighting;
     int offset0C;
     int offset10;
     int offset14;
@@ -509,8 +508,8 @@ typedef struct
     FSeek(start + offset04);
     EventSceneUnk04 eventSceneUnk04;
 
-    FSeek(start + offset08);
-    EventSceneUnk08 eventSceneUnk08;
+    FSeek(start + offsetLighting);
+    EventSceneLighting lighting;
 
     FSeek(start + offset0C);
     EventSceneUnk0C eventSceneUnk0C;

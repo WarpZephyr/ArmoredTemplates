@@ -1,0 +1,111 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.2 Binary Template
+//
+//      File: AcColorSet.bt
+//   Authors: WarpZephyr
+//   Version: 1.1.1
+//   Purpose: Armored Core 4 AcColorSet structures.
+//  Category: Saves
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+#include "Util.bt"
+#include "Color.bt"
+
+//------------------------------------------------
+
+typedef struct
+{
+    byte all;
+    byte all_frames;
+    byte all_units;
+    byte all_stabilizers;
+    byte head;
+    byte core;
+    byte arm_right;
+    byte arm_left;
+    byte legs;
+    byte arm_unit_right;
+    byte arm_unit_left;
+    byte back_unit_right;
+    byte back_unit_left;
+    byte shoulder_unit;
+    byte hanger_unit_right;
+    byte hanger_unit_left;
+    byte all_head_stabilizers;
+    byte all_core_stabilizers;
+    byte all_arm_stabilizers;
+    byte all_leg_stabilizers;
+    byte stbz_head_top;
+    byte stbz_head_right;
+    byte stbz_head_left;
+    byte stbz_core_upper_right;
+    byte stbz_core_upper_left;
+    byte stbz_core_lower_right;
+    byte stbz_core_lower_left;
+    byte stbz_arm_right;
+    byte stbz_arm_left;
+    byte stbz_legs_back;
+    byte stbz_legs_upper_right;
+    byte stbz_legs_upper_left;
+    byte stbz_legs_middle_right;
+    byte stbz_legs_middle_left;
+    byte stbz_legs_lower_right;
+    byte stbz_legs_lower_left;
+} Patterns <bgcolor=cGreen>;
+
+typedef struct
+{
+    ColorSet head;
+    ColorSet core;
+    ColorSet arm_right;
+    ColorSet arm_left;
+    ColorSet legs;
+    ColorSet arm_unit_right;
+    ColorSet arm_unit_left;
+    ColorSet back_unit_right;
+    ColorSet back_unit_left;
+    ColorSet shoulder_unit;
+    ColorSet hanger_unit_right;
+    ColorSet hanger_unit_left;
+    ColorSet stbz_head_top;
+    ColorSet stbz_head_right;
+    ColorSet stbz_head_left;
+    ColorSet stbz_core_upper_right;
+    ColorSet stbz_core_upper_left;
+    ColorSet stbz_core_lower_right;
+    ColorSet stbz_core_lower_left;
+    ColorSet stbz_arm_right;
+    ColorSet stbz_arm_left;
+    ColorSet stbz_legs_back;
+    ColorSet stbz_legs_upper_right;
+    ColorSet stbz_legs_upper_left;
+    ColorSet stbz_legs_upper_right_back;
+    ColorSet stbz_legs_upper_left_back;
+    ColorSet stbz_legs_middle_right;
+    ColorSet stbz_legs_middle_left;
+    ColorSet stbz_legs_middle_right_back;
+    ColorSet stbz_legs_middle_left_back;
+    ColorSet stbz_legs_lower_right;
+    ColorSet stbz_legs_lower_left;
+    ColorSet stbz_legs_lower_right_back;
+    ColorSet stbz_legs_lower_left_back;
+} ColorSets <bgcolor=cLtGreen>;
+
+typedef struct
+{
+    ColorSets colors;
+    Patterns patterns;
+    ColorRGBA EyeColor;
+} AcColorSet <bgcolor=cLtGreen>;
+
+//------------------------------------------------
+
+// For colorset files
+// define _ACCOLORSET_NO_CALL to prevent calling while using in design saves
+#ifndef _ACCOLORSET_NO_CALL
+BigEndian();
+AcColorSet accolorset;
+#endif

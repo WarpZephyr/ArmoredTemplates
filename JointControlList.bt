@@ -1,0 +1,103 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.2 Binary Template
+//
+//      File: JointControlList.bt
+//   Authors: WarpZephyr
+//   Version: 1.0.0
+//   Purpose: Armored Core Verdict Day Joint Control Lists.
+//  Category: Models
+// File Mask: *jcondata.bin
+//  ID Bytes: 00 00 00 00
+//   History: 
+//------------------------------------------------
+
+BigEndian();
+local int OBJECTS_OFFSET = 0;
+
+//------------------------------------------------
+
+typedef struct
+{
+    int nameOffset;
+    int axisYOffset;
+    int unk08;
+    float lockAng;
+    float limitRotAngVelX;
+    float limitRotAngVelY;
+    float reactAng;
+    float traceAng;
+    float reactDelay;
+    float reactTime;
+    float lockMinX;
+    float lockMaxX;
+    float lockMinY;
+    float lockMaxY;
+    float lockMinZ;
+    float lockMaxZ;
+
+    local quad end <hidden=true> = FTell();
+    FSeek(header.stringsOffset + nameOffset);
+    string name;
+    
+    FSeek(header.stringsOffset + axisYOffset);
+    string axisY;
+
+    FSeek(end);
+} Object <bgcolor=cLtYellow, read=ReadObject, optimize=false>;
+
+string ReadObject(Object& object)
+{
+    local string str <hidden=true>;
+    
+    if (object.name != "")
+    {
+        str = object.name;
+    }
+
+    if (object.axisY != "")
+    {
+        if (str != "")
+        {
+            str += " | ";
+        }
+
+        str += object.axisY;
+    }
+
+    return str;
+}
+
+typedef struct
+{
+    int stringsOffset;
+    int objectCount;
+    int objectsOffset;
+
+    local quad end <hidden=true> = FTell();
+    FSeek(header.stringsOffset + stringsOffset);
+    string name;
+
+    FSeek(OBJECTS_OFFSET + objectsOffset);
+    Object objects[objectCount];
+    FSeek(end);
+} JointControl <bgcolor=cLtGreen, read=ReadJointControl, optimize=false>;
+
+string ReadJointControl(JointControl& control)
+{
+    return control.name;
+}
+
+typedef struct
+{
+    int unk00;
+    int jointControlCount;
+    int unk08; // JointControls offset?
+    int stringsOffset;
+    
+    OBJECTS_OFFSET = 16 + ((jointControlCount * 3) * 4);
+} Header <bgcolor=cLtRed>;
+
+//------------------------------------------------
+
+Header header;
+JointControl jointControls[header.jointControlCount];

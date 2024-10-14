@@ -11,6 +11,7 @@
 //   History: 
 //------------------------------------------------
 
+#include "Util.bt"
 BigEndian();
 
 //------------------------------------------------
@@ -29,13 +30,6 @@ typedef struct
     int unk18;
     int unk1C;
 } Header <bgcolor=cLtRed>;
-
-typedef struct
-{
-    float x;
-    float y;
-    float z;
-} Vector3;
 
 typedef struct
 {

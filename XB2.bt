@@ -1,0 +1,65 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.2 Binary Template
+//
+//      File: XB2.bt
+//   Authors: WarpZephyr
+//   Version: 1.0.0
+//   Purpose: Murakumo: Renegade Mech Pursuit models.
+//  Category: Model
+// File Mask: 
+//  ID Bytes: 58 42 32 00
+//   History: 
+//------------------------------------------------
+
+LittleEndian();
+
+//------------------------------------------------
+
+typedef struct
+{
+    float x;
+    float y;
+    float z;
+    float w;
+} Vector4 <read=ReadVector4>;
+
+string ReadVector4(Vector4& vec)
+{
+    return Str("<%7.2f, %7.2f, %7.2f, %7.2f>", vec.x, vec.y, vec.z, vec.w);
+}
+
+//------------------------------------------------
+
+typedef struct
+{
+    char magic[4]; Assert(magic == "XB2\0");
+    int version; // I think?
+    int size;
+    int unk0C;
+    int unk10;
+    int unk14;
+    int unk18;
+    int unk1C;
+    int indicesCount;
+    int verticesOffset;
+    int indicesOffset;
+    int unk2C;
+    int unk30;
+    int unk34;
+    int unk38;
+    int unk3C;
+    Vector4 boundingBoxMin; // I think?
+    int unk50;
+    int unk54;
+    int unk58;
+    int unk5C;
+    Vector4 boundingBoxMax; // I think?
+    
+} XB2 <bgcolor=cLtRed>;
+
+//------------------------------------------------
+
+local quad xbm_start <hidden=true> = FTell();
+XB2 xbm;
+FSeek(xbm_start + xbm.indicesOffset);
+ushort indices[xbm.indicesCount];

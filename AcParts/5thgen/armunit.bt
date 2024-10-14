@@ -50,7 +50,8 @@ typedef struct
     ushort reload_time;
     ushort unk13A;
     ushort ammo_cost;
-    ushort unk13E;
+    ubyte horizontal_firing_accuracy;
+    ubyte vertical_firing_accuracy;;
     float unk140;
     float unk144;
     float duration;

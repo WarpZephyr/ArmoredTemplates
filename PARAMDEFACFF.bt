@@ -78,8 +78,8 @@ typedef struct
     float minimum;
     float maximum;
     float increment;
-    int unk60;
-    int unk64;
+    enum <int> { EDIT_WRAP = 1, EDIT_LOCK = 4 } editorFlags;
+    int byteCount;
 } Field <read=ReadField, bgcolor=cLtGreen, optimize=false>;
 
 string ReadField(Field &field)

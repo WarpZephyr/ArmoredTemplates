@@ -1,0 +1,162 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.2 Binary Template
+//
+//      File: MRB.bt
+//   Authors: WarpZephyr
+//   Version: 1.0.0
+//   Purpose: MenuResourceBinary UI configuration.
+//  Category: Dantelion
+// File Mask: *.mrb
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+#include "../Util.bt"
+#include "STR.bt"
+#include "PRMI.bt"
+#include "TNAM.bt"
+#include "TEXI.bt"
+#include "SHPR.bt"
+#include "SHAP.bt"
+#include "ANIM.bt"
+#include "DLGO.bt"
+#include "FSPR.bt"
+#include "DLG.bt"
+LittleEndian();
+
+local quad offsetsStr <hidden=true, format=hex> = -1;
+local quad offsetsPrmi <hidden=true, format=hex> = -1;
+local quad offsetsTnam <hidden=true, format=hex> = -1;
+local quad offsetsTexi <hidden=true, format=hex> = -1;
+local quad offsetsShpr <hidden=true, format=hex> = -1;
+local quad offsetsShap <hidden=true, format=hex> = -1;
+local quad offsetsAnim <hidden=true, format=hex> = -1;
+local quad offsetsDlgo <hidden=true, format=hex> = -1;
+local quad offsetsFspr <hidden=true, format=hex> = -1;
+local quad offsetsDlg <hidden=true, format=hex> = -1;
+
+enum <uint> MRB_VERSION
+{
+    VER_ACFF = 0,
+    VER_ACFF_NO_SHAP_TYPE = 1,
+    VER_ACFF_DIFF_MONORECT = 2,
+    VER_ACLR = 3
+};
+
+// Set this to tell apart different versions of the format.
+local MRB_VERSION VERSION <hidden=true> = VER_ACFF;
+
+//------------------------------------------------
+
+typedef struct
+{
+    char type[4];
+    int size;
+    int count;
+    int unk0C <hidden=true>; Assert(unk0C == 0);
+    local quad start <hidden=true> = FTell();
+
+    switch (type)
+    {
+        case "MRB\0":
+        case "END\0":
+            Assert(size == 0);
+            Assert(count == 0);
+            break;
+        case "STR\0":
+            offsetsStr = start;
+            break;
+        case "PRMI":
+            offsetsPrmi = start;
+            break;
+        case "TNAM":
+            Assert(offsetsTexi == -1);
+            offsetsTnam = start;
+            if (count > 0)
+                TNAMEntry entries[count];
+            break;
+        case "TEXI":
+            Assert(offsetsTnam == -1);
+            offsetsTexi = start;
+            if (count > 0)
+                TEXIEntry entries[count];
+            break;
+        case "SHPR":
+            offsetsShpr = start;
+            break;
+        case "SHAP":
+            offsetsShap = start;
+            break;
+        case "ANIM":
+            offsetsAnim = start;
+            if (count > 0)
+                ANIMEntry entries[count];
+            break;
+        case "DLGO":
+            offsetsDlgo = start;
+            break;
+        case "FSPR":
+            offsetsFspr = start;
+            if (count > 0)
+                FSPREntry entries[count];
+            break;
+        case "DLG\0":
+            offsetsDlg = start;
+            DLGEntry entries[count];
+            break;
+        default:
+            Assert(false, Str("Unknown section type: %s", type));
+    }
+
+    FSeek(start + size);
+} Section <read=ReadSection, bgcolor=GetSectionBgcolor>;
+
+int64 GetSectionBgcolor(Section& section)
+{
+    return GetSectionBgcolorByType(section.type);
+}
+
+int64 GetSectionBgcolorByType(char type[])
+{
+    switch (type)
+    {
+        case "MRB\0":
+        case "END\0":
+            return cBlack;
+        case "STR\0":
+            return cLtRed;
+        case "PRMI":
+            return cRed;
+        case "TNAM":
+        case "TEXI":
+            return cDkRed;
+        case "SHPR":
+            return cLtBlue;
+        case "SHAP":
+            return cBlue;
+        case "ANIM":
+            return cLtYellow;
+        case "DLGO":
+            return cGreen;
+        case "FSPR":
+            return cAqua;
+        case "DLG\0":
+            return cLtGreen;
+        default:
+            Assert(false, Str("Unknown section type: %s", type));
+    }
+}
+
+string ReadSection(Section& section)
+{
+    return Str("%s [%d] %Xh", section.type, section.count, section.size);
+}
+
+//------------------------------------------------
+
+while (true)
+{
+    Section section;
+    if (section.type == "END\0")
+        break;
+}

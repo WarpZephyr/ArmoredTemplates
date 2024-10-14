@@ -1,0 +1,55 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.2 Binary Template
+//
+//      File: BND_ACSL.bt
+//   Authors: WarpZephyr
+//   Version: 1.0.1
+//   Purpose: Armored Core 3 Silent Line Binder archives.
+//  Category: Archive
+// File Mask: AC3DATA.BIN
+//  ID Bytes: 42 4E 44 00
+//   History: 
+//------------------------------------------------
+
+LittleEndian();
+
+//------------------------------------------------
+
+typedef struct
+{
+    char magic[4]; Assert(magic == "BND\0");
+    char file_version[8]; Assert(file_version == "LTL\0");
+    int file_size;
+    int file_num;
+    int unpadded_file_size; // Does not include padding, a total of all the size values in every entry.
+    int unk18; // names_offset? file_path_mode?
+    short alignment_size;
+    short unk1E; // ?
+} Header <bgcolor=cLtRed>;
+
+typedef struct
+{
+    int id;
+    int size; TOTAL_SIZE += size;
+    int offset;
+    int unk0C; // Potential name offset? Or just padding to pad out to 16 bytes?
+
+    if (offset > 0)
+    {
+        if (size > 0)
+        {
+            local quad end = FTell();
+            FSeek(offset);
+            ubyte data[size] <bgcolor=cAqua>;
+            FSeek(end);
+        }
+    }
+} File <bgcolor=cLtGreen, optimize=false>;
+
+//------------------------------------------------
+
+Header header;
+
+local int TOTAL_SIZE <hidden=true> = 0;
+File files[header.file_num];
+Assert(header.unpadded_file_size == TOTAL_SIZE);

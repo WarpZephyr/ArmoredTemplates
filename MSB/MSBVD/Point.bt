@@ -152,8 +152,8 @@ typedef struct
     byte unk00;
     byte unk01;
     byte unk02;
-    byte unk03;
-} PointUnk3;
+    byte layerID;
+} PointLayer;
 
 typedef struct
 {
@@ -182,7 +182,7 @@ typedef struct
     int offsetUnk2; Assert(offsetUnk2 > 0);
     int pointID;
     int shapeDataOffset;
-    int offsetUnk3; Assert(offsetUnk3 > 0);
+    int offsetLayer; Assert(offsetLayer > 0);
     int offsetUnk4; Assert(offsetUnk4 > 0);
     int typeDataOffset;
     int offset50 <hidden=true>; Assert(offset50 == 0); // Depreciated specific type offset
@@ -226,12 +226,12 @@ typedef struct
         }
     }
 
-    FSeek(start + offsetUnk3);
-    PointUnk3 unk3;
+    FSeek(start + offsetLayer);
+    PointLayer layer;
 
     FSeek(start + offsetUnk4);
     PointUnk4 unk4;
-
+	
     if(typeDataOffset > 0)
     {
         Assert(pointType != PointTypeCapture

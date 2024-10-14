@@ -1,0 +1,33 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.2 Binary Template
+//
+//      File: PAINT.bt
+//   Authors: WarpZephyr
+//   Version: 1.0.2
+//   Purpose: Armored Core 4 PAINT.DAT save files.
+//  Category: Saves
+// File Mask: PAINT.DAT
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+#include "Color.bt"
+#include "Emblem.bt"
+BigEndian();
+
+#define COLORSET_COUNT 4 * 4
+#define PALETTE_COUNT 3 * 12
+#define EMBLEM_COUNT 64
+
+//------------------------------------------------
+
+typedef struct
+{
+    ColorSet colorsets[COLORSET_COUNT];
+    ColorRGBA user_palette[PALETTE_COUNT];
+    Emblem emblems[EMBLEM_COUNT] <optimize=false>;
+} PAINT <bgcolor=cLtGreen>;
+
+//------------------------------------------------
+
+PAINT paint;

@@ -14,16 +14,22 @@
 typedef struct
 {
     Vector3 boundingBoxMin;
-    int childOffset1;
+    int leftChildOffset;
     Vector3 boundingBoxMax;
     int unk1C <hidden=true>; Assert(unk1C == 0);
     Vector3 origin;
-    int childOffset2;
-    float unk30;
+    int rightChildOffset;
+    float radius;
     int partCount;
 
     if (partCount > 0)
     {
         short partIndices[partCount];
     }
-} Tree;
+} TreeNode <read=ReadTreeNode>;
+
+string ReadTreeNode(TreeNode& node)
+{
+    local string str;
+    return SPrintf(str, "[%d] %7.2f", node.partCount, node.radius);
+}

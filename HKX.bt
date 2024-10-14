@@ -1,0 +1,130 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.2 Binary Template
+//
+//      File: HKX.bt
+//   Authors: WarpZephyr
+//   Version: 1.0.0
+//   Purpose: Havok HKX files
+//  Category: Physics
+// File Mask: *.hkx
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+LittleEndian();
+local long DATA_OFFSET <hidden=true> = -1;
+
+//------------------------------------------------
+
+typedef struct
+{
+    char year[4];
+    char major[2];
+    char minor[2];
+} SDKVersion <read=ReadSDKVersion>;
+
+string ReadSDKVersion(SDKVersion& sdkVersion)
+{
+    local string str;
+    return SPrintf(str, "Year: %s | Major: %s | Minor: %s", sdkVersion.year, sdkVersion.major, sdkVersion.minor);
+}
+
+typedef struct
+{
+    local long m_offset <hidden=true> = FTell();
+    string str;
+} StructString <read=ReadStructString, optimize=false>;
+
+string ReadStructString(StructString& str)
+{
+    return str.str;
+}
+
+typedef struct
+{
+    local int m_count <hidden=true> = 0;
+    while (ReadUShort() != 0xFFFF)
+    {
+        StructString type;
+        m_count++;
+    }
+    ushort terminator <hidden=true>; Assert(terminator == 0xFFFF);
+} StringArray <optimize=false>;
+
+struct Section;
+
+typedef struct
+{
+    local long start <hidden=true> = FTell(); 
+    BigEndian();
+    uint flags : 2;
+    uint length : 30;
+    LittleEndian();
+    char signature[4];
+    
+    local long end <hidden=true> = start + length;
+    switch (signature)
+    {
+        case "TAG0":
+            break;
+        case "SDKV":
+            SDKVersion sdkVersion;
+            break;
+        case "DATA":
+            DATA_OFFSET = FTell();
+            break;
+        case "TCRF":
+            break;
+        case "TYPE":
+            break;
+        case "TPTR":
+            break;
+        case "TSTR":
+        case "TST1":
+            StringArray typeStrings;
+            break;
+        case "TNA1":
+            break;
+        case "FSTR":
+        case "FST1":
+            StringArray fieldStrings;
+            break;
+        case "TBDY":
+            break;
+        case "THSH":
+            break;
+        case "TPAD":
+            break;
+        case "INDX":
+            break;
+        case "ITEM":
+            break;
+        case "PTCH":
+            break;
+    }
+    
+    if (flags != 1)
+    {
+        struct
+        {
+            while (FTell() < end)
+            {
+                Section subSection;
+            }
+        } subSections;
+    }
+    else
+    {
+        FSeek(end);
+    }
+    
+} Section <bgcolor=cLtGreen, read=ReadSection>;
+
+string ReadSection(Section& section)
+{
+    return section.signature;
+}
+
+//------------------------------------------------
+
+Section rootSection;

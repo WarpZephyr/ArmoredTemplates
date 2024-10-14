@@ -1,0 +1,22 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.1 Binary Template
+//
+//      File: STR.bt
+//   Authors: WarpZephyr
+//   Version: 1.0.1
+//   Purpose: DRB strings containing names for many DRB entries.
+//  Category: Dantelion
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+typedef struct
+{
+    wstring str;
+} STREntry <read=ReadSTREntry, optimize=false>;
+
+wstring ReadSTREntry(STREntry& entry)
+{
+    return entry.str;
+}

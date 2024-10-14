@@ -1,0 +1,32 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.2 Binary Template
+//
+//      File: Thumbnail.bt
+//   Authors: WarpZephyr
+//   Version: 1.0.1
+//   Purpose: Armored Core For Answer design mini-thumbnails generated when saving designs.
+//  Category: Saves
+// File Mask:
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+typedef struct
+{
+    ubyte unk00;
+    ubyte unk01 <hidden=true>; Assert(unk01 == 0);
+    ushort chunkCount;
+    uint unk04 <hidden=true>; Assert(unk04 == 0);
+    uint unk08 <hidden=true>; Assert(unk08 == 0);
+    int dataSize;
+    ubyte data[128 * 128];
+} Thumbnail <bgcolor=cLtGreen>;
+
+//------------------------------------------------
+
+// For thumbnail files
+// define _ACTHUMBNAIL_NO_CALL to prevent calling while using in design saves
+#ifndef _ACTHUMBNAIL_NO_CALL
+BigEndian();
+Thumbnail thumbnail;
+#endif

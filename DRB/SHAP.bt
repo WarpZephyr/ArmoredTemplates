@@ -1,0 +1,619 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.1 Binary Template
+//
+//      File: SHAP.bt
+//   Authors: WarpZephyr
+//   Version: 1.0.1
+//   Purpose: DRB shapes.
+//  Category: Dantelion
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+enum <ubyte> BLENDMODE
+{
+    BLEND_OPAQUE = 0,
+    BLEND_ALPHA = 1,
+    BLEND_ADD = 2,
+    BLEND_SUBTRACT = 3,
+    BLEND_UNK_4 = 4
+};
+
+enum <byte> ALIGNMENT
+{
+    TOP_LEFT = 0,
+    RIGHT = 1,
+    HCENTER = 2,
+    BOTTOM = 4,
+    VCENTER = 8,
+    UNK9 = 9
+};
+
+enum <byte> TEXTTYPE
+{
+    LITERAL = 0,
+    FMG = 1,
+    DYNAMIC = 2,
+    UNK3 = 3
+};
+
+//------------------------------------------------
+
+typedef struct
+{
+    short dlgIndex;
+    byte unk02; Assert(unk02 == 0 || unk02 == 1);
+    byte unk03; Assert(unk03 == 0 || unk03 == 1);
+    int paletteColor;
+    ubyte customColor[4];
+    byte unk0C;
+    byte unk0D;
+    byte unk0E;
+    byte unk0F;
+    // This was determined from disassembly; there are no examples that I'm aware of.
+    // It is only used if unk03 is on.
+    if (unk0C == 1)
+    {
+        short unk10;
+        short unk12;
+        int unk14;
+    }
+} Dialog;
+
+typedef struct
+{
+    int dlgoNameOffset <format=hex>;
+    byte unk04; Assert(unk04 == 1);
+    int unk05; Assert(unk05 == 0);
+    int unk09; Assert(unk09 == 0);
+    short unk0D; Assert(unk0D == 0);
+    
+    local quad endpos = FTell();
+    FSeek(offsets.str + dlgoNameOffset);
+    wstring dlgoName;
+    FSeek(endpos);
+} Mask;
+
+typedef struct
+{
+    // Some of these don't really work properly but I assume it's the same thing
+    BLENDMODE blendMode; Assert(blendMode >= BLEND_OPAQUE && blendMode <= BLEND_SUBTRACT);
+    byte unk01;
+    short lineSpacing;
+    int palletteColor;
+    ubyte customColor[4];
+    short fontSize; // 0-11: different sizes of menu font; 12: talk font
+    ALIGNMENT alignment; Assert(alignment >= 0 || alignment <= 9);
+    TEXTTYPE textType; Assert(textType >= 0 && textType <= 3);
+    int unk10; Assert(unk10 == 0x1C);
+    switch (textType)
+    {
+        case LITERAL:
+            int stringOffset <format=hex>;
+            break;
+        case FMG:
+            int charLength;
+            int textID;
+            break;
+        case DYNAMIC:
+            int charLength;
+            break;
+        case UNK3:
+            int unk14; Assert(unk14 == 0 || unk14 == 1 || unk14 == 3);
+            break;
+        default:
+            Assert(false);
+    }
+        
+    if (unk01 != 0 && unk01 != 4) {
+        short leftEdge;
+        short unkY02;
+        short rightEdge;
+        //if (unkY04 == 1) { // Only used in Shadow Assault Tenchu
+        //    int unkY06; Assert(unkY06 == 0);
+        //    short unkY0A; Assert(unkY0A == 0xFF);
+        //    short unkY0C; Assert(unkY0C == 0 || unkY0C == 2);
+        //    short unkY0E; Assert(unkY0E == 0 || unkY0E == 2);
+        //}
+    }
+    
+
+    if (textType == LITERAL) {
+        local quad endpos = FTell();
+        FSeek(offsets.str + stringOffset);
+        wstring str;
+        FSeek(endpos);
+    }
+} Text;
+
+typedef struct
+{
+    // Some of these don't really work properly but I assume it's the same thing
+    BLENDMODE blendMode; Assert(blendMode >= BLEND_OPAQUE && blendMode <= BLEND_SUBTRACT);
+    byte unk01;
+    short lineSpacing;
+    int palletteColor;
+    ubyte customColor[4];
+    short fontSize;    // 0-11: different sizes of menu font; 12: talk font
+    ALIGNMENT alignment; Assert(alignment >= 0 || alignment <= 9);
+    TEXTTYPE textType; Assert(textType >= 0 && textType <= 2);
+    int unk10; Assert(unk10 == 0x1C);
+    switch (textType)
+    {
+        case LITERAL:
+            int stringOffset <format=hex>;
+            break;
+        case FMG:
+            int charLength;
+            int textID;
+            break;
+        case DYNAMIC:
+            int charLength;
+            break;
+        default:
+            Assert(false);
+    }
+    
+    // Scroll factors
+    //---------------
+    short unkX00; Assert(unkX00 == 0 || unkX00 == 0x60);
+    short unkX02; Assert(unkX02 == 0 || unkX02 == 6);
+    short unkX04; Assert(unkX04 == 0 || unkX04 == 0x60);
+    short unkX06; Assert(unkX06 == 0 || unkX06 == 6);
+    short scrollSpeed;
+    short unkX0A;
+    //---------------
+        
+    if (unk01 != 0) {
+        int unkY00;
+        short unkY04;
+        if (unkY04 == 1) { // Only used in Shadow Assault Tenchu
+            int unkY06; Assert(unkY06 == 0);
+            short unkY0A; Assert(unkY0A == 0xFF);
+            short unkY0C; Assert(unkY0C == 0 || unkY0C == 2);
+            short unkY0E; Assert(unkY0E == 0 || unkY0E == 2);
+        }
+    }
+    
+    if (textType == LITERAL) {
+        local quad endpos = FTell();
+        FSeek(offsets.str + stringOffset);
+        wstring str;
+        FSeek(endpos);
+    }
+} ScrollText;
+
+typedef struct
+{
+    short unk00;
+    short unk02; Assert(unk02 == 0);
+    int unk04; Assert(unk04 == 0);
+    ubyte unk08; Assert(unk08 == 0xFF);
+    ubyte unk09; Assert(unk09 == 0xFF);
+    ubyte unk0A; Assert(unk0A == 0xFF);
+    ubyte unk0B; Assert(unk0B == 0xFF);
+    int unk0C;
+} ScriptCtrlDialog;
+
+// Gouraud - Multi Color
+typedef struct
+{
+    byte blendMode;
+    byte unk01;
+    byte unk02;
+    byte thickness;
+    ubyte topLeftColor[4];
+    ubyte topRightColor[4];
+    ubyte bottomRightColor[4];
+    ubyte bottomLeftColor[4];
+} GouraudFrame;
+
+// Gouraud - Multi Color
+typedef struct
+{
+    byte blendMode;
+    byte unk01;
+    byte unk02;
+    byte thickness;
+    ubyte topLeftColor[4];
+    ubyte topRightColor[4];
+    ubyte bottomRightColor[4];
+    ubyte bottomLeftColor[4];
+} GouraudRect;
+
+// Mono - Single Color
+typedef struct
+{
+    BLENDMODE blendMode; Assert(blendMode >= BLEND_OPAQUE && blendMode <= BLEND_UNK_4);
+    byte unk01 <hidden=true>;
+    byte unk02 <hidden=true>;
+    byte thickness;
+    int paletteColor;
+    ubyte customColor[4];
+} MonoFrame;
+
+// Mono - Single Color
+typedef struct
+{
+    BLENDMODE blendMode; Assert(blendMode >= BLEND_OPAQUE && blendMode <= BLEND_UNK_4);
+    byte unk01 <hidden=true>;
+    byte unk02 <hidden=true>;
+    byte thickness;
+    int paletteColor;
+    ubyte customColor[4];
+} MonoRect;
+
+// Gouraud - Multi Color
+typedef struct
+{
+    short texLeftEdge;
+    short texTopEdge;
+    short texRightEdge;
+    short texBottomEdge;
+    short textureIndex;
+    // 1-8 - confirmed nothing
+    //  10 - rotate 90 degrees clockwise
+    //  20 - rotate 180 degrees
+    //  40 - flip vertical
+    //  80 - flip horizontal
+    ubyte flags <format=hex>;
+    BLENDMODE blendMode; Assert(blendMode >= BLEND_OPAQUE && blendMode <= BLEND_UNK_4);
+    
+    ubyte topLeftColor[4];
+    ubyte topRightColor[4];
+    ubyte bottomRightColor[4];
+    ubyte bottomLeftColor[4];
+} GouraudSprite;
+
+// No Gouraud, so Mono Single Color
+typedef struct
+{
+    short texLeftEdge;
+    short texTopEdge;
+    short texRightEdge;
+    short texBottomEdge;
+    short textureIndex;
+    // 1-8 - confirmed nothing
+    //  10 - rotate 90 degrees clockwise
+    //  20 - rotate 180 degrees
+    //  40 - flip vertical
+    //  80 - flip horizontal
+    ubyte flags <format=hex>;
+    BLENDMODE blendMode; Assert(blendMode >= BLEND_OPAQUE && blendMode <= BLEND_UNK_4);
+
+    int paletteColor;
+    ubyte customColor[4];
+} Sprite;
+
+typedef struct
+{
+    byte unk00;
+    byte unk01; Assert(unk01 == 0);
+    byte unk02; Assert(unk02 == 0);
+    byte unk03; Assert(unk03 == 0);
+    int unk04;
+    float unk08;
+    int unk0C;
+    float unk10;
+    float unk14;
+    float unk18;
+    float unk1C;
+    float unk20;
+} NoiseSprite;
+
+typedef struct
+{
+    int unk00;
+} LineKeyGuide;
+
+typedef struct
+{
+    byte unk00; Assert(unk00 == 0 || unk00 == 1 || unk00 == 2);
+    byte unk01; Assert(unk01 == 0);
+    short unk02;
+    short unk04;
+    short unk06;
+    int unk08;
+    int unk0C;
+    int unk10;
+    short unk12;
+    short unk14;
+} CircleFillSprite;
+
+typedef struct
+{
+    int unk00;
+    int unk04;
+    short width;
+    short height;
+    short unk0A;
+    short unk0C;
+    int unk10;
+    int unk14;
+} FrameRedrawSprite;
+
+typedef struct
+{
+    byte unk00;
+    byte unk01;
+    short unk02;
+    short unk04;
+    short unk06;
+    short unk08;
+    short unk0A;
+    int unk0C;
+    int unk10;
+    short unk12;
+    short unk14;
+    float unk18;
+    float unk1C;
+    float unk20;
+    float unk24;
+} AlphaMaskSprite;
+
+typedef struct
+{
+    short unk00;
+    short unk02;
+    float unk04;
+    float unk08;
+    float unk0C;
+    float unk10;
+    float unk14;
+    float unk18;
+    int unk1C;
+    float unk20;
+    float unk24;
+    float unk28;
+    float unk2C;
+    float unk30;
+} TVFilterSprite;
+
+// This one is strange, it may start sooner than this, Im not sure
+typedef struct
+{
+    float unk00;
+    float unk04;
+    float unk08;
+} FadeNoiseSprite;
+
+typedef struct
+{
+    byte unk00; Assert(unk00 == 1);
+    byte unk01; Assert(unk01 == 0);
+    byte unk02; Assert(unk02 == 0);
+    byte unk03; Assert(unk03 == 0);
+    int unk04; Assert(unk04 == 0);
+    int unk08; Assert(unk08 == -1);
+    float unk0C;
+} BlurSprite;
+
+// Weird how it doesnt offset perfectly, oh well
+typedef struct
+{
+    short unk00;
+    short unk02;
+    short unk04;
+    short unk06;
+    short unk08;
+    short unk0A;
+    int unk0C;
+    short unk10;
+    short unk12;
+    int unk14;
+    int unk18;
+    short unk1C;
+    byte unk1E;
+} AlphaAnimSprite;
+
+typedef struct
+{
+    int unk00;
+    float unk04;
+    int unk08;
+} FishEyeSprite;
+
+typedef struct
+{
+    int unk00;
+    short unk02;
+    short unk04;
+    byte unk08;
+    byte unk09; Assert(unk09 == 0);
+    byte unk0A; Assert(unk0A == 0);
+    byte unk0B; Assert(unk0B == 0);
+    int unk0C;
+    short unk0E;
+    short unk10;
+} OverLaySprite;
+
+typedef struct
+{
+    short unk00;
+    short unk02;
+    float unk04;
+    float unk08;
+    float unk0C;
+    float unk10;
+    float unk14;
+    float unk18;
+    float unk1C;
+    float unk20;
+} LineNoiseSprite;
+
+// Has problem similar to FadeNoiseSprite
+typedef struct
+{
+    float unk00;
+    float unk04;
+    float unk08;
+    float unk0C;
+    short unk10;
+    short unk12;
+    float unk14;
+    short unk16;
+} DepthLineSprite;
+
+//------------------------------------------------
+
+typedef struct
+{
+    int typeOffset <format=hex>;
+    int dataOffset <format=hex>;
+    
+    local quad pos <hidden=true> = FTell();
+    FSeek(offsets.str + typeOffset);
+    wstring type;
+
+    FSeek(offsets.shpr + dataOffset);
+    short leftEdge;
+    FSkip(-2);
+    byte mark <hidden=true, bgcolor=cBlack, fgcolor=cWhite>;
+    FSkip(1);
+    short topEdge;
+    short rightEdge;
+    short bottomEdge;
+
+    // Why though?
+    if (type != "FadeNoiseSprite" && type != "DepthLineSprite"){
+        Assert(rightEdge >= leftEdge);
+        Assert(bottomEdge >= topEdge);
+    }
+
+    if (version == VERSION_DSR && type != "Null")
+    {
+        short scalingOriginX;
+        short scalingOriginY;
+        // Flags maybe? If so, there are a lot of them.
+        short scalingMode; Assert(scalingMode >= 0 && scalingMode <= 128);
+        short pad0E <hidden=true>; Assert(pad0E == 0); // From disassembly
+    }
+    
+    // Colors are in ABGR order for LE, RGBA order for BE
+    switch (type)
+    {
+        case "Null":
+            break;
+        case "Dialog":
+            Dialog shape;
+            break;
+        case "Mask":
+            Mask shape;
+            break;
+        case "Text":
+            Text shape;
+            break;
+        case "ScrollText":
+            ScrollText shape;
+            break;
+        case "ScriptCtrlDialog":
+            ScriptCtrlDialog shape;
+            break;
+        case "GouraudFrame":
+            GouraudFrame shape;
+            break;
+        case "GouraudRect":
+            GouraudRect shape;
+            break;
+        case "MonoFrame":
+            MonoFrame shape;
+            break;
+        case "MonoRect":
+            MonoRect shape;
+            break;
+        case "GouraudSprite":
+            GouraudSprite shape;
+            break;
+        case "Sprite":
+            Sprite shape;
+            break;
+        case "NoiseSprite":
+            NoiseSprite shape;
+            break;
+        case "LineKeyGuide":
+            LineKeyGuide shape;
+            break;
+        case "CircleFillSprite":
+            CircleFillSprite shape;
+            break;
+        case "FrameRedrawSprite":
+            FrameRedrawSprite shape;
+            break;
+        case "AlphaMaskSprite":
+            AlphaMaskSprite shape;
+            break;
+        case "TVFilterSprite":
+            TVFilterSprite shape;
+            break;
+        case "FadeNoiseSprite":
+            FadeNoiseSprite shape;
+            break;
+        case "BlurSprite":
+            BlurSprite shape;
+            break;
+        case "AlphaAnimSprite":
+            AlphaAnimSprite shape;
+            break;
+        case "FishEyeSprite":
+            FishEyeSprite shape;
+            break;
+        case "OverLaySprite":
+            OverLaySprite shape;
+            break;
+        case "LineNoiseSprite":
+            LineNoiseSprite shape;
+            break;
+        case "DepthLineSprite":
+            DepthLineSprite shape;
+            break;
+        default:
+            Assert(false);
+            break;
+    }
+    FSeek(pos);
+} SHAPEntry <read=ReadSHAPEntry, optimize=false>;
+
+wstring ReadSHAPEntry(SHAPEntry& entry)
+{
+    string str;
+    switch (entry.type)
+    {
+        case "Mask":
+            SPrintf(str, "%s", entry.type);
+        case "Text":
+            if (entry.shape.textType == LITERAL)
+            {
+                return SPrintf(str, "%s - ", entry.type) + entry.shape.str;
+            }
+            else
+            {
+                str = entry.type;
+            }
+            break;
+        case "GouraudRect":
+            SPrintf(str, "%s - %i %s%s%s%s",
+                entry.type, entry.shape.blendMode,
+                FormatColor(entry.shape.topLeftColor),
+                FormatColor(entry.shape.topRightColor),
+                FormatColor(entry.shape.bottomLeftColor),
+                FormatColor(entry.shape.bottomRightColor));
+            break;
+        case "GouraudSprite":
+            SPrintf(str, "%s", entry.type);
+            break;
+        case "MonoFrame":
+            SPrintf(str, "%s - %i %i %i %s",
+                entry.type, entry.shape.blendMode, entry.shape.thickness, entry.shape.paletteColor,
+                FormatColor(entry.shape.customColor));
+            break;
+        case "MonoRect":
+            SPrintf(str, "%s - %i %s", entry.type, entry.shape.paletteColor, 
+                FormatColor(entry.shape.customColor));
+            break;
+        default:
+            str = entry.type;
+            break;
+    }
+    return str;
+}

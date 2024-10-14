@@ -1,0 +1,35 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.1 Binary Template
+//
+//      File: TEXI.bt
+//   Authors: WarpZephyr
+//   Version: 1.0.1
+//   Purpose: DRB textures to be called upon by UI elements.
+//  Category: Dantelion
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+typedef struct
+{
+    int nameOffset <format=hex, hidden=true>;
+    int pathOffset <format=hex, hidden=true>;
+    int unk08 <hidden=true>; Assert(unk08 == 0);
+    int unk0C <hidden=true>; Assert(unk0C == 0);
+    
+    local quad pos <hidden=true> = FTell();
+    FSeek(offsets.str + nameOffset);
+    wstring name;
+
+    FSeek(offsets.str + pathOffset);
+    wstring path;
+    FSeek(pos);
+} TEXIEntry <read=ReadTEXIEntry, optimize=false>;
+
+wstring ReadTEXIEntry(TEXIEntry& entry)
+{
+    string str;
+    SPrintf(str, "%s - %s", entry.name, entry.path);
+    return str;
+}

@@ -11,11 +11,6 @@
 //   History: 
 //------------------------------------------------
 
-typedef struct
-{
-    ubyte null; Assert(null == 0);
-} Null <bgcolor=cBlack, optimize=false>;
-
 #include "..\..\Util.bt"
 #include "..\MSB.bt"
 #include "Model.bt"
@@ -133,7 +128,7 @@ typedef struct
     for (i = 0; i < param.count - 1; i++)
     {
         FSeek(param.offsets[i].val);
-        Tree tree;
+        TreeNode node;
     }
 } MapstudioTree <read=ReadMapstudioTree, bgcolor=cLtBlue>;
 

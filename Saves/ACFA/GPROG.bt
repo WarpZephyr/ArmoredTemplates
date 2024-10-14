@@ -1,0 +1,190 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.2 Binary Template
+//
+//      File: GPROG.bt
+//   Authors: WarpZephyr
+//   Version: 1.1.0
+//   Purpose: Armored Core For Answer game progress save file.
+//  Category: Saves
+// File Mask: GPROG.DAT
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+BigEndian();
+#define MISSION_COUNT 42
+#define NORMAL_MISSION_COUNT 42
+#define HARD_MISSION_COUNT 42
+#define COLLARED_MATCH_COUNT 30
+#define ORCA_MATCH_COUNT 12
+#define RESERVED_PART_COUNT 1024
+#define RESERVED_DESIGN_COUNT 80
+#define RESERVED_EMBLEM_COUNT 64
+#define RESERVED_FRS_COUNT 248 // Assumption
+
+enum <ushort> PartUnlockStatus
+{
+    Hidden = 0,
+    InShop = 4096,
+    Owned = 8192
+};
+
+enum <ubyte> PartCategory
+{
+    Head = 0,
+    Core = 1,
+    Arms = 2,
+    Legs = 3,
+    FCS = 4,
+    Generator = 5,
+    MainBooster = 6,
+    BackBooster = 7,
+    SideBooster = 8,
+    OveredBooster = 9,
+    RightArmUnit = 10,
+    LeftArmUnit = 11,
+    RightBackUnit = 12,
+    LeftBackUnit = 13,
+    ShoulderUnit = 14,
+    StabilizerHeadTop = 17,
+    StabilizerHeadRight = 18,
+    StabilizerHeadLeft = 19,
+    StabilizerCoreUpperRight = 20,
+    StabilizerCoreUpperLeft = 21,
+    StabilizerCoreLowerRight = 22,
+    StabilizerCoreLowerLeft = 23,
+    StabilizerArmRight = 24,
+    StabilizerArmLeft = 25,
+    StabilizerLegsBack = 26,
+    StabilizerLegsUpperRight = 27,
+    StabilizerLegsUpperLeft = 28,
+    StabilizerLegsUpperRightBack = 29,
+    StabilizerLegsUpperLeftBack = 30,
+    StabilizerLegsMiddleRight = 31,
+    StabilizerLegsMiddleLeft = 32,
+    StabilizerLegsMiddleRightBack = 33,
+    StabilizerLegsMiddleLeftBack = 34,
+    StabilizerLegsLowerRight = 35,
+    StabilizerLegsLowerLeft = 36,
+    StabilizerLegsLowerRightBack = 37,
+    StabilizerLegsLowerLeftBack = 38,
+};
+
+enum <byte> Rank
+{
+    NotCompleted = -1,
+    E = 0,
+    D = 1,
+    C = 2,
+    B = 3,
+    A = 4,
+    S = 5
+};
+
+//------------------------------------------------
+
+typedef struct
+{
+    int story_count;
+    short story_ids[MISSION_COUNT];
+    int free_count;
+    short free_ids[MISSION_COUNT];
+} Missions <bgcolor=cRed>;
+
+// Wrapping in struct to prevent strange 010Editor bug with showing enum array value for some reason.
+typedef struct
+{
+    Rank rank;
+} MissionRank <bgcolor=cRed, read=ReadMissionRank>;
+
+string ReadMissionRank(MissionRank& rank)
+{
+    return EnumToString(rank.rank);
+}
+
+typedef struct
+{
+    ubyte unk00;
+    ubyte matches_won_collared[COLLARED_MATCH_COUNT];
+    ubyte matches_won_orca[ORCA_MATCH_COUNT];
+    ubyte unk2B;
+    ubyte unk2C;
+    ubyte unk2D;
+    ubyte unk2E;
+    ubyte unk2F;
+    ubyte arena_unlocked; Assert(arena_unlocked == 0 || arena_unlocked == 1);
+    ubyte orca_arena_unlocked; Assert(orca_arena_unlocked == 0 || orca_arena_unlocked == 1);
+    ubyte unk32;
+    ubyte unk33;
+    ubyte unk34;
+    ubyte unk35;
+    ubyte unk36;
+    ubyte unk37;
+    ubyte unk38;
+    ubyte unk39;
+    ubyte unk3A;
+    ubyte unk3B;
+    ubyte unk3C;
+    ubyte unk3D;
+    ubyte unk3E;
+    ubyte unk3F;
+} Matches <bgcolor=cDkRed>;
+
+typedef struct
+{
+    PartCategory part_category;
+    ubyte unk01 <hidden=true>; Assert(unk01 == 0);
+    ushort part_id;
+    PartUnlockStatus part_unlock_status;
+} Part <read=ReadPart, optimize=false>;
+
+string ReadPart(Part &part)
+{
+    return Str("%d | %s | %s", part.part_id, EnumToString(part.part_unlock_status), EnumToString(part.part_category));
+}
+
+typedef struct
+{
+    int count;
+    Part parts[RESERVED_PART_COUNT];
+} Parts <bgcolor=cLtYellow>;
+
+typedef struct
+{
+    int count;
+    short design_ids[RESERVED_DESIGN_COUNT];
+} Designs <bgcolor=cYellow>;
+
+typedef struct
+{
+    int count;
+    ubyte emblem_ids[RESERVED_EMBLEM_COUNT];
+} Emblems <bgcolor=cAqua>;
+
+typedef struct
+{
+    int frs_amount;
+    int count;
+    ubyte frs_ids[RESERVED_FRS_COUNT];
+} FRS <bgcolor=cGreen>;
+
+typedef struct
+{
+    short game_completions;
+    ubyte show_intro; Assert(show_intro == 0 || show_intro == 1);
+    ubyte unk03;
+    Missions missions;
+    MissionRank rank_normal[NORMAL_MISSION_COUNT];
+    MissionRank rank_hard[HARD_MISSION_COUNT];
+    Matches matches;
+    Parts parts;
+    Designs designs;
+    ubyte unk19F0[40] <bgcolor=cBlack>;
+    Emblems emblems;
+    FRS frs;
+    ubyte unk1B5C[4] <bgcolor=cBlack>;
+} GPROG <bgcolor=cLtRed>;
+
+//------------------------------------------------
+
+GPROG progress;

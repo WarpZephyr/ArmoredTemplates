@@ -1,0 +1,139 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.2 Binary Template
+//
+//      File: ACLR_TIM2.bt
+//   Authors: WarpZephyr
+//   Version: 1.0.0
+//   Purpose: ACLR stripped down PS2 TIM2 textures.
+//  Category: Texture
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+LittleEndian();
+
+// To allow sharing ClutStorageMode enum between ClutType and GsTex0 without a ubyte and uint64 version.
+BitfieldDisablePadding();
+
+// Helper Functions
+//------------------------------------------------
+
+void Align(int alignment)
+{
+    if (FTell() % alignment > 0)
+    {
+        FSkip(alignment - (FTell() % alignment));
+    }
+}
+
+// TIM2 Enums and defines
+//------------------------------------------------
+
+#define HEADER_SIZE 32
+
+enum <ubyte> ClutStorageMode
+{
+    CSM1 = 0,
+    CSM2 = 1
+};
+
+// Defines how pixel are arranged in each 32-bit word of local memory.
+enum <uint64> PixelStorageMode
+{
+    PSMCT32 = 0,   // RGBA32, uses 32-bit per pixel.
+    PSMCT24 = 1,   // RGB24, uses 24-bit per pixel with the upper 8 bit unused.
+    PSMCT16 = 2,   // RGBA16 unsigned, pack two pixels in 32-bit in little endian order.
+    PSMCT16S = 10, // RGBA16 signed, pack two pixels in 32-bit in little endian order.
+    PSMT8 = 19,    // 8-bit indexed, packing 4 pixels per 32-bit.
+    PSMT4 = 20,    // 4-bit indexed, packing 8 pixels per 32-bit.
+    PSMT8H = 27,   // 8-bit indexed, but the upper 24-bit are unused.
+    PSMT4HL = 36,  // 4-bit indexed, but the upper 24-bit are unused.
+    PSMT4HH = 44,  // 4-bit indexed, where the bits 4-7 are evaluated and the rest discarded.
+    PSMZ32 = 48,   // 32-bit Z buffer
+    PSMZ24 = 49,   // 24-bit Z buffer with the upper 8-bit unused
+    PSMZ16 = 50,   // 16-bit unsigned Z buffer, pack two pixels in 32-bit in little endian order.
+    PSMZ16S = 58   // 16-bit signed Z buffer, pack two pixels in 32-bit in little endian order.
+};
+
+enum <uint64> TextureColorComponent
+{
+    RGB = 0,
+    RGBA = 1
+};
+
+enum <uint64> TextureFunction
+{
+    Modulate = 0,
+    Decal = 1,
+    Hilight = 2,
+    Hilight2 = 3
+};
+
+// TIM2 structures
+//------------------------------------------------
+
+typedef struct
+{
+	uint64 TBP0               : 14; // Texture base pointer (Address/256)
+	uint64 TBW                :  6; // Texture buffer width (Texels/64)
+	PixelStorageMode PSM      :  6; // Texture pixel storage format (0 = 32bit RGBA)
+	uint64 TW                 :  4; // Texture Width = 2^TW
+	uint64 TH                 :  4; // Texture Height = 2^TH
+	TextureColorComponent TCC :  1; // Texture color component, 0 = RGB, 1 = RGBA
+	TextureFunction TFX       :  2; // Texture function
+	uint64 CBP                : 14; // CLUT buffer base pointer (Address/256)
+	PixelStorageMode CPSM     :  4; // CLUT pixel storage format
+	ClutStorageMode CSM       :  1; // CLUT storage mode, 0 = CSM1, 1 = CSM2
+	uint64 CSA                :  5; // CLUT entry offset
+	uint64 CLD                :  3; // CLUT buffer load control
+} GsTex0;
+
+typedef struct
+{
+    uint64 LCM       : 1;  // LOD Calculation method
+    uint64 reserved1 : 1;  Assert(reserved1 == 0);
+    uint64 MXL       : 3;  // Maximum MIP level
+    uint64 MMAG      : 1;  // Filter when texture is expanded
+    uint64 MMIN      : 3;  // Filter when texture is reduced
+    uint64 MTBA      : 1;  // Specification of MIPMAP texture base address of Level 1 or more
+    uint64 reserved2 : 9;  Assert(reserved2 == 0);
+    uint64 L         : 2;  // LOD Parameter value L
+    uint64 reserved3 : 11; Assert(reserved3 == 0);
+    uint64 K         : 12; // LOD Parameter value K
+    uint64 reserved4 : 20; Assert(reserved4 == 0);
+} GsTex1;
+
+typedef struct
+{
+    // Picture header
+	uint totalSize;
+	uint imageSize;
+	ubyte mipMapCount; // Unsure about this
+    Align(0x10); // Unsure about this
+    
+	GsTex0 gsTex0;
+	GsTex1 gsTex1;
+
+    // Image Data
+    if (imageSize > 0)
+    {
+        ubyte imageData[imageSize] <bgcolor=cLtGreen>;
+
+        // CLUT Data
+        local int clutSize <hidden=true> = totalSize - HEADER_SIZE - imageSize;
+        if (clutSize > 0)
+        {
+            ubyte clutData[clutSize] <bgcolor=cGreen>;
+        }
+    }
+    else
+    {
+        // Assumption for some files in other games with 0 imageSize and no clut
+        ubyte imageData[totalSize - HEADER_SIZE] <bgcolor=cLtGreen>;
+    }
+} TIM2_PICTURE <bgcolor=cRed, optimize=false>;
+
+//------------------------------------------------
+
+TIM2_PICTURE picture;

@@ -1,0 +1,123 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.2 Binary Template
+//
+//      File: HMD_ACVD.bt
+//   Authors: WarpZephyr
+//   Version: 1.0.0
+//   Purpose: Armored Core Verdict Day HMD model collision files.
+//  Category: Collision
+// File Mask: *.hmd
+//  ID Bytes: 10 00 01 17
+//   History: 
+//------------------------------------------------
+
+#include "Util.bt";
+
+BigEndian();
+
+local int HMD_MAGIC = 0x10000117;
+
+//------------------------------------------------
+
+typedef struct
+{
+    int magic; Assert(magic == HMD_MAGIC);
+    int unk04;
+    int fileSize;
+    int textureCount;
+    int collisionCount;
+    int vertexCount;
+    int unk18;
+    int nodeCount;
+    int indexCount;
+    int textureOffset;
+    int collisionOffset;
+    int indicesOffset;
+    int unk30 <hidden=true>; Assert(unk30 == 0);
+    int unk34 <hidden=true>; Assert(unk34 == 0);
+    int unk38 <hidden=true>; Assert(unk38 == 0);
+    int unk3C <hidden=true>; Assert(unk3C == 0);
+} Header <bgcolor=cLtRed>;
+
+typedef struct
+{
+    int nameOffset;
+    int nameEndOffset;
+
+    local quad end <hidden=true> = FTell();
+    FSeek(nameOffset);
+    string name;
+    FSeek(end);
+} Texture <bgcolor=cLtGreen, optimize=false>;
+
+typedef struct
+{
+    short indexCount;
+    short startIndex; Assert(indexCount > 0 ? startIndex > -1 : startIndex == -1);
+    short leftChildIndex;
+    short rightChildIndex;
+    Vector3 min;
+    Vector3 max;
+    Vector3 origin;
+    float boxRadius; // Max to origin, rounded to 4 decimal places
+    float planeRadius; // (Smallest X,Z to Largest X,Z) / 2 ?
+} TreeNode <bgcolor=cGreen, read=ReadTreeNode, optimize=false>;
+
+string ReadTreeNode(TreeNode& node)
+{
+    local string str <hidden=true>;
+    return SPrintf(str, "[%d] %d (%d | %d) ", node.indexCount, node.startIndex, node.leftChildIndex, node.rightChildIndex);
+}
+
+typedef struct
+{
+    short unk00;
+    short unk02;
+    short unk04;
+    short unk06;
+    short unk08;
+} Indices <bgcolor=cLtYellow, read=ReadIndices, optimize=false>;
+
+string ReadIndices(Indices& indices)
+{
+    local string str <hidden=true>;
+    return SPrintf(str, "{%d, %d, %d} (%d | %d)", indices.unk00, indices.unk02, indices.unk04, indices.unk06, indices.unk08);
+}
+
+typedef struct
+{
+    Vector3 unk00;
+    Vector3 unk0C;
+    Vector3 unk18;
+    short index;
+    short unkIndex;
+    short parentIndex;
+    short childIndex;
+    short nextSiblingIndex;
+    short unk2E <hidden=true>; Assert(unk2E == 0);
+    int nodesOffset; Assert(nodesOffset > 0);
+    int verticesOffset; Assert(verticesOffset > 0);
+    int unk38 <hidden=true>; Assert(unk38 == 0);
+
+    local quad end <hidden=true> = FTell();
+    FSeek(nodesOffset);
+    TreeNode nodes[header.nodeCount];
+    
+    FSeek(verticesOffset);
+    Vector3 vertices[header.vertexCount];
+
+    FSeek(end);
+} Collision <bgcolor=cDkGreen, optimize=false>;
+
+//------------------------------------------------
+
+Header header;
+
+FSeek(header.textureOffset);
+Texture textures[header.textureCount];
+
+FSeek(header.collisionOffset);
+Collision collisions[header.collisionCount];
+
+FSeek(header.indicesOffset);
+Indices indices[header.indexCount];

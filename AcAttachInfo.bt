@@ -25,7 +25,8 @@ typedef struct
 
 typedef struct (int stringsOffset)
 {
-    short unk00;
+    ubyte category;
+    ubyte attachID;
     byte unk02;
     byte unk03;
     int stringOffset;
@@ -43,7 +44,7 @@ typedef struct (int stringsOffset)
 string ReadEntry(Entry& entry)
 {
     local string str;
-    return SPrintf(str, "%s | %i %i %i %i", entry.boneName, entry.unk00, entry.unk02, entry.unk03, entry.unk0C);
+    return SPrintf(str, "%s\t\t(%i,%i)\t\t[%i,%i] %s", entry.boneName, entry.category, entry.attachID, entry.unk02, entry.unk03, (entry.unk0C == 1 ? "T" : "F"));
 }
 
 //------------------------------------------------

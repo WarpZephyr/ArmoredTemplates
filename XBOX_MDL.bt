@@ -1,0 +1,98 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.2 Binary Template
+//
+//      File: XBOX_MDL.bt
+//   Authors: WarpZephyr
+//   Version: 1.0.0
+//   Purpose: Murakumo: Renegade Mech Pursuit models.
+//  Category: Model
+// File Mask: *.MDL
+//  ID Bytes: 4D 44 4C 20
+//   History: 
+//------------------------------------------------
+
+LittleEndian();
+
+//------------------------------------------------
+
+typedef struct
+{
+    char magic[4]; Assert(magic == "MDL ");
+    int version; Assert(version == 20003 || version == 20004); // I think?
+    int unk08; Assert(unk08 == 0);
+    int modelNameOffset;
+    int textureNameOffset;
+    int sectionCount;
+    int sectionOffset;
+    string modelName;
+    string textureName;
+} MDL <bgcolor=cLtRed>;
+
+typedef struct
+{
+    char magic[4]; Assert(magic == "XB2\0");
+    int version; // I think?
+    int size;
+    int unk0C;
+    int unk10;
+    int unk14;
+    int unk18;
+    int unk1C;
+    int unk20;
+    int unk24;
+    int unk28;
+    int unk2C;
+} XB2 <bgcolor=cLtRed>;
+
+typedef struct
+{
+    
+} OBJ <bgcolor=cBlue>;
+
+typedef struct(char magic[])
+{
+    int offset;
+    int size;
+
+    local quad pos <hidden=true> = FTell();
+
+    FSeek(offset);
+    switch (magic)
+    {
+        case "XBM ":
+            XB2 xbm;
+            break;
+        case "OBJ ":
+            OBJ obj;
+            break;
+        default:
+            ubyte data[size] <bgcolor=cAqua>;
+            break;
+    }
+
+    FSeek(pos);
+} Entry <bgcolor=cLtGreen, optimize=false>;
+
+typedef struct
+{
+    char magic[4];
+    int count;
+    int offset;
+    int unk0C <hidden=true>; Assert(unk0C == 0);
+
+    local quad pos <hidden=true> = FTell();
+    FSeek(offset);
+    Entry entries(magic)[count];
+    FSeek(pos);
+} Section <bgcolor=cRed, read=ReadSection, optimize=false>;
+
+string ReadSection(Section& section)
+{
+    return section.magic;
+}
+
+//------------------------------------------------
+
+MDL mdl;
+FSeek(mdl.sectionOffset);
+Section sections[mdl.sectionCount];

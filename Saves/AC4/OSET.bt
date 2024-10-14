@@ -1,0 +1,99 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.2 Binary Template
+//
+//      File: OSET.bt
+//   Authors: WarpZephyr
+//   Version: 1.0.0
+//   Purpose: Armored Core 4 options/settings save file.
+//  Category: Saves
+// File Mask: OSET.DAT
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+BigEndian();
+
+enum <ubyte> ControlType
+{
+    TypeA = 0,
+    TypeB = 1,
+    CustomA = 2,
+    CustomB = 3
+};
+
+enum <ubyte> Key
+{
+    LeftStickUpArrow = 0,
+    LeftStickDownArrow = 1,
+    LeftStickRightArrow = 2,
+    LeftStickLeftArrow = 3,
+    RightStickUpArrow = 4,
+    RightStickDownArrow = 5,
+    RightStickRightArrow = 6,
+    RightStickLeftArrow = 7,
+    Circle = 8,
+    Triangle = 9,
+    Square = 10,
+    X = 11,
+    L1 = 12,
+    L2 = 13,
+    R1 = 14,
+    R2 = 15,
+    L3 = 16,
+    R3 = 17,
+    Select = 18,
+    Start = 19,
+    UpArrow = 20,
+    DownArrow = 21,
+    RightArrow = 22,
+    LeftArrow = 23,
+    Compound = 254,
+    Unassigned = 255
+};
+
+//------------------------------------------------
+
+typedef struct
+{
+    Key forward;
+    Key backward;
+    Key right;
+    Key left;
+    Key look_right;
+    Key look_left;
+    Key look_up;
+    Key look_down;
+    Key reset_view;
+    Key lock_on;
+    Key boost;
+    Key over_boost;
+    Key quick_boost;
+    Key use_right;
+    Key use_left;
+    Key use_shoulder;
+    Key switch_right;
+    Key switch_left;
+    Key pause;
+} Keys <bgcolor=cLtYellow>;
+
+typedef struct
+{
+    ControlType control_type;
+    Keys customA;
+    Keys customB;
+    ubyte auto_sighting : 1;
+    ubyte auto_boost : 1;
+    ubyte auto_switch : 1;
+    ubyte unk27 : 5;
+    ubyte brightness;
+    ubyte unk29; // A setting?
+    ubyte volume_music;
+    ubyte volume_effects;
+    ubyte volume_voice;
+    ubyte unk2D; // Some kind of volume setting? (Since it's set to 80 for max)
+    char regulation[16];
+} OSET <bgcolor=cLtRed>;
+
+//------------------------------------------------
+
+OSET options;

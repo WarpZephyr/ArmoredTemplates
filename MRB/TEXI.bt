@@ -1,0 +1,33 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.2 Binary Template
+//
+//      File: TEXI.bt
+//   Authors: WarpZephyr
+//   Version: 1.0.0
+//   Purpose: MenuResource textures, contains naming and index information for texture access.
+//  Category: Dantelion
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+typedef struct
+{
+    int nameOffset <format=hex, hidden=true>;
+    int pathOffset <format=hex, hidden=true>;
+    int unk08 <hidden=true>; Assert(unk08 == 0);
+    int unk0C <hidden=true>; Assert(unk0C == 0);
+    
+    local quad pos <hidden=true> = FTell();
+    FSeek(offsetsStr + nameOffset);
+    string name;
+
+    FSeek(offsetsStr + pathOffset);
+    string path;
+    FSeek(pos);
+} TEXIEntry <read=ReadTEXIEntry, optimize=false>;
+
+string ReadTEXIEntry(TEXIEntry& entry)
+{
+    return Str("%s - %s", entry.name, entry.path);
+}

@@ -1,0 +1,35 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.1 Binary Template
+//
+//      File: ANIO.bt
+//   Authors: WarpZephyr
+//   Version: 1.0.1
+//   Purpose: DRB animation objects.
+//  Category: Dantelion
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+typedef struct
+{
+    int unk00; Assert(unk00 >= 0 && unk00 <= 3); // Index?
+    int anikCount;
+    int anikOffset <format=hex>;
+    int unk0C; // Frame count?
+
+    if (anikCount > 0)
+    {
+        local quad pos <hidden=true> = FTell();
+        FSeek(offsets.anik + anikOffset);
+        ANIKEntry anikEntries(unk00)[anikCount] <bgcolor=cLtGray, optimize=false>;
+        FSeek(pos);
+    }
+} ANIOEntry <read=ReadANIOEntry, optimize=false>;
+
+wstring ReadANIOEntry(ANIOEntry& entry)
+{
+    string str;
+    SPrintf(str, "%i %i %3i", entry.unk00, entry.anikCount, entry.unk0C);
+    return str;
+}

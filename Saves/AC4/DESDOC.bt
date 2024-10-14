@@ -1,0 +1,59 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.2 Binary Template
+//
+//      File: DESDOC.bt
+//   Authors: WarpZephyr
+//   Version: 1.0.4
+//   Purpose: Armored Core 4 design documents.
+//  Category: Saves
+// File Mask: DESDOC.DAT
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+#define DESIGN_CAPACITY 128
+#define _DESIGN_NO_CALL
+#define _DESIGN_ENCODING_AUTO
+
+// Auto detect based on file size
+// 1,005,576 means 2 byte encoding is being used (US) (Xbox 360)
+// 1,005,572 means 2 byte encoding is being used (US) (PS3)
+// 993,284 means 1 byte encoding is being used (JP) (PS3)
+local ubyte _DESIGN_ENCODING_WIDE <hidden=true> = 0;
+local quad _DESDOC_FILE_SIZE <hidden=true> = FileSize();
+if (_DESDOC_FILE_SIZE == 1005572 || _DESDOC_FILE_SIZE == 1005576)
+{
+    _DESIGN_ENCODING_WIDE = 1;
+}
+
+local ubyte _DESDOC_XBOX <hidden=true> = 0;
+if (ReadShort(0) == 400)
+    _DESDOC_XBOX = 1;
+else
+    _DESDOC_XBOX = 0;
+
+#include "Design.bt"
+BigEndian();
+
+//------------------------------------------------
+
+typedef struct
+{
+    if (_DESDOC_XBOX)
+    {
+        ushort unk00;
+        ushort unk02;
+        ushort design_count; // Saved design count
+        ushort unk06;
+    }
+    else
+    {
+        ushort design_count; // Saved design count
+        ushort unk02;
+    }
+    Design designs[DESIGN_CAPACITY]; // Read the whole file anyways
+} DESDOC <bgcolor=cLtRed>;
+
+//------------------------------------------------
+
+DESDOC desdoc;

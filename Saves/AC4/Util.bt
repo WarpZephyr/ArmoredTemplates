@@ -1,0 +1,55 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.2 Binary Template
+//
+//      File: Util.bt
+//   Authors: WarpZephyr
+//   Version: 1.0.0
+//   Purpose: Utility structs and functions.
+//  Category: Utility
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+#ifndef _ARMOREDTEMPLATES_UTIL
+#define _ARMOREDTEMPLATES_UTIL
+
+typedef struct
+{
+    float x;
+    float y;
+    float z;
+} Vector3 <read=ReadVector3>;
+
+string ReadVector3(Vector3& vec)
+{
+    return Str("<%7.2f, %7.2f, %7.2f>", vec.x, vec.y, vec.z);
+}
+
+typedef struct
+{
+    ubyte Red;
+    ubyte Green;
+    ubyte Blue;
+    ubyte Alpha;
+} ColorRGBA <bgcolor=cLtGreen, read=ReadColorRGBA>;
+
+string ReadColorRGBA(ColorRGBA& color)
+{
+    return Str("<%d,%d,%d,%d>", color.Red, color.Green, color.Blue, color.Alpha);
+}
+
+ubyte ColorEmptyRGBA(ColorRGBA& color)
+{
+    if (color.Red == 0
+    && color.Green == 0
+    && color.Blue == 0
+    && color.Alpha == 0)
+    {
+        return 1;
+    }
+
+    return 0;
+}
+
+#endif

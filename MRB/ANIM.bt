@@ -1,0 +1,31 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.2 Binary Template
+//
+//      File: ANIM.bt
+//   Authors: WarpZephyr
+//   Version: 1.0.0
+//   Purpose: MenuResource animations.
+//  Category: Dantelion
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+typedef struct
+{
+    int nameOffset;
+    int prmiOffset;
+
+    local quad pos <hidden=true> = FTell();
+    FSeek(offsetsStr + nameOffset);
+    string name;
+
+    FSeek(offsetsPrmi + prmiOffset);
+    PRMIEntry prmi <bgcolor=GetSectionBgcolorByType("PRMI")>;
+    FSeek(pos);
+} ANIMEntry <read=ReadANIMEntry, optimize=false>;
+
+string ReadANIMEntry(ANIMEntry& entry)
+{
+    return entry.name;
+}

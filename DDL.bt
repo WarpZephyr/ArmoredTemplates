@@ -1,0 +1,72 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.2 Binary Template
+//
+//      File: DDL.bt
+//   Authors: WarpZephyr
+//   Version: 1.0.0
+//   Purpose: Murakumo: Renegade Mech Pursuit textures.
+//  Category: Texture
+// File Mask: *.DDL
+//  ID Bytes: 44 44 4C 20
+//   History: 
+//------------------------------------------------
+
+LittleEndian();
+
+//------------------------------------------------
+
+typedef struct
+{
+    char magic[4]; Assert(magic == "DDL ");
+    int version; Assert(version == 20000); // I think?
+    int unk08; Assert(unk08 == 0);
+    int nameOffset;
+    int sectionCount;
+    int sectionOffset;
+    string name;
+} DDL <bgcolor=cLtRed>;
+
+typedef struct
+{
+    int nameOffset;
+    int offset;
+    int size;
+
+    local quad pos <hidden=true> = FTell();
+    FSeek(nameOffset);
+    string name;
+
+    FSeek(offset);
+    ubyte data[size] <bgcolor=cAqua>;
+
+    FSeek(pos);
+} Entry <bgcolor=cLtGreen, read=ReadFileEntry, optimize=false>;
+
+string ReadEntry(Entry& entry)
+{
+    return entry.name;
+}
+
+typedef struct
+{
+    char magic[4];
+    int count;
+    int offset;
+    int unk0C <hidden=true>; Assert(unk0C == 0);
+
+    local quad pos <hidden=true> = FTell();
+    FSeek(offset);
+    Entry entries[count];
+    FSeek(pos);
+} Section <bgcolor=cRed, read=ReadSection, optimize=false>;
+
+string ReadSection(Section& section)
+{
+    return section.magic;
+}
+
+//------------------------------------------------
+
+DDL ddl;
+FSeek(ddl.sectionOffset);
+Section sections[ddl.sectionCount];

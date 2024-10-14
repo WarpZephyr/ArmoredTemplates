@@ -1,0 +1,38 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.1 Binary Template
+//
+//      File: DLGO.bt
+//   Authors: WarpZephyr
+//   Version: 1.0.1
+//   Purpose: DRB Dialog Objects, individual UI elements.
+//  Category: Dantelion
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+typedef struct {
+    int nameOffset <format=hex, hidden=true>;
+    int shapOffset <format=hex, hidden=true>;
+    int ctrlOffset <format=hex, hidden=true>;
+    int unk0C <hidden=true>; Assert(unk0C == 0);
+    int unk10 <hidden=true>; Assert(unk10 == 0);
+    int unk14 <hidden=true>; Assert(unk14 == 0);
+    int unk18 <hidden=true>; Assert(unk18 == 0);
+    int unk1C <hidden=true>; Assert(unk1C == 0);
+    
+    local quad pos <hidden=true> = FTell();
+    FSeek(offsets.str + nameOffset);
+    wstring name;
+
+    FSeek(offsets.shap + shapOffset);
+    SHAPEntry shapEntry <bgcolor=cLtBlue>;
+
+    FSeek(offsets.ctrl + ctrlOffset);
+    CTRLEntry ctrlEntry <bgcolor=cAqua>;
+    FSeek(pos);
+} DLGOEntry <read=ReadDLGOEntry, optimize=false>;
+
+wstring ReadDLGOEntry(DLGOEntry& entry) {
+    return entry.name;
+}

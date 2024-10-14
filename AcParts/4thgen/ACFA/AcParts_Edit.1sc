@@ -1,0 +1,23 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.2 Script File
+//
+//      File: AcParts_Edit.1sc
+//   Authors: WarpZephyr
+//   Version: 1.0.0
+//   Purpose: Editing AcParts values.
+//  Category: Mass Editing
+//   History: 
+//------------------------------------------------
+
+RunTemplate("AcParts.bt");
+
+//------------------------------------------------
+
+int i;
+for (i = 0; i < header.Back_Unit_Count; i++)
+{
+    if (Back_Units[i].SubCategoryID >= MISSLE && Back_Units[i].SubCategoryID <= AS_MISSLE)
+    {
+        Back_Units[i].Stats.weapon.Firing_Mode = Automatic;
+    }
+}

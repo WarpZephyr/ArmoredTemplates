@@ -1,0 +1,201 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.2 Binary Template
+//
+//      File: BND2.bt
+//   Authors: WarpZephyr, Dropoff
+//   Version: 1.2.2
+//   Purpose: FromSoftware Binder2 archives in several games including but not limited to ACE PSP, ACLR, ACNB, ACFF PSP, MWC.
+//  Category: Archives
+// File Mask: *.BIN,*.bin,*.BND,*.bnd,*.dat,*.DAT
+//  ID Bytes: 42 4E 44 00
+//   History: Discovered the name "Binder2.exe" in ACFF PSP, renamed template to BND2.
+//------------------------------------------------
+
+LittleEndian();
+
+// Used for asserting file offsets are not invalid
+local byte HEADER_SIZE = 32;
+local byte FILE_ENTRY_SIZE = 16;
+
+// Flags
+//------------------------------------------------
+
+// Guesses, may be wrong, other than FI_FILE_NAME_OFFSET being related to name offset somehow in file entries.
+local ubyte HI_HEADER_ITEM      <hidden=true> = 0b00000001;
+local ubyte HI_ENDIAN           <hidden=true> = 0b00000010;
+local ubyte HI_FILE_VERSION     <hidden=true> = 0b00000100;
+local ubyte HI_FILE_SIZE        <hidden=true> = 0b00001000;
+local ubyte HI_FILE_NUM         <hidden=true> = 0b00010000;
+local ubyte HI_BASE_DIR_OFFSET  <hidden=true> = 0b00100000;
+local ubyte HI_ALIGNMENT_SIZE   <hidden=true> = 0b01000000;
+local ubyte HI_OPTION           <hidden=true> = 0b10000000;
+
+local ubyte FI_FILE_ID          <hidden=true> = 0b00000001;
+local ubyte FI_FILE_OFFSET      <hidden=true> = 0b00000010;
+local ubyte FI_FILE_SIZE        <hidden=true> = 0b00000100;
+local ubyte FI_FILE_NAME_OFFSET <hidden=true> = 0b00001000;
+
+// Helpers that store whether or not a flag is active rather than using the AND operator over and over.
+local ubyte HAS_HI_HEADER_ITEM;
+local ubyte HAS_HI_ENDIAN;
+local ubyte HAS_HI_FILE_VERSION;
+local ubyte HAS_HI_FILE_SIZE;
+local ubyte HAS_HI_FILE_NUM;
+local ubyte HAS_HI_BASE_DIR_OFFSET;
+local ubyte HAS_HI_ALIGNMENT_SIZE;
+local ubyte HAS_HI_OPTION;
+
+local ubyte HAS_FI_FILE_ID;
+local ubyte HAS_FI_FILE_OFFSET;
+local ubyte HAS_FI_FILE_SIZE;
+local ubyte HAS_FI_FILE_NAME_OFFSET;
+
+// Enum
+//------------------------------------------------
+
+enum <ubyte> FILE_PATH_MODE
+{
+    NAMELESS = 0,      // Files have no name
+    FILENAME = 1,      // Files have a file name
+    FULL_PATH = 2,     // Files have a full file path
+    BASE_DIRECTORY = 3 // Files have a partial path, and all files are based in the base directory
+};
+
+
+// Helper Functions
+//------------------------------------------------
+
+void Align(int align)
+{
+    local quad pos = FTell();
+    local quad remainder = pos % align;
+    if (remainder > 0)
+    {
+        FSkip(align - remainder);
+    }
+}
+
+void SetFlags(ubyte headerInfo, ubyte fileInfo)
+{
+    HAS_HI_HEADER_ITEM      = (headerInfo & HI_HEADER_ITEM) > 0;
+    HAS_HI_ENDIAN           = (headerInfo & HI_ENDIAN) > 0;
+    HAS_HI_FILE_VERSION     = (headerInfo & HI_FILE_VERSION) > 0;
+    HAS_HI_FILE_SIZE        = (headerInfo & HI_FILE_SIZE) > 0;
+    HAS_HI_FILE_NUM         = (headerInfo & HI_FILE_NUM) > 0;
+    HAS_HI_BASE_DIR_OFFSET  = (headerInfo & HI_BASE_DIR_OFFSET) > 0;
+    HAS_HI_ALIGNMENT_SIZE   = (headerInfo & HI_ALIGNMENT_SIZE) > 0;
+    HAS_HI_OPTION           = (headerInfo & HI_OPTION) > 0;
+
+    HAS_FI_FILE_ID          = (fileInfo & FI_FILE_ID) > 0;
+    HAS_FI_FILE_OFFSET      = (fileInfo & FI_FILE_OFFSET) > 0;
+    HAS_FI_FILE_SIZE        = (fileInfo & FI_FILE_SIZE) > 0;
+    HAS_FI_FILE_NAME_OFFSET = (fileInfo & FI_FILE_NAME_OFFSET) > 0;
+}
+
+// Structs
+//------------------------------------------------
+
+typedef struct 
+{
+    char magic[4]; Assert(magic == "BND\0");
+    ubyte headerInfo <format=binary>; // Maybe?
+    ubyte fileInfo <format=binary>; // Maybe?
+    SetFlags(headerInfo, fileInfo);
+    ubyte unk06 <hidden=true>; Assert(unk06 == 0); // Division Flags? Bit Big Endian? "Header Item"?
+    if (HAS_HI_ENDIAN)
+    {
+        ubyte endian; // Assumed from the order of things
+        if (endian) BigEndian();
+    }
+    
+    if (HAS_HI_FILE_VERSION)    uint file_version;
+    if (HAS_HI_FILE_SIZE)       uint file_size;
+    if (HAS_HI_FILE_NUM)        uint file_num;
+    if (HAS_HI_BASE_DIR_OFFSET) uint base_dir_offset; // Can be set to zero when file_path_mode is BASE_DIRECTORY if the FI_FILE_NAME_OFFSET flag is not set
+    if (HAS_HI_ALIGNMENT_SIZE)  ushort alignment_size;
+    if (HAS_HI_OPTION)          FILE_PATH_MODE file_path_mode;
+
+    ubyte unk1B; // Unknown, I recall seeing it set to 1 in a file from memory, but I'm not sure.
+    uint unk1C <hidden=true>; Assert(unk1C == 0); // Padding?
+
+    if (!HAS_FI_FILE_NAME_OFFSET)
+    {
+        uint unk20 <hidden=true>; Assert(unk20 == 0); // Why is this included when no names? I have only seen it in one file though.
+    }
+} Header <bgcolor=cLtRed, optimize=false>;
+
+typedef struct
+{
+    if (HAS_FI_FILE_ID)          uint id;
+    if (HAS_FI_FILE_OFFSET)      uint offset;
+    if (HAS_FI_FILE_SIZE)        uint size;
+    if (HAS_FI_FILE_NAME_OFFSET) uint name_offset;
+
+    local ubyte seekToData = HAS_FI_FILE_OFFSET && HAS_FI_FILE_SIZE;
+    local ubyte seekToName = HAS_FI_FILE_NAME_OFFSET && name_offset != 0;
+    if (seekToData || seekToName) local quad end = FTell();
+    if (seekToData)
+    {
+        FSeek(offset);
+        ubyte data[size];
+        FSeek(end);
+    }
+
+    if(seekToName)
+    {
+        FSeek(name_offset);
+        string name;
+        FSeek(end);
+    }
+} File <bgcolor=cLtGreen, read=ReadFile, optimize=false>;
+
+string ReadFile(File& file)
+{
+    local string str = "";
+
+    if (HAS_FI_FILE_ID) SPrintf(str, "%i", file.id);
+    if (HAS_FI_FILE_NAME_OFFSET)
+    {
+        local string name;
+        switch(header.file_path_mode)
+        {
+            case NAMELESS: break;
+            case FILENAME:
+            case FULL_PATH:
+            case BASE_DIRECTORY:
+                if (str != "") str += " | ";
+                str += file.name;
+                break;
+            default: Assert(false);
+        }
+    }
+
+    return str;
+}
+
+typedef struct
+{
+    string name;
+} FileName <read=ReadName>;
+
+string ReadName(FileName& name)
+{
+    return name.name;
+}
+
+// Read
+//------------------------------------------------
+
+Header header;
+if (HAS_HI_BASE_DIR_OFFSET && header.base_dir_offset > 0)
+{
+    local long start <hidden=true> = FTell();
+    FSeek(header.base_dir_offset);
+    string base_dir <bgcolor=cLtGreen>;
+    FSeek(start);
+}
+
+if (HAS_HI_FILE_NUM && header.file_num > 0)
+{
+    File files[header.file_num];
+}

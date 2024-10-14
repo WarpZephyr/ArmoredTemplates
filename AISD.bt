@@ -45,7 +45,14 @@ typedef struct
     wchar_t unk70[24];
     wchar_t unkA0[24];
     quad creationTimeStamp; // In microseconds, starting from 01/01/01 00:00:00
-    quad unkD8 <hidden=true>; Assert(unkD8 == 0);
+    ubyte unkD8;
+    ubyte unkD9;
+    ubyte unkDA;
+    ubyte unkDB;
+    ubyte unkDC;
+    ubyte unkDD;
+    ubyte unkDE;
+    ubyte unkDF;
     quad unkE0 <hidden=true>; Assert(unkE0 == 0);
     Parts parts;
 } UnacDesign <bgcolor=cLtGreen>;

@@ -1,0 +1,49 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.2 Binary Template
+//
+//      File: LDMU.bt
+//   Authors: WarpZephyr
+//   Version: 1.0.0
+//   Purpose: Archive header
+//  Category: Archives
+// File Mask: *.bhd
+//  ID Bytes: 4C 44 4D 55
+//   History: 
+//------------------------------------------------
+
+local int SECTOR_SIZE = 0x400;
+LittleEndian();
+
+//------------------------------------------------
+
+typedef struct
+{
+    char magic[4]; Assert(magic == "LDMU");
+    int unk04; // version?
+    int fileCount;
+    int dataSize;
+    int unk10;
+    int unk14;
+    int unk18;
+} Header <bgcolor=cLtRed>;
+
+typedef struct
+{
+    int id;
+    int start_sector;
+    int uncompressed_length;
+    int compressed_length;
+    byte unk10[24]; // Hash? Checksum? Both?
+} File <bgcolor=cLtGreen, read=ReadFile, optimize=false>;
+
+string ReadFile(File& file)
+{
+    local string str;
+    return SPrintf(str, "ID: %i | Offset: %i | Length: %i \\ %i",
+    file.id, (file.start_sector * SECTOR_SIZE), file.compressed_length, file.uncompressed_length);
+}
+
+//------------------------------------------------
+
+Header header;
+File files[header.fileCount];

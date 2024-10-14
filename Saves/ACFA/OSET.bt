@@ -1,0 +1,121 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.2 Binary Template
+//
+//      File: OSET.bt
+//   Authors: WarpZephyr
+//   Version: 1.0.1
+//   Purpose: Armored Core For Answer options/settings save file.
+//  Category: Saves
+// File Mask: OSET.DAT
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+BigEndian();
+
+enum <ubyte> Key
+{
+    LeftStickUpArrow = 0,
+    LeftStickDownArrow = 1,
+    LeftStickRightArrow = 2,
+    LeftStickLeftArrow = 3,
+    RightStickUpArrow = 4,
+    RightStickDownArrow = 5,
+    RightStickRightArrow = 6,
+    RightStickLeftArrow = 7,
+    Circle = 8,
+    Triangle = 9,
+    Square = 10,
+    X = 11,
+    L1 = 12,
+    L2 = 13,
+    R1 = 14,
+    R2 = 15,
+    L3 = 16,
+    R3 = 17,
+    Select = 18,
+    Start = 19,
+    UpArrow = 20,
+    DownArrow = 21,
+    RightArrow = 22,
+    LeftArrow = 23,
+    Compound = 254,
+    Unassigned = 255
+};
+
+enum <int> RadarType
+{
+    RadarClassic = 0,
+    RadarNormal = 1
+};
+
+//------------------------------------------------
+
+typedef struct
+{
+    Key look_up;
+    Key look_down;
+    Key reset_view;
+    Key look_right;
+    Key look_left;
+    Key boost;
+    Key overed_boost;
+    Key quick_boost;
+    Key use_right;
+    Key use_left;
+    Key use_shoulder;
+    Key switch_right;
+    Key switch_left;
+    Key purge_right;
+    Key purge_left;
+    Key purge_shoulder;
+    Key reload_right;
+    Key reload_left;
+    Key lock_on;
+    Key switch_lock;
+    Key pause;
+    Key forward;
+    Key backward;
+    Key right;
+    Key left;
+    Key assault_armor;
+} Keys <bgcolor=cYellow>;
+
+typedef struct
+{
+    Keys keys;
+    ubyte control_type; // Seems to be control type, the game doesn't care what it is though.
+    ubyte unk1B; // Flags? The game doesn't seem to care what they are
+    int unk1C; // Always 0
+} KeySet <bgcolor=cLtYellow>;
+
+typedef struct
+{
+    ubyte selected_control_type;
+    ubyte vibration;
+    ushort unk02; // Always 0
+    KeySet regularA;
+    KeySet regularB;
+    KeySet simple;
+    ubyte auto_sighting : 1;
+    ubyte auto_boost : 1;
+    ubyte auto_switch : 1;
+    ubyte unk64 : 5; // Just unused bits and/or memory leak?
+    ubyte unk65[31]; // Seems random, might be unused setting data though.
+    ubyte brightness;
+    ubyte unk85; // A setting?
+    ubyte volume_music;
+    ubyte volume_effects;
+    ubyte volume_voice;
+    ubyte unk89; // Some kind of volume setting? (Since it's set to 80 for max in AC4 previously)
+    ubyte unk8A[6]; // More volume related settings not in use? Memory leak?
+    int unk90; // Always 0
+    RadarType radar_type; Assert(radar_type == RadarClassic || radar_type == RadarNormal);
+    int cockpit_color;
+    char regulation[16];
+    ubyte unkAC[32]; // Looks like garbage joint control XML data leaked from memory
+} OSET <bgcolor=cLtRed>;
+
+//------------------------------------------------
+
+OSET options;

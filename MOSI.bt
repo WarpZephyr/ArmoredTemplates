@@ -34,15 +34,14 @@ typedef struct
     char unk10[4];
     int unk14 <hidden=true>; Assert(unk14 == 0xFF000000);
     int unk18 <hidden=true>; Assert(unk18 == 0);
-} Entry <bgcolor=cLtGreen, read=ReadEntry, optimize=false>;
+} FileEntry <bgcolor=cLtGreen, read=ReadFileEntry, optimize=false>;
 
-string ReadEntry(Entry& entry)
+string ReadFileEntry(FileEntry& entry)
 {
-    string str;
-    return SPrintf(str, "%i", entry.id);
+    return Str("%i", entry.id);
 }
 
 //------------------------------------------------
 
 Header header;
-Entry entries[header.count];
+FileEntry entries[header.count];

@@ -1,0 +1,57 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.2 Binary Template
+//
+//      File: Emblem.bt
+//   Authors: WarpZephyr
+//   Version: 1.0.2
+//   Purpose: Emblem/Decal image structures in Armored Core V saves.
+//  Category: Saves
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+#ifndef _ARMORED_TEMPLATES_EMBLEMS
+#define _ARMORED_TEMPLATES_EMBLEMS
+
+#include "Color.bt"
+BigEndian();
+
+//------------------------------------------------
+
+typedef struct
+{
+    ubyte unk00 : 4;
+    ubyte negative_angle : 1;
+    ubyte unk05 : 1;
+    ubyte negative_pos_x : 1;
+    ubyte negative_pos_y : 1;
+} EmblemLayerFlags;
+
+typedef struct
+{
+    ubyte angle;
+    ColorRGB colorDifference; // Subtracted from 255
+    ubyte opacityDifference; // Multiplied by 2 for some reason
+    ubyte unk06;
+    ushort imageID;
+    byte width; // If negative its flipped horizontally
+    byte height; // If negative its flipped vertically
+    ubyte x;
+    ubyte y;
+    EmblemLayerFlags flags;
+    ubyte unk;
+} EmblemLayer <optimize=false>;
+
+typedef struct
+{
+    uquad unk1;
+    ubyte unk00;
+    ubyte unk01;
+    ubyte unk02;
+    ubyte unk03;
+    EmblemLayer layers[128];
+    int unk;
+} Emblem <optimize=false>;
+
+#endif

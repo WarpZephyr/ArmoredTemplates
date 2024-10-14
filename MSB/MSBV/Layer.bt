@@ -3,7 +3,7 @@
 //
 //      File: Layer.bt
 //   Authors: WarpZephyr
-//   Version: 1.1.0
+//   Version: 1.1.1
 //   Purpose: Armored Core V Layers.
 //  Category: Maps
 // File Mask: 
@@ -15,7 +15,8 @@ typedef struct
 {
     local quad start = FTell();
     
-    int nameOffset <format=hex>;
+	// Read Data
+    int nameOffset;
     int layerID;
     int unk08;
     int id;
@@ -24,6 +25,7 @@ typedef struct
     int unk18;
     int unk1C;
 
+	// Get Offset Structs
     FSeek(start + nameOffset);
     string name;
 } Layer <read=ReadLayer>;
@@ -31,5 +33,5 @@ typedef struct
 string ReadLayer(Layer& layer)
 {
     local string str;
-    return SPrintf(str, "IDs: %d %d | %s", layer.id, layer.layerID, layer.name);
+    return SPrintf(str, "ID: %d | %s", layer.id, layer.name);
 }

@@ -1,0 +1,25 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.2 Binary Template
+//
+//      File: GPROG.bt
+//   Authors: WarpZephyr
+//   Version: 1.0.0
+//   Purpose: Armored Core 4 game progress save file.
+//  Category: Saves
+// File Mask: GPROG.DAT
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+BigEndian();
+
+//------------------------------------------------
+
+typedef struct
+{
+    
+} GPROG <bgcolor=cLtRed>;
+
+//------------------------------------------------
+
+GPROG progress;

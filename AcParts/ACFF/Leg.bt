@@ -1,0 +1,19 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.2 Binary Template
+//
+//      File: Leg.bt
+//   Authors: WarpZephyr
+//   Version: 1.0.0
+//   Purpose: Leg part stats in ACFF.
+//  Category: Stats
+// File Mask: *.bin
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+LittleEndian();
+
+typedef struct
+{
+    byte data[128];
+} Leg <optimize=false>;

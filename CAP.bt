@@ -15,37 +15,33 @@ BigEndian();
 
 //------------------------------------------------
 
-int FourCCToInt(string fourCC) {
-    return fourCC[0] | ((int)fourCC[1] << 8) | ((int)fourCC[2] << 16) | ((int)fourCC[3] << 24);
-}
-
-string IntToFourCC(int value) {
-    string str;
-    return SPrintf(str, "%c%c%c%c",
-        value & 0xff, value >> 8 & 0xff, value >> 16 & 0xff, value >> 24 & 0xff);
-}
-
 typedef struct
 {
-    int fourCC <format=hex>; Assert(fourCC == FourCCToInt("CAP\0"));
+    char magic[4]; Assert(magic == "\0PAC"); // CAP
     int unk04; Assert(unk04 == 1);
     int unk08; Assert(unk08 == 0);
     int unk0C; Assert(unk0C == 0);
-} Header <bgcolor=cLtRed, read=ReadHeader>;
-
-string ReadHeader(Header& header) {
-    string str;
-    return SPrintf(str, "%s", IntToFourCC(header.fourCC));
-}
+} Header <bgcolor=cLtRed>;
 
 typedef struct
 {
-    short unk00;
-    short unk02;
-    int unk04;
-    float unk08;
-    float unk0C;
-} Entry <bgcolor=cLtGreen, optimize=false>;
+    short type;
+    short size;
+    
+    if (type == -1)
+    {
+        ubyte padding[12];
+    }
+    else
+    {
+        ubyte data[size - 4];
+    }
+} Entry <bgcolor=cLtGreen, read=ReadEntry, optimize=false>;
+
+string ReadEntry(Entry& entry)
+{
+    return Str("%d [%d]", entry.type, entry.size);
+}
 
 //------------------------------------------------
 
@@ -53,10 +49,12 @@ Header header;
 
 struct 
 {
-    local short end <hidden=true> = 0;
-    while (end != -1)
+    while (true)
     {
-        Entry entry;
-        end = entry.unk00;
+        Entry entries;
+        if (entries.type == -1)
+        {
+            break;
+        }
     }
 } Entries;

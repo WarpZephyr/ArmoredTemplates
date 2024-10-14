@@ -1,0 +1,80 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.1 Binary Template
+//
+//      File: Colors.bt
+//   Authors: WarpZephyr
+//   Version: 
+//   Purpose: Color helper functions and structs.
+//  Category: 
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+typedef struct
+{
+    ubyte Red;
+    ubyte Green;
+    ubyte Blue;
+    ubyte Alpha;
+} ColorRGBA <bgcolor=cLtGreen, read=ReadColorRGBA>;
+
+string ReadColorRGBA(ColorRGBA& color)
+{
+    local string str;
+    return SPrintf(str, "%d/%d/%d/%d", color.Red, color.Green, color.Blue, color.Alpha);
+}
+
+ubyte ColorEmptyRGBA(ColorRGBA& color)
+{
+    if (color.Red == 0
+    && color.Green == 0
+    && color.Blue == 0
+    && color.Alpha == 0)
+    {
+        return 1;
+    }
+
+    return 0;
+}
+
+typedef struct
+{
+    ubyte Red;
+    ubyte Green;
+    ubyte Blue;
+} ColorRGB <bgcolor=cLtGreen, read=ReadColorRGB>;
+
+string ReadColorRGB(ColorRGB& color)
+{
+    local string str;
+    return SPrintf(str, "%d/%d/%d", color.Red, color.Green, color.Blue);
+}
+
+typedef struct
+{
+    ColorRGBA Main;
+    ColorRGBA Sub1;
+    ColorRGBA Hidden_Support;
+    ColorRGBA Sub2;
+    ColorRGBA Hidden_Joint;
+    ColorRGBA Glow;
+} ColorSet <bgcolor=cLtGreen, read=ReadColorSet>;
+
+string FormatColorSetColor(byte index, ColorRGBA& color)
+{
+    local string str;
+    return SPrintf(str, "%d: %d/%d/%d/%d", index, color.Red, color.Green, color.Blue, color.Alpha);
+}
+
+string ReadColorSet(ColorSet& colorset)
+{
+    string str;
+    return SPrintf(str, "%s %s %s %s %s %s", 
+            FormatColorSetColor(1, colorset.Main),
+            FormatColorSetColor(2, colorset.Sub1),
+            FormatColorSetColor(3, colorset.Hidden_Support),
+            FormatColorSetColor(4, colorset.Sub2),
+            FormatColorSetColor(5, colorset.Hidden_Joint),
+            FormatColorSetColor(6, colorset.Glow));
+}

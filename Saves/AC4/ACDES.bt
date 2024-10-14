@@ -1,0 +1,14 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.2 Binary Template
+//
+//      File: ACDES.bt
+//   Authors: WarpZephyr
+//   Version: 1.0.1
+//   Purpose: Armored Core 4 currently loaded player design file.
+//  Category: Saves
+// File Mask: ACDES.DAT
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+#include "Design.bt"

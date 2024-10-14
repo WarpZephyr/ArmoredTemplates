@@ -1,0 +1,42 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.2 Binary Template
+//
+//      File: Color.bt
+//   Authors: WarpZephyr
+//   Version: 1.0.3
+//   Purpose: Armored Core 4 color structures.
+//  Category: Saves
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+#include "Util.bt"
+
+//------------------------------------------------
+
+#ifndef _ARMOREDTEMPLATES_AC4_SAVE_COLOR
+#define _ARMOREDTEMPLATES_AC4_SAVE_COLOR
+
+typedef struct
+{
+    ColorRGBA main;
+    ColorRGBA sub;
+    ColorRGBA support;
+    ColorRGBA optional;
+    ColorRGBA joint;
+    ColorRGBA device;
+} ColorSet <bgcolor=cLtGreen, read=ReadColorSet>;
+
+string ReadColorSet(ColorSet& colorset)
+{
+    return Str("%s %s %s %s %s %s", 
+            ReadColorRGBA(colorset.main),
+            ReadColorRGBA(colorset.sub),
+            ReadColorRGBA(colorset.support),
+            ReadColorRGBA(colorset.optional),
+            ReadColorRGBA(colorset.joint),
+            ReadColorRGBA(colorset.device));
+}
+
+#endif

@@ -11,36 +11,50 @@
 //   History: 
 //------------------------------------------------
 
-#include "../Util.bt"
+#include "Util.bt"
 BigEndian();
 
 //------------------------------------------------
 
-typedef struct {
+enum <int> ObjectType
+{
+    Geom = 1,
+    Dummy = 2
+};
+
+typedef struct
+{
     short x;
     short y;
     short z;
 } Vector3Short <read=ReadVector3Short>;
 
-string ReadVector3Short(Vector3Short& vec) {
-    string str;
-    SPrintf(str, "<%f, %f, %f>", vec.x / 1000.0, vec.y / 1000.0, vec.z / 1000.0);
-    return str;
+string ReadVector3Short(Vector3Short& vec)
+{
+    local string x <hidden=true> = TrimDecimalZeros(Str("%f", vec.x / 1000.0));
+    local string y <hidden=true> = TrimDecimalZeros(Str("%f", vec.y / 1000.0));
+    local string z <hidden=true> = TrimDecimalZeros(Str("%f", vec.z / 1000.0));
+    return Str("<%s, %s, %s>", x, y, z);
 }
 
 //------------------------------------------------
 
 typedef struct
 {
-    int unk00 <format=hex>; Assert(unk00 == 0x20051014 || unk00 == 0x60100910);
+    int version <format=hex>;
+
+    Assert(version == 0x20051014
+        || version == 0x60100910
+        || version == 0xA0100910);
+    
     int unk04; Assert(unk04 == 0 || unk04 == 25);
     int frameCount;
-    int boneOffset;
-    int boneCount;
-    int framePositionOffset;
-    int frameRotationOffset;
-    int framePositionCount;
-    int frameRotationCount;
+    int objectsOffset;
+    int objectCount;
+    int positionsOffset;
+    int anglesOffset;
+    int positionCount;
+    int angleCount;
     int dataSize; // Does not include padding at the end of the file, except for 2 bytes sometimes for some reason
 
     local long fileSize = FileSize();
@@ -49,12 +63,7 @@ typedef struct
     {
         FSeek(dataSize);
         local int paddingSize = fileSize - dataSize;
-        byte padding[paddingSize] <bgcolor=cDkAqua, hidden=true>;
-        local int i;
-        for (i = 0; i < paddingSize; i++)
-        {
-            Assert(padding[i] == 0);
-        }
+        Null padding[paddingSize];
         FSeek(40);
     }
 
@@ -62,104 +71,150 @@ typedef struct
     int unk2C; Assert(unk2C == 1);
     byte unk30; Assert(unk30 == 1);
     byte unk31; Assert(unk31 == 1);
-    byte unk32; Assert(unk32 == 0);
+    byte unk32; Assert(unk32 == 0 || unk32 == 1);
     byte unk33; Assert(unk33 == 0);
-} Header <bgcolor=cRed>;
+
+    Null null[68];
+} Header <bgcolor=cLtRed>;
 
 typedef struct (int animationType)
 {
-    short nextKeyFrame;
+    short keyTime;
     switch(animationType)
     {
         case 1:
-            byte framePositionIndex;
-			byte unk03;
-			byte unk04;
-			byte frameRotationIndex;
-			byte unk06;
-			byte unk07;
+            byte position;
+			byte positionInTangent;
+			byte positionOutTangent;
+			byte angle;
+			byte angleInTangent;
+			byte angleOutTangent;
             break;
         case 2:
-			short framePositionIndex;
-		    short unk04;
-			short unk06;
-			short frameRotationIndex;
-			short unk0A;
-			short unk0C;
-			short unk0E;
+			short position;
+		    short positionInTangent;
+			short positionOutTangent;
+			short angle;
+			short angleInTangent;
+			short angleOutTangent;
+			short scale; Assert(scale == 1);
             break;
         case 4:
-            short frameRotationIndex;
+            short angle;
+			short angleInTangent;
+			short angleOutTangent;
+            break;
+        case 6:
+            ubyte unk02;
+            ubyte unk03;
+            ubyte unk04;
+            ubyte unk05;
+            short unk06;
+            break;
+        case 7:
+            short unk02;
             short unk04;
             short unk06;
+            short unk08;
+            short unk0A;
+            break;
+        case 9:
+            short unk02;
             break;
         default:
             Assert(false);
             break;
     }
-} FrameData <bgcolor=cDkYellow, optimize=false>;
+} KeyFrameInfo <bgcolor=cDkYellow, optimize=false>;
 
 typedef struct
 {
-    int frameDataOffset; Assert(frameDataOffset >= FTell() + 36);
-    int frameCount;
-    int animationType; Assert(animationType == 1 || animationType == 2 || animationType == 4);
+    int keyFramesOffset; Assert(keyFramesOffset >= FTell() + 36);
+    int numKeyFrames;
+    int animationType;
+    
+    Assert(animationType == 1
+        || animationType == 2
+        || animationType == 4
+        || animationType == 6
+        || animationType == 7
+        || animationType == 9);
     Vector3 unk10;
     Vector3 unk20;
     int unk24; Assert(unk24 == 0);
 
-    FSeek(frameDataOffset);
-    local int i;
-    for(i = 0; i < frameCount; i++)
-    {
-        FrameData frameData(animationType);
-    }
-} BoneData <bgcolor=cYellow, optimize=false>;
+    FSeek(keyFramesOffset);
+    KeyFrameInfo keyFrames(animationType)[numKeyFrames];
+} AnimationInfo <bgcolor=cYellow, optimize=false>;
 
 typedef struct
 {
-    int boneNameOffset; Assert(boneNameOffset != 0);
-    int unk04; Assert(unk04 == 0 || unk04 == 1 || unk04 == 2);
-    short boneIndex; Assert(boneIndex < header.boneCount);
-    short unk08Index; Assert(unk08Index < header.boneCount);
-    short parentBoneIndex; Assert(parentBoneIndex < header.boneCount);
-    short childIndex; Assert(childIndex < header.boneCount);
-    short nextSiblingIndex; Assert(nextSiblingIndex < header.boneCount);
-    short unk12Index; Assert(unk12Index < header.boneCount);
-    Vector3 boneTranslation;
-    Vector3 boneRotation;
-    Vector3 boneScale;
-    int boneDataOffset;
-
-    // Go retrieve the bone name, bone data, and frame data
-    local quad end = FTell();
-    FSeek(boneNameOffset);
-    string boneName;
-
-    if(boneDataOffset != 0)
+    if (header.version != 0xA0100910)
     {
-        FSeek(boneDataOffset);
-        BoneData boneData;
+        int nameOffset;         Assert(nameOffset > 0);
+        ObjectType type;        
+        short objectIndex;        Assert(objectIndex < header.objectCount);
+        short siblingObjectIndex;   Assert(type == Geom ? siblingObjectIndex < header.objectCount : siblingObjectIndex == -1);
+        short parentObjectIndex;  Assert(parentObjectIndex < header.objectCount);
+        short childIndex;       Assert(childIndex < header.objectCount);
+        short nextSiblingIndex; Assert(nextSiblingIndex < header.objectCount);
+        short unkIndex12;       Assert(unkIndex12 < header.objectCount);
+        Vector3 translation;
+        Vector3 rotation;
+        Vector3 scale;
     }
-    FSeek(end);
     
-    // Go to the next Entry
-    FSeek(FTell() + 0xB8);
-} BoneEntry <bgcolor=cLtGreen, read=ReadBoneName, optimize=false>;
+    int animationOffset;
 
-string ReadBoneName(BoneEntry& boneEntry) {
-    return boneEntry.boneName;
+    if (header.version == 0x20051014)
+    {
+        Null null[184];
+    }
+    else if (header.version == 0x60100910 || header.version == 0xA0100910)
+    {
+        Null null[4];
+    }
+    else
+    {
+        Assert(false, Str("Unknown version: %d", header.version));
+    }
+
+    // Get offset data
+    local quad end <hidden=true> = FTell();
+    if (header.version != 0xA0100910)
+    {
+        FSeek(nameOffset);
+        string name;
+    }
+
+    if(animationOffset > 0)
+    {
+        FSeek(animationOffset);
+        AnimationInfo animation;
+    }
+
+    FSeek(end);
+} Object <bgcolor=cLtGreen, read=ReadObject, optimize=false>;
+
+string ReadObject(Object& object)
+{
+    if (exists(object.name))
+    {
+        return object.name;
+    }
+    
+    return "";
 }
 
 //------------------------------------------------
 
 Header header;
 
-FSeek(header.boneOffset);
-BoneEntry boneEntries[header.boneCount];
+FSeek(header.positionsOffset);
+Vector3 positions[header.positionCount] <bgcolor=cAqua>;
 
-FSeek(header.framePositionOffset);
-Vector3 framePositions[header.framePositionCount] <bgcolor=cAqua>;
+FSeek(header.anglesOffset);
+Vector3Short angles[header.angleCount] <bgcolor=cDkAqua>;
 
-FSeek(header.frameRotationOffset);
-Vector3Short frameRotations[header.frameRotationCount] <bgcolor=cDkAqua>;
+FSeek(header.objectsOffset);
+Object objects[header.objectCount];

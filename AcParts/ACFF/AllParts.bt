@@ -1,0 +1,144 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.2 Binary Template
+//
+//      File: AllParts.bt
+//   Authors: WarpZephyr
+//   Version: 1.0.0
+//   Purpose: Part stats container in Armored Core Formula Front.
+//  Category: Archive
+// File Mask: AllParts.bin, new_AllParts.bin
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+LittleEndian();
+#include "Head.bt"
+#include "Core.bt"
+#include "Arm.bt"
+#include "Leg.bt"
+#include "Booster.bt"
+#include "FCS.bt"
+#include "Generator.bt"
+#include "Radiator.bt"
+#include "Inside.bt"
+#include "Extension.bt"
+#include "BackUnit.bt"
+#include "RightArmUnit.bt"
+#include "LeftArmUnit.bt"
+#include "Optional.bt"
+
+//------------------------------------------------
+
+typedef struct
+{
+    short head_count;
+    short core_count;
+    short arm_count;
+    short leg_count;
+    short booster_count;
+    short fcs_count;
+    short generator_count;
+    short radiator_count;
+    short inside_count;
+    short extension_count;
+    short back_unit_count;
+    short right_arm_unit_count;
+    short left_arm_unit_count;
+    short optional_count;
+    short unk_15_count; // Could be padding
+    short unk_16_count; // Could be padding
+} Header <bgcolor=cLtRed>;
+
+typedef struct
+{
+    char name[18];
+    char subcategory[18];
+    uint price;
+    ubyte unk28;
+    char explain[146];
+    ubyte unkBB;
+    ushort weight;
+    ushort en_cost;
+    float unkC0;
+    ushort unkC4;
+    ushort unkC6;
+    ushort unkC8;
+    ushort unkCA;
+    ubyte unkCC;
+    char category[2];
+    ubyte unkCF;
+    
+    switch (category)
+    {
+        case "hd":
+            Head part_stats;
+            break;
+        case "cr":
+            Core part_stats;
+            break;
+        case "am":
+            Arm part_stats;
+            break;
+        case "lg":
+            Leg part_stats;
+            break;
+        case "bo":
+            Booster part_stats;
+            break;
+        case "fc":
+            FCS part_stats;
+            break;
+        case "ge":
+            Generator part_stats;
+            break;
+        case "rd":
+            Radiator part_stats;
+            break;
+        case "in":
+            Inside part_stats;
+            break;
+        case "ex":
+            Extension part_stats;
+            break;
+        case "bk":
+            BackUnit part_stats;
+            break;
+        case "gn":
+            RightArmUnit part_stats;
+            break;
+        case "sw":
+            LeftArmUnit part_stats;
+            break;
+        case "op":
+            Optional part_stats;
+            break;
+    }
+} Part <read=ReadPart, optimize=false>;
+
+string ReadPart(Part& part)
+{
+    return part.name;
+}
+
+typedef struct(long size)
+{
+    byte bytes[size];
+} ByteArray <optimize=false>;
+
+//------------------------------------------------
+
+Header header;
+Part heads[header.head_count] <bgcolor=cRed>;
+Part cores[header.core_count] <bgcolor=cDkRed>;
+Part arms[header.arm_count] <bgcolor=cLtGreen>;
+Part legs[header.leg_count] <bgcolor=cGreen>;
+Part boosters[header.booster_count] <bgcolor=cDkGreen>;
+Part fcs[header.fcs_count] <bgcolor=cLtYellow>;
+Part generators[header.generator_count] <bgcolor=cYellow>;
+Part radiators[header.radiator_count] <bgcolor=cDkYellow>;
+Part insides[header.inside_count] <bgcolor=cLtAqua>;
+Part extensions[header.extension_count] <bgcolor=cAqua>;
+Part back_units[header.back_unit_count] <bgcolor=cDkAqua>;
+Part right_arm_units[header.right_arm_unit_count] <bgcolor=cLtBlue>;
+Part left_arm_units[header.left_arm_unit_count] <bgcolor=cBlue>;
+Part optionals[header.optional_count] <bgcolor=cDkBlue>;

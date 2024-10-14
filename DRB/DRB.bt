@@ -1,0 +1,260 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.1 Binary Template
+//
+//      File: DRB.bt
+//   Authors: TKGP, WarpZephyr
+//   Version: 1.0.1
+//   Purpose: AC4 to ACVD UI configuration
+//  Category: Dantelion
+// File Mask: *.drb
+//  ID Bytes: [+4] 00 00 00 00 00 00 00 00 00 00 00 00 [+12] 00 00 00 00
+//   History: 
+//------------------------------------------------
+
+#include "../Util.bt"
+#include "Header.bt"
+#include "STR.bt"
+#include "TEXI.bt"
+#include "SHAP.bt"
+#include "CTRL.bt"
+#include "ANIK.bt"
+#include "ANIO.bt"
+#include "ANIM.bt"
+#include "SCDK.bt"
+#include "SCDO.bt"
+#include "SCDL.bt"
+#include "DLGO.bt"
+#include "DLG.bt"
+
+LittleEndian();
+if (ReadInt() == 0x44524200) {
+    BigEndian();
+}
+
+// There is no sensible way to distinguish versions automatically,
+// so you must choose one manually.
+enum VERSION
+{
+    VERSION_ACFA,
+    VERSION_DS1,
+    VERSION_ACV,
+    VERSION_DSR
+};
+local VERSION version = VERSION_ACFA;
+
+//------------------------------------------------
+
+typedef struct
+{
+    BlockHeader header("STR\0");
+    STREntry entries[header.count];
+} STR <read=ReadSTR>;
+
+wstring ReadSTR(STR& str)
+{
+    return ReadBlockHeader(str.header);
+}
+
+typedef struct
+{
+    BlockHeader header("TEXI");
+    if (header.count > 0) {
+        TEXIEntry entries[header.count];
+    }
+} TEXI <read=ReadTEXI>;
+
+wstring ReadTEXI(TEXI& texi)
+{
+    return ReadBlockHeader(texi.header);
+}
+
+typedef struct {
+    BlockHeader header("SHAP");
+    //SHAPEntry entries[header.count];
+} SHAP <read=ReadSHAP>;
+
+wstring ReadSHAP(SHAP& shap) {
+    return ReadBlockHeader(shap.header);
+}
+
+typedef struct
+{
+    BlockHeader header("CTRL");
+    //CTRLEntry entries[header.count];
+} CTRL <read=ReadCTRL>;
+
+wstring ReadCTRL(CTRL& ctrl)
+{
+    return ReadBlockHeader(ctrl.header);
+}
+
+typedef struct
+{
+    BlockHeader header("ANIK");
+    if (header.count > 0)
+    {
+        //ANIKEntry entries[header.count];
+    }
+} ANIK <read=ReadANIK>;
+
+wstring ReadANIK(ANIK& anik)
+{
+    return ReadBlockHeader(anik.header);
+}
+
+typedef struct
+{
+    BlockHeader header("ANIO");
+    if (header.count > 0)
+    {
+        //ANIOEntry entries[header.count];
+    }
+} ANIO <read=ReadANIO>;
+
+wstring ReadANIO(ANIO& anio)
+{
+    return ReadBlockHeader(anio.header);
+}
+
+typedef struct
+{
+    BlockHeader header("ANIM");
+    if (header.count > 0)
+    {
+        ANIMEntry entries(version)[header.count];
+    }
+} ANIM <read=ReadANIM>;
+
+wstring ReadANIM(ANIM& anim)
+{
+    return ReadBlockHeader(anim.header);
+}
+
+typedef struct {
+    BlockHeader header("SCDK");
+    if (header.count > 0) {
+        //SCDKEntry entries[header.count];
+    }
+} SCDK <read=ReadSCDK>;
+
+wstring ReadSCDK(SCDK& scdk) {
+    return ReadBlockHeader(scdk.header);
+}
+
+typedef struct {
+    BlockHeader header("SCDO");
+    if (header.count > 0) {
+        //SCDOEntry entries[header.count];
+    }
+} SCDO <read=ReadSCDO>;
+
+wstring ReadSCDO(SCDO& scdo) {
+    return ReadBlockHeader(scdo.header);
+}
+
+typedef struct {
+    BlockHeader header("SCDL");
+    if (header.count > 0) {
+        SCDLEntry entries[header.count];
+    }
+} SCDL <read=ReadSCDL>;
+
+wstring ReadSCDL(SCDL& scdl) {
+    return ReadBlockHeader(scdl.header);
+}
+
+typedef struct {
+    BlockHeader header("DLGO");
+    if (header.count > 0) {
+        //DLGOEntry entries[header.count];
+    }
+} DLGO <read=ReadDLGO>;
+
+wstring ReadDLGO(DLGO& dlgo) {
+    return ReadBlockHeader(dlgo.header);
+}
+
+typedef struct {
+    BlockHeader header("DLG\0");
+    DLGEntry entries[header.count];
+} DLG <read=ReadDLG>;
+
+wstring ReadDLG(DLG& dlg) {
+    return ReadBlockHeader(dlg.header);
+}
+
+//------------------------------------------------
+
+BlockOffsets offsets;
+
+NullHeader drb("DRB\0") <bgcolor=cBlack, fgcolor=cWhite>;
+
+STR str <bgcolor=cLtPurple>;
+FSeek(str.header.start + str.header.size);
+offsets.str = str.header.start;
+
+TEXI texi <bgcolor=cPurple>;
+FSeek(texi.header.start + texi.header.size);
+offsets.texi = texi.header.start;
+
+BlobHeader shpr("SHPR") <bgcolor=cLtBlue>;
+FSeek(shpr.start + shpr.size);
+offsets.shpr = shpr.start;
+
+BlobHeader ctpr("CTPR") <bgcolor=cAqua>;
+FSeek(ctpr.start + ctpr.size);
+offsets.ctpr = ctpr.start;
+
+BlobHeader anip("ANIP") <bgcolor=cLtGray>;
+FSeek(anip.start + anip.size);
+offsets.anip = anip.start;
+
+BlobHeader intp("INTP") <bgcolor=cLtGray>;
+FSeek(intp.start + intp.size);
+offsets.intp = intp.start;
+
+BlobHeader scdp("SCDP") <bgcolor=cLtGreen>;
+FSeek(scdp.start + scdp.size);
+offsets.scdp = scdp.start;
+
+SHAP shap <bgcolor=cLtBlue>;
+FSeek(shap.header.start + shap.header.size);
+offsets.shap = shap.header.start;
+
+CTRL ctrl <bgcolor=cAqua>;
+FSeek(ctrl.header.start + ctrl.header.size);
+offsets.ctrl = ctrl.header.start;
+
+ANIK anik <bgcolor=cLtGray>;
+FSeek(anik.header.start + anik.header.size);
+offsets.anik = anik.header.start;
+
+ANIO anio <bgcolor=cSilver>;
+FSeek(anio.header.start + anio.header.size);
+offsets.anio = anio.header.start;
+
+ANIM anim <bgcolor=cGray>;
+FSeek(anim.header.start + anim.header.size);
+offsets.anim = anim.header.start;
+
+SCDK scdk <bgcolor=cLtGreen>;
+FSeek(scdk.header.start + scdk.header.size);
+offsets.scdk = scdk.header.start;
+
+SCDO scdo <bgcolor=cGreen>;
+FSeek(scdo.header.start + scdo.header.size);
+offsets.scdo = scdo.header.start;
+
+SCDL scdl <bgcolor=cDkGreen>;
+FSeek(scdl.header.start + scdl.header.size);
+offsets.scdl = scdl.header.start;
+
+DLGO dlgo <bgcolor=cLtRed>;
+FSeek(dlgo.header.start + dlgo.header.size);
+offsets.dlgo = dlgo.header.start;
+
+DLG dlg <bgcolor=cRed>;
+FSeek(dlg.header.start + dlg.header.size);
+offsets.dlg = dlg.header.start;
+
+NullHeader end("END\0") <bgcolor=cBlack, fgcolor=cWhite>;

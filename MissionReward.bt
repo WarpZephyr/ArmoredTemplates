@@ -12,6 +12,14 @@
 //------------------------------------------------
 
 BigEndian();
+local ubyte HEADER_SIZE = 16;
+local ubyte ENTRY_SIZE = 16;
+local ubyte UNLOCK_ENTRY_SIZE = 8;
+local ubyte REWARD_ENTRY_SIZE = 8;
+local uint PART_COUNT = 0;
+local uint FRS_COUNT = 0;
+local uint DESIGN_COUNT = 0;
+local uint EMBLEM_COUNT = 0;
 
 enum <short> RewardType
 {
@@ -21,7 +29,8 @@ enum <short> RewardType
     Emblem = 5,
     UNK_CONDITION = 6,
     UNK_SEVEN = 7,
-    UNK_EIGHT = 8
+    UNK_EIGHT = 8,
+    UNK_NINE = 9,
 };
 
 //------------------------------------------------
@@ -32,21 +41,10 @@ typedef struct
     int unlock_entry_count;
     int reward_entry_count;
     int unk0C <hidden=true>; Assert(unk0C == 0);
+
+    local quad unlock_offset = HEADER_SIZE + ENTRY_SIZE * entry_count;
+    local quad reward_offset = unlock_offset + (UNLOCK_ENTRY_SIZE * unlock_entry_count);
 } Header <bgcolor=cLtRed>;
-
-typedef struct
-{
-    int unk00; Assert(unk00 == 1 || unk00 == 2);
-    int unlock_index;
-    int reward_count;
-    int reward_start_index;
-} Entry <bgcolor=cLtGreen, read=ReadEntry, optimize=false>;
-
-string ReadEntry(Entry& entry)
-{
-    local string str;
-    return SPrintf(str, "%i %i %i", entry.unk00, entry.unlock_index, entry.reward_start_index);
-}
 
 typedef struct
 {
@@ -70,18 +68,22 @@ typedef struct
         case Part:
             short category_id;
             short part_id;
+            PART_COUNT += 1;
             break;
         case FRS:
             short amount;
             short frs_id;
+            FRS_COUNT += 1;
             break;
         case Design:
             short design_id;
             short unk04 <hidden=true>; Assert(unk04 == 0);
+            DESIGN_COUNT += 1;
             break;
         case Emblem:
             short emblem_id;
             short unk04 <hidden=true>; Assert(unk04 == 0);
+            EMBLEM_COUNT += 1;
             break;
         case UNK_CONDITION:
             short boolean; Assert(boolean == 0 || boolean == 1);
@@ -95,6 +97,10 @@ typedef struct
             short unk_id;
             short unk04 <hidden=true>; Assert(unk04 == 0);
             break;
+        case UNK_NINE:
+            short unk02 <hidden=true>; Assert(unk02 == 0);
+            short unk04 <hidden=true>; Assert(unk04 == 0);
+            break;
         default:
             short unk02;
             short unk04;
@@ -106,12 +112,45 @@ typedef struct
 
 string ReadReward(Reward& entry)
 {
-    return EnumToString(entry.reward_type);
+    local string str;
+    switch (entry.reward_type)
+    {
+        
+        case FRS:
+            return SPrintf(str, "%s %i (%i)", EnumToString(entry.reward_type), entry.frs_id, entry.amount);
+        default: 
+    }
+    
+    return SPrintf(str, "%s", EnumToString(entry.reward_type));
+}
+
+typedef struct
+{
+    int unlock_count;
+    int unlock_start_index;
+    int reward_count;
+    int reward_start_index;
+    local quad end = FTell();
+    
+    FSeek(header.unlock_offset + (unlock_start_index * UNLOCK_ENTRY_SIZE));
+    Unlock unlocks[unlock_count];
+
+    FSeek(header.reward_offset + (reward_start_index * REWARD_ENTRY_SIZE));
+    Reward rewards[reward_count];
+    FSeek(end);
+} Entry <bgcolor=cLtGreen, read=ReadEntry, optimize=false>;
+
+string ReadEntry(Entry& entry)
+{
+    local string str;
+    return SPrintf(str, "Unlocks: %i (%i) | Rewards: %i (%i)", entry.unlock_count, entry.unlock_start_index, entry.reward_count, entry.reward_start_index);
 }
 
 //------------------------------------------------
 
 Header header;
 Entry entries[header.entry_count];
-Unlock unlock_entries[header.unlock_entry_count];
-Reward reward_entries[header.reward_entry_count];
+Printf("Parts: %d\n", PART_COUNT);
+Printf("FRS: %d\n", FRS_COUNT);
+Printf("Designs: %d\n", DESIGN_COUNT);
+Printf("Emblems: %d", EMBLEM_COUNT);

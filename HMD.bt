@@ -22,7 +22,12 @@ typedef struct
     float x;
     float y;
     float z;
-} Vector3;
+} Vector3 <read=ReadVector3>;
+
+string ReadVector3(Vector3& vec)
+{
+    return Str("%7.2f, %7.2f, %7.2f", vec.x, vec.y, vec.z);
+}
 
 typedef struct
 {
@@ -30,7 +35,12 @@ typedef struct
     float y;
     float z;
     float w;
-} Vector4;
+} Vector4 <read=ReadVector4>;
+
+string ReadVector4(Vector4& vec)
+{
+    return Str("%7.2f, %7.2f, %7.2f, %7.2f", vec.x, vec.y, vec.z, vec.w);
+}
 
 typedef struct
 {
@@ -38,12 +48,12 @@ typedef struct
     int unk04;
     int fileSize;
     int textureCount;
-    int entryCount;
+    int treeCount;
     int unk14;
     int unk18;
     int unk1C;
     int textureOffset;
-    int dataOffset;
+    int treeOffset;
     int unk28;
     int version <format=hex>;
 } Header <bgcolor=cLtRed>;
@@ -59,43 +69,41 @@ typedef struct
     FSeek(pos);
 } Texture <bgcolor=cLtGreen, optimize=false>;
 
-struct UnkMember;
+struct Node;
 
 typedef struct
 {
     short unk00;
     short unk02;
-    int offsetChild1;
-    int offsetChild2;
+    int offsetLeft;
+    int offsetRight;
     int unk0C; Assert(unk0C == 0);
     local quad pos = FTell();
 
-    if (offsetChild1 != 0)
+    if (offsetLeft != 0)
     {
-        FSeek(offsetChild1);
-        UnkMember child1;
+        FSeek(offsetLeft);
+        Node left;
         FSeek(pos);
     }
 
-    if (offsetChild2 != 0)
+    if (offsetRight != 0)
     {
-        FSeek(offsetChild2);
-        UnkMember child2;
+        FSeek(offsetRight);
+        Node right;
         FSeek(pos);
     }
 
-    Vector4 unk10;
-    Vector4 unk20;
+    Vector4 boundsMin;
+    Vector4 boundsMax;
     Vector4 unk30;
     Vector4 unk40;
 
-    local int count = 8;
-
     if (unk00 > 0)
     {
-        short indices[count] <bgcolor=cRed>;
+        short indices[8] <bgcolor=cRed>;
     }
-} UnkMember <bgcolor=cDkGreen, optimize=false>;
+} Node <bgcolor=cDkGreen, optimize=false>;
 
 typedef struct
 {
@@ -112,7 +120,7 @@ typedef struct
     short unk3E; Assert(unk3E == 0);
     int unk40; Assert(unk40 == 0);
 
-    int unkMemberOffset;
+    int offsetNode;
     
     int countVectors1;
     int offsetVectors1;
@@ -125,10 +133,10 @@ typedef struct
     
     local quad pos = FTell();
 
-    if (unkMemberOffset != 0)
+    if (offsetNode != 0)
     {
-        FSeek(unkMemberOffset);
-        UnkMember unkMember;
+        FSeek(offsetNode);
+        Node node;
     }
 
     if (countVectors1 > 0)
@@ -150,7 +158,7 @@ typedef struct
     }
 
     FSeek(pos);
-} UnkEntry <bgcolor=cGreen, optimize=false>;
+} Tree <bgcolor=cGreen, optimize=false>;
 
 //------------------------------------------------
 
@@ -159,5 +167,5 @@ Header header;
 FSeek(header.textureOffset);
 Texture textures[header.textureCount];
 
-FSeek(header.dataOffset);
-UnkEntry unkEntries[header.entryCount];
+FSeek(header.treeOffset);
+Tree trees[header.treeCount];

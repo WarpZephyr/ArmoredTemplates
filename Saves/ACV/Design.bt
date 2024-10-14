@@ -1,0 +1,108 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.2 Binary Template
+//
+//      File: DESIGN.bt
+//   Authors: WarpZephyr
+//   Version: 1.0.0
+//   Purpose: Armored Core Verdict Day saved player designs
+//  Category: Games
+// File Mask: DESIGN.DAT
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+#define _ACCOLORSET_NO_CALL
+
+#include "..\..\Util.bt"
+#include "Emblem.bt"
+#include "AcColorSet.bt"
+BigEndian();
+
+//------------------------------------------------
+
+typedef struct
+{
+    ushort head;
+    ushort core;
+    ushort arms;
+    ushort legs;
+    ushort fcs;
+    ushort generator;
+    ushort boosters;
+    ushort back_booster;
+    ushort side_booster;
+    ushort recon_unit;
+    ushort arm_unit_right;
+    ushort arm_unit_left;
+    ushort ultimate_weapon;
+    ushort back_unit_left;
+    ushort shoulder_unit;
+    ushort bay_unit_right;
+    ushort bay_unit_left;
+    ushort stab_head_t;
+    ushort stab_head_s_r;
+    ushort stab_head_s_l;
+    ushort stab_core_u_r;
+    ushort stab_core_u_l;
+    ushort stab_core_l_r;
+    ushort stab_core_l_l;
+    ushort stab_arms_r;
+    ushort stab_arms_l;
+    ushort stab_legs_b;
+    ushort stab_legs_u_r;
+    ushort stab_legs_u_l;
+    ushort stab_legs_u_rb;
+    ushort stab_legs_u_lb;
+    ushort stab_legs_m_r;
+    ushort stab_legs_m_l;
+    ushort stab_legs_m_rb;
+    ushort stab_legs_m_lb;
+    ushort stab_legs_l_r;
+    ushort stab_legs_l_l;
+    ushort stab_legs_l_rb;
+    ushort stab_legs_l_lb;
+} Parts <bgcolor=cYellow>;
+
+typedef struct
+{
+    uquad tune_id_arm_unit_left <format=hex>;
+    uquad tune_id_arm_unit_right <format=hex>;
+    uquad tune_id_bay_unit_left <format=hex>;
+    uquad tune_id_bay_unit_right <format=hex>;
+} Tuning <bgcolor=cDkYellow>;
+
+typedef struct
+{
+    wchar_t design_name[48];
+    wchar_t designer_name[48];
+
+    uquad creation_timestamp; // In microseconds, starting from 01/01/01 00:00:00
+    ubyte trade_category;
+    ubyte unkC9;
+    ubyte unkCA;
+    ubyte unkCB;
+    uint unkCC;
+    uint unkD0;
+    uint unkD4;
+    Parts parts;
+    ubyte unk4E[50] <bgcolor=cBlack>;
+    Tuning tuning;
+    AcColorSet colors;
+    ubyte unk_emblem_data[23200];
+    Emblem currentEmblem;
+    ubyte thumbnail[16400];
+} Design <bgcolor=cLtGreen, read=ReadDesign, optimize=false>;
+
+string ReadDesign(Design& design)
+{
+    return design.design_name + " \\ " + design.designer_name;
+}
+
+//------------------------------------------------
+
+// For design files like ACDES
+// define _DESIGN_NO_CALL to prevent calling while using in DESDOC saves
+#ifndef _DESIGN_NO_CALL
+BigEndian();
+Design design;
+#endif

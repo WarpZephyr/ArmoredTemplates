@@ -65,21 +65,21 @@ typedef struct
     Null null_2[28];
     Vector3 boundingBoxMin;
     Vector3 boundingBoxMax;
-    int countUnkStruct1;
+    int materialCount;
     int boneCount;
-    int countUnkStruct3; // Never seen
-    int layoutCount;
-    int meshNamesCount;
+    int lightObjectCount; // Never seen
+    int primitiveInfoCount;
+    int textureCount;
     int vertexBufferSize;
     int indicesBufferSize;
     int dummyCount;
     int countUnkStruct9;
     int countUnkStruct10; // Never seen
-    int offsetUnkStruct1s;
+    int materialsOffset;
     int bonesOffset;
-    int offsetUnkStruct3s; // Never seen
-    int layoutsOffset;
-    int meshNamesOffset;
+    int lightObjectsOffset; // Never seen
+    int primitiveInfosOffset;
+    int texturesOffset;
     int vertexBufferOffset;
     int indicesOffset;
     int dummiesOffset;
@@ -89,22 +89,27 @@ typedef struct
 
 typedef struct
 {
-    ubyte unk00[48]; // What is this struct?
-} UnkStruct1 <bgcolor=cLtGreen, optimize=false>;
+    ubyte color[4]; // Divide by 255
+    ubyte unk04[4];
+    ubyte ambient_color[4]; // Divide by 255
+    ubyte unk0C[8];
+    float specular_exp;
+    ubyte unk[24];
+} Material <bgcolor=cLtGreen, optimize=false>;
 
 typedef struct
 {
-    Vector3 position;
-    Vector3 rotation;
-    Vector3 scale;
-    Vector3 unk24; // Not a directional vector?
-    Vector3 unk30; // Directional vector?
-    Vector4 unk3C; // Directional vector?
+    Vector3 relative_position;
+    Vector3 relative_angle;
+    Vector3 relative_scale;
+    Vector3 world_position;
+    Vector3 world_angle;
+    Vector4 world_scale;
     Vector3 boundingBoxMin;
     Vector3 boundingBoxMax;
     
     int unk64;
-    int unk68;
+    int primitiveCount;
     int unk6C;
     char name[8];
 } Bone <bgcolor=cGreen, read=ReadBone, optimize=false>;
@@ -117,7 +122,7 @@ string ReadBone(Bone& bone)
 typedef struct
 {
     Assert(false); // Never seen
-} UnkStruct3 <bgcolor=cDkGreen, optimize=false>;
+} LightObject <bgcolor=cDkGreen, optimize=false>;
 
 typedef struct
 {
@@ -129,18 +134,18 @@ typedef struct
     short unk06 <hidden=true>; Assert(unk06 == 0);
     int unk08;
     int vertexBufferOffset;
-    int vertexCount;
+    int primitiveNodeCount;
     int unk14 <hidden=true>; Assert(unk14 == 0);
-} Layout <bgcolor=cLtYellow, optimize=false>;
+} PrimitiveInfo <bgcolor=cLtYellow, optimize=false>;
 
 typedef struct
 {
-    char name[24]; // Assumed to be a mesh name of some kind
-} MeshName <bgcolor=cYellow, read=ReadMeshName, optimize=false>;
+    char name[24];
+} Texture <bgcolor=cYellow, read=ReadTexture, optimize=false>;
 
-string ReadMeshName(MeshName& name)
+string ReadTexture(Texture& texture)
 {
-    return name.name;
+    return texture.name;
 }
 
 typedef struct
@@ -183,11 +188,11 @@ typedef struct
 
 Header header;
 
-if (header.countUnkStruct1 > 0)
+if (header.materialCount > 0)
 {
-    Assert(header.offsetUnkStruct1s > 0);
-    FSeek(header.offsetUnkStruct1s);
-    UnkStruct1 unkStruct1s[header.countUnkStruct1];
+    Assert(header.materialsOffset > 0);
+    FSeek(header.materialsOffset);
+    Material materials[header.materialCount];
 }
 
 if (header.boneCount > 0)
@@ -198,25 +203,25 @@ if (header.boneCount > 0)
 }
 
 // Never seen
-if (header.countUnkStruct3 > 0)
+if (header.lightObjectCount > 0)
 {
-    Assert(header.offsetUnkStruct3s > 0);
-    FSeek(header.offsetUnkStruct3s);
-    UnkStruct3 unkStruct3s[header.countUnkStruct3];
+    Assert(header.lightObjectsOffset > 0);
+    FSeek(header.lightObjectsOffset);
+    LightObject lightObjects[header.exLightObjectCount];
 }
 
-if (header.layoutCount > 0)
+if (header.primitiveInfoCount > 0)
 {
-    Assert(header.layoutsOffset > 0);
-    FSeek(header.layoutsOffset);
-    Layout layouts[header.layoutCount];
+    Assert(header.primitiveInfosOffset > 0);
+    FSeek(header.primitiveInfosOffset);
+    PrimitiveInfo primitiveInfos[header.primitiveInfoCount];
 }
 
-if (header.meshNamesCount > 0)
+if (header.textureCount > 0)
 {
-    Assert(header.meshNamesOffset > 0);
-    FSeek(header.meshNamesOffset);
-    MeshName meshNames[header.meshNamesCount];
+    Assert(header.texturesOffset > 0);
+    FSeek(header.texturesOffset);
+    Texture textures[header.textureCount];
 }
 
 if (header.dummyCount > 0)

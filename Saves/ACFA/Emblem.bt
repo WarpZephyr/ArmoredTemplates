@@ -1,0 +1,69 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.2 Binary Template
+//
+//      File: Emblem.bt
+//   Authors: WarpZephyr
+//   Version: 1.0.3
+//   Purpose: Armored Core For Answer emblem structures in save data.
+//  Category: Saves
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+enum <ubyte> EmblemType
+{
+    NoEmblem = 0,
+    PresetEmblem = 1,
+    CustomEmblem = 2
+};
+
+typedef struct
+{
+    ubyte unk00 : 1;
+    ubyte unk01 : 1;
+    ubyte unk02 : 1;
+    ubyte unk03 : 1;
+    ubyte negative_angle : 1;
+    ubyte unk05 : 1;
+    ubyte negative_x : 1;
+    ubyte negative_y : 1;
+} EmblemLayerFlags;
+
+typedef struct
+{
+    ubyte angle;
+    ubyte imageID;
+    ubyte colorIndex;
+    byte width; // If negative its flipped horizontally
+    byte height; // If negative its flipped vertically
+    ubyte x;
+    ubyte y;
+    EmblemLayerFlags flags;
+} EmblemLayer;
+
+typedef struct
+{
+    EmblemType type;
+    ubyte unk01;
+    ubyte unk02;
+    ubyte unk03;
+
+    switch (type)
+    {
+        case NoEmblem:
+            ubyte empty[128];
+            break;
+        case PresetEmblem:
+            ushort emblemID;
+            ubyte empty[126];
+            break;
+        case CustomEmblem:
+            EmblemLayer layers[16];
+            break;
+        default:
+            Printf("Warning: Emblem type at 0x%0X unknown: %d\n", FTell() - 4, type);
+            ubyte unk04[128] <bgcolor=cBlack>;
+            break;
+    }
+} Emblem <bgcolor=cGreen>;

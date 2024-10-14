@@ -1,0 +1,82 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.1 Binary Template
+//
+//      File: Header.bt
+//   Authors: WarpZephyr
+//   Version: 1.0.1
+//   Purpose: DRB Headers containing information about each structure.
+//  Category: Dantelion
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+typedef struct (string assertFourCC)
+{
+    int fourCC <format=hex>; Assert(fourCC == FourCCToInt(assertFourCC));
+    
+    int size <format=hex>; Assert(size == 0 || size == 16);
+    int count; Assert(count == 0 || count == 1);
+    int unk0C <hidden=true>; Assert(unk0C == 0);
+    if (count > 0)
+    {
+        ubyte null_bytes[size];
+    }
+} NullHeader <read=ReadNullHeader>;
+
+wstring ReadNullHeader(NullHeader& header)
+{
+    string str;
+    return SPrintf(str, "%s", IntToFourCC(header.fourCC));
+}
+
+typedef struct (string assertFourCC)
+{
+    int fourCC <format=hex>; Assert(fourCC == FourCCToInt(assertFourCC));
+    int size <format=hex>;
+    int count; Assert(count == 1);
+    int unk0C <hidden=true>; Assert(unk0C == 0);
+    local quad start <format=hex> = FTell();
+} BlobHeader <read=ReadBlobHeader>;
+
+wstring ReadBlobHeader(BlobHeader& header)
+{
+    string str;
+    return SPrintf(str, "%-4s        %5Xh", IntToFourCC(header.fourCC), header.size);
+}
+
+typedef struct (string assertFourCC)
+{
+    int fourCC <format=hex>; Assert(fourCC == FourCCToInt(assertFourCC));
+    int size <format=hex>;
+    int count;
+    int unk0C <hidden=true>; Assert(unk0C == 0);
+    local quad start <format=hex> = FTell();
+} BlockHeader <read=ReadBlockHeader>;
+
+wstring ReadBlockHeader(BlockHeader& header)
+{
+    string str;
+    return SPrintf(str, "%-4s [%4i] %5Xh", IntToFourCC(header.fourCC), header.count, header.size);
+}
+
+typedef struct
+{
+    local quad str <format=hex>;
+    local quad texi <format=hex>;
+    local quad shpr <format=hex>;
+    local quad ctpr <format=hex>;
+    local quad anip <format=hex>;
+    local quad intp <format=hex>;
+    local quad scdp <format=hex>;
+    local quad shap <format=hex>;
+    local quad ctrl <format=hex>;
+    local quad anik <format=hex>;
+    local quad anio <format=hex>;
+    local quad anim <format=hex>;
+    local quad scdk <format=hex>;
+    local quad scdo <format=hex>;
+    local quad scdl <format=hex>;
+    local quad dlgo <format=hex>;
+    local quad dlg <format=hex>;
+} BlockOffsets;

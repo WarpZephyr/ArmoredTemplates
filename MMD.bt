@@ -1,0 +1,211 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.2 Binary Template
+//
+//      File: MMD.bt
+//   Authors: WarpZephyr
+//   Version: 1.0.0
+//   Purpose: FromSoftware .mmd model containers.
+//  Category: Model
+// File Mask: *.mmd
+//  ID Bytes:
+//   History: 
+//------------------------------------------------
+
+#include "Util.bt"
+LittleEndian();
+
+//------------------------------------------------
+
+typedef struct
+{
+    int fileSize;
+    int sectionCount;
+    int unk08;
+    int unk0C;
+} Header <bgcolor=cLtRed>;
+
+typedef struct
+{
+    Vector4 unk00; // Min?
+    Vector4 unk10; // Max?
+    Null null[0x20] <hidden=true>;
+} MHDMember <optimize=false>;
+
+typedef struct
+{
+    int unk00;
+    int size;
+    char name[8];
+    Null null_1[0x10] <hidden=true>;
+    int headerSize; // Could just be a char
+    Null null_2[0xC] <hidden=true>;
+    MHDMember members[(size - headerSize) / 64];
+} MHD <bgcolor=cDkRed>;
+
+typedef struct(long start)
+{
+    int offset;
+    int unk04;
+    int unk08;
+    int unk0C;
+    
+    local quad pos <hidden=true> = FTell();
+    FSeek(start + offset);
+    ubyte marker;
+    FSeek(pos);
+} OMDMember <bgcolor=cLtGreen, optimize=false>;
+
+typedef struct
+{
+    local quad start <hidden=true> = FTell();
+    int size;
+    int count;
+    int unk08;
+    int unk0C;
+
+    OMDMember members(start)[count];
+} OMD <bgcolor=cLtGreen>;
+
+typedef struct(long start)
+{
+    int offset;
+    int unk04;
+    int unk08;
+    int unk0C;
+    
+    local quad pos <hidden=true> = FTell();
+    FSeek(start + offset);
+    int textureSize; // This is a field in the texture itself
+    ubyte texture[textureSize - 4];
+    FSeek(pos);
+} TM2Member <bgcolor=cLtAqua, optimize=false>;
+
+typedef struct
+{
+    local quad start <hidden=true> = FTell();
+    int size;
+    int count;
+    int unk08;
+    int unk0C;
+
+    TM2Member members(start)[count];
+} TM2 <bgcolor=cLtAqua>;
+
+typedef struct
+{
+    int size;
+    int count;
+    int unk08;
+    int unk0C;
+} MI2 <bgcolor=cLtAqua>;
+
+typedef struct
+{
+    int size;
+    int count;
+    int unk08;
+    int unk0C;
+} OTH <bgcolor=cLtAqua>;
+
+typedef struct
+{
+    int unk00;
+    int unk04;
+    int unk08;
+    int unk0C;
+} OMPMember <bgcolor=cLtAqua>;
+
+typedef struct
+{
+    int size;
+    int count;
+    int unk08;
+    int unk0C;
+    OMPMember members[count];
+} OMP <bgcolor=cLtAqua>;
+
+typedef struct
+{
+    int unk00;
+    int unk04;
+    int unk08;
+    int unk0C;
+} TMPMember <bgcolor=cLtAqua>;
+
+typedef struct
+{
+    int size;
+    int count;
+    int unk08;
+    int unk0C;
+    TMPMember members[count];
+} TMP <bgcolor=cLtAqua>;
+
+typedef struct
+{
+    int size;
+    int count;
+    int unk08;
+    int unk0C;
+} MIP <bgcolor=cLtAqua>;
+
+typedef struct
+{
+    int size;
+    int count;
+    int unk08;
+    int unk0C;
+} OTP <bgcolor=cLtAqua>;
+
+typedef struct
+{
+    int offset;
+    char type[4];
+    Null null[8] <hidden=true>;
+
+    local quad end <hidden=true> = FTell();
+    FSeek(offset);
+    switch (type)
+    {
+        case "MHD\0":
+            MHD modelHeader;
+            break;
+        case "OMD\0":
+            OMD omd;
+            break;
+        case "TM2\0":
+            TM2 textures;
+            break;
+        case "MI2\0":
+            MI2 animations;
+            break;
+        case "OTH\0":
+            OTH oth;
+            break;
+        case "OMP\0":
+            OMP omp;
+            break;
+        case "TMP\0":
+            TMP tmp;
+            break;
+        case "MIP\0":
+            MIP mip;
+            break;
+        case "OTP\0":
+            OTP otp;
+            break;
+        default:
+            byte marker;
+    }
+    FSeek(end);
+} Section <bgcolor=cRed, read=ReadSection, optimize=false>;
+
+string ReadSection(Section& section)
+{
+    return Str("%s | %i", section.type, section.offset);
+}
+
+//------------------------------------------------
+
+Header header;
+Section sections[header.sectionCount];

@@ -1,0 +1,335 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.2 Binary Template
+//
+//      File: asm_disp.bt
+//   Authors: WarpZephyr
+//   Version: 1.0.0
+//   Purpose: Armored Core Formula Front PS2 Assemble Menu Display binary.
+//  Category: Menu
+// File Mask: asm_disp.bin
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+#define ASSEMMENU_READ_RAW_TEXT
+
+// Comment out to read structures as intended, otherwise use it to see structures in a nicer way
+#define ASSEMMENU_EASY_READ
+
+LittleEndian();
+local ubyte HEADER_SIZE = 36;
+local ubyte TEXT_SIZE = 8;
+local ubyte MENU_SIZE = 8;
+local ubyte TYPE_SIZE = 8;
+local ubyte STAT_SIZE = 8;
+local ubyte DESC_SIZE = 8;
+local ubyte TYPE_VALUE_SIZE = 8;
+local quad HEADER_OFFSET;
+local quad TEXT_OFFSET;
+local quad MENU_OFFSET;
+local quad TYPE_OFFSET;
+local quad STAT_OFFSET;
+local quad DESC_OFFSET;
+local quad TYPE_VALUE_OFFSET;
+local quad TEXT_DATA_OFFSET;
+
+struct Header;
+struct Text;
+struct Menu;
+struct TypeValue;
+struct Stat;
+struct Description;
+struct Type;
+
+enum <ushort> StatImprovement
+{
+    Default = 0,
+
+    // When the new stat is greater than the old stat it is an improvement
+    GreaterThan = 1,
+    
+    // When the new stat is less than the old stat it is an improvement  
+    LessThan = 2
+};
+
+typedef struct
+{
+    string str;
+} String <read=ReadStringStruct, optimize=false>;
+
+string ReadStringStruct(String& str)
+{
+    return str.str;
+}
+
+void GetType(ushort typeID)
+{
+    local int i <hidden=true>;
+    FSeek(TYPE_OFFSET);
+    for (i = 0; i < header.countText; i++)
+    {
+        if (ReadUShort() == typeID)
+        {
+            Type type;
+            break;
+        }
+        FSkip(TYPE_SIZE);
+    }
+}
+
+void GetText(ushort textID)
+{
+    local int i <hidden=true>;
+    FSeek(TEXT_OFFSET);
+    for (i = 0; i < header.countText; i++)
+    {
+        if (ReadUInt() == textID)
+        {
+            Text text <bgcolor=cLtGreen>;
+            break;
+        }
+        FSkip(TEXT_SIZE);
+    }
+}
+
+void GetDescName(ushort textID)
+{
+    local int i <hidden=true>;
+    FSeek(TEXT_OFFSET);
+    for (i = 0; i < header.countText; i++)
+    {
+        if (ReadUInt() == textID)
+        {
+            Text name <bgcolor=cLtGreen>;
+            break;
+        }
+        FSkip(TEXT_SIZE);
+    }
+}
+
+void GetDescDesc(ushort textID)
+{
+    local int i <hidden=true>;
+    FSeek(TEXT_OFFSET);
+    for (i = 0; i < header.countText; i++)
+    {
+        if (ReadUInt() == textID)
+        {
+            Text desc <bgcolor=cLtGreen>;
+            break;
+        }
+        FSkip(TEXT_SIZE);
+    }
+}
+
+void GetDescStats(ushort statID, ushort secondStatID)
+{
+    local int i <hidden=true>;
+    local ubyte foundStat <hidden=true> = 0;
+    local ubyte foundSecondStat <hidden=true> = 0;
+    FSeek(STAT_OFFSET);
+    for (i = 0; i < header.countStat; i++)
+    {
+        if (ReadUShort() == secondStatID)
+        {
+            Stat secondStat;
+            foundSecondStat = 1;
+        }
+        else if (ReadUShort() == statID)
+        {
+            Stat stat;
+            foundStat = 1;
+        }
+        else
+        {
+            FSkip(STAT_SIZE);
+        }
+
+        if (foundStat == 1)
+        {
+            if (secondStatID == 0 || foundSecondStat == 1)
+            {
+                break;
+            }
+        }
+    }
+    
+}
+
+void GetDescValues(ushort nameTextID, ushort descTextID, ushort statID, ushort parentStatID)
+{
+    local quad pos <hidden=true> = FTell();
+    GetDescName(nameTextID);
+    GetDescDesc(descTextID);
+    GetDescStats(statID, parentStatID);
+    FSeek(pos);
+}
+
+//------------------------------------------------
+
+typedef struct
+{
+    HEADER_OFFSET = FTell();
+    uint countText;
+    uint countMenu;
+    uint countType;
+    uint countDesc;
+    uint countTypeValue;
+    uint countStat;
+    uint unk18; Assert(unk18 == 0);
+    uint unk1C; Assert(unk1C == 0);
+    uint unk20; Assert(unk20 == 0);
+
+    local quad sizeTexts = countText * TEXT_SIZE;
+    local quad sizeMenus = countMenu * MENU_SIZE;
+    local quad sizeTypes = countType * TYPE_SIZE;
+    local quad sizeStats = countStat * STAT_SIZE;
+    local quad sizeDescs = countDesc * DESC_SIZE;
+    local quad sizeTypeValues = countTypeValue * TYPE_VALUE_SIZE;
+    TEXT_OFFSET = HEADER_SIZE;
+    MENU_OFFSET = TEXT_OFFSET + sizeTexts;
+    TYPE_OFFSET = MENU_OFFSET + sizeMenus;
+    STAT_OFFSET = TYPE_OFFSET + sizeTypes;
+    DESC_OFFSET = STAT_OFFSET + sizeStats;
+    TYPE_VALUE_OFFSET = DESC_OFFSET + sizeDescs;
+    TEXT_DATA_OFFSET = TYPE_VALUE_OFFSET + sizeTypeValues;
+} Header <bgcolor=cLtRed>;
+
+typedef struct
+{
+    uint id;
+    uint offset;
+
+    local quad pos <hidden=true> = FTell();
+    FSeek(offset + TEXT_DATA_OFFSET);
+    string text;
+    FSeek(pos);
+} Text <read=ReadText, optimize=false>;
+
+string ReadText(Text& entry)
+{
+    return Str("ID: %d | %s", entry.id, entry.text);
+}
+
+typedef struct
+{
+    ushort id;
+    ushort descCount;
+    uint descIndex;
+
+#ifdef ASSEMMENU_EASY_READ
+    local quad pos <hidden=true> = FTell();
+    FSeek(DESC_OFFSET + (descIndex * DESC_SIZE));
+    Description descriptions[descCount];
+    FSeek(pos);
+#endif
+} Menu <bgcolor=cGreen, read=ReadMenu, optimize=false>;
+
+string ReadMenu(Menu& entry)
+{
+    return Str("ID: %d | Desc Cnt/Indx: %d/%d", entry.id, entry.descCount, entry.descIndex);
+}
+
+typedef struct
+{
+    ushort id;
+    ushort typeValueCount;
+    uint typeValueIndex;
+
+#ifdef ASSEMMENU_EASY_READ
+    local quad pos <hidden=true> = FTell();
+    FSeek(TYPE_VALUE_OFFSET + (typeValueIndex * TYPE_VALUE_SIZE));
+    TypeValue typeValue[typeValueCount];
+    FSeek(pos);
+#endif
+} Type <bgcolor=cDkGreen, read=ReadType, optimize=false>;
+
+string ReadType(Type& entry)
+{
+    return Str("ID: %d | TypeValue Cnt/Indx: %d/%d", entry.id, entry.typeValueCount, entry.typeValueIndex);
+}
+
+typedef struct
+{
+    ushort id;
+    ushort typeID;
+    StatImprovement improvementType;
+    ushort unk06 <hidden=true>; Assert(unk06 == 0);
+
+#ifdef ASSEMMENU_EASY_READ
+    local quad pos <hidden=true> = FTell();
+    GetType(typeID);
+    FSeek(pos);
+#endif
+} Stat <bgcolor=cLtYellow, read=ReadStat, optimize=false>;
+
+string ReadStat(Stat& entry)
+{
+    return Str("ID: %d | Type: %d | ImprovType: %s", entry.id, entry.typeID, EnumToString(entry.improvementType));
+}
+
+typedef struct
+{
+    ushort nameTextID;
+    ushort descTextID;
+    ushort statID;
+    ushort secondStatID;
+#ifdef ASSEMMENU_EASY_READ
+    GetDescValues(nameTextID, descTextID, statID, secondStatID);
+#endif
+} Description <bgcolor=cYellow, read=ReadDescription, optimize=false>;
+
+string ReadDescription(Description& entry)
+{
+#ifdef ASSEMMENU_EASY_READ
+    local string name <hidden=true> = exists(entry.name) ? entry.name.text : "%null%";
+    local string desc <hidden=true> = exists(entry.desc) ? entry.desc.text : "%null%";
+    local string stat <hidden=true> = exists(entry.stat) ? EnumToString(entry.stat.improvementType) : "%null%";
+    local string secondStat <hidden=true> = exists(entry.secondStat) ? EnumToString(entry.secondStat.improvementType) : "%null%";
+    return Str("%s/%s | %s | %s", stat, secondStat, name, desc);
+#else
+    return Str("Name: %d | Desc: %d | Stats 1st/2nd: %d/%d", entry.nameTextID, entry.descTextID, entry.statID, entry.secondStat);
+#endif
+}
+
+typedef struct
+{
+    uint index;
+    uint textID;
+
+#ifdef ASSEMMENU_EASY_READ
+    local quad pos <hidden=true> = FTell();
+    GetText(textID);
+    FSeek(pos);
+#endif
+} TypeValue <bgcolor=cDkYellow, read=ReadTypeValue, optimize=false>;
+
+string ReadTypeValue(TypeValue& entry)
+{
+#ifdef ASSEMMENU_EASY_READ
+    return Str("Index: %d | %s", entry.index, exists(entry.text) ? entry.text.text : Str("Text: %d", entry.textID));
+#else
+    return Str("Index: %d | Text: %d", entry.index, entry.textID);
+#endif
+}
+
+//------------------------------------------------
+
+Header header;
+
+#ifdef ASSEMMENU_EASY_READ
+FSeek(MENU_OFFSET);
+Menu menus[header.countMenu];
+#else
+Text texts[header.countText];
+Menu menus[header.countMenu];
+Type types[header.countType];
+Stat stats[header.countStat];
+Description descriptions[header.countDesc];
+TypeValue typeValues[header.countTypeValue];
+#endif
+
+#ifdef ASSEMMENU_READ_RAW_TEXT
+FSeek(TEXT_DATA_OFFSET);
+String rawText[header.countText];
+#endif

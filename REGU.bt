@@ -15,6 +15,6 @@ BigEndian();
 
 //------------------------------------------------
 
-Assert(FileSize() == 256004);
-int reg_size;
+//Assert(FileSize() == 256004);
+ubyte unk[16];
 #include "BND3.bt"

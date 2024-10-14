@@ -1,0 +1,33 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.2 Binary Template
+//
+//      File: DESDOC.bt
+//   Authors: WarpZephyr
+//   Version: 1.0.1
+//   Purpose: Armored Core Verdict Day Design Documents
+//  Category: Saves
+// File Mask: DESDOC.DAT
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+#define _DESIGN_NO_CALL
+
+#include "Design.bt"
+BigEndian();
+
+//------------------------------------------------
+
+typedef struct
+{
+    ushort unk00;
+    ushort unk02;
+    ushort design_count;
+    byte unk[250] <hidden=true>;
+} Header <bgcolor=cLtRed>;
+
+//------------------------------------------------
+
+Header header;
+Design designs[header.design_count];
+Design empty_designs[50 - header.design_count];

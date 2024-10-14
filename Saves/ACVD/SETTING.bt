@@ -1,0 +1,166 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.2 Binary Template
+//
+//      File: SETTING.bt
+//   Authors: WarpZephyr
+//   Version: 1.0.0
+//   Purpose: Armored Core Verdict Day SETTING.DAT save files.
+//  Category: Saves
+// File Mask: SETTING.DAT
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+BigEndian();
+
+//------------------------------------------------
+
+enum <ubyte> Keybind
+{
+    LeftStickUp = 0,
+    LeftStickDown = 1,
+    LeftStickRight = 2,
+    LeftStickLeft = 3,
+    RightStickUp = 4,
+    RightStickDown = 5,
+    RightStickRight = 6,
+    RightStickLeft = 7,
+    Circle = 8,
+    Triangle = 9,
+    Square = 10,
+    X = 11,
+    L1 = 12,
+    L2 = 13,
+    R1 = 14,
+    R2 = 15,
+    L3 = 16,
+    R3 = 17,
+    Select = 18,
+    Start = 19,
+    ArrowUp = 20,
+    ArrowDown = 21,
+    ArrowRight = 22,
+    ArrowLeft = 23,
+    NotAssigned = 24
+};
+
+//------------------------------------------------
+
+typedef struct
+{
+    Keybind forward;
+    Keybind backward;
+    Keybind right;
+    Keybind left;
+    Keybind look_up;
+    Keybind look_down;
+    Keybind look_right;
+    Keybind look_left;
+    Keybind jump;
+    Keybind toggle_boost;
+    Keybind high_boost;
+    Keybind glide_boost;
+    Keybind use_right;
+    Keybind use_left;
+    Keybind use_shoulder;
+    Keybind use_recon;
+    Keybind bay_shift;
+    Keybind purge;
+    Keybind buzzer;
+    Keybind text_chat;
+    Keybind menu;
+    Keybind pause;
+    Keybind change_mode;
+    Keybind unk; // ?
+} Keybinds;
+
+typedef struct
+{
+    ubyte unk00;
+    ubyte vibration;
+    ubyte unk02;
+    ubyte unk03 <hidden=true>; Assert(unk03 == 0); // Padding?
+    Keybinds keybinds;
+    uint unk1C <hidden=true>; Assert(unk1C == 0); // Padding?
+    uint unk20 <hidden=true>; Assert(unk20 == 0); // ?
+    ubyte auto_purge : 1;
+    ubyte auto_boost : 1;
+    ubyte auto_sighting : 1;
+    ubyte subtitles : 1;
+    ubyte unk24 : 4 <hidden=true>; Assert(unk24 == 0); // ?
+    ubyte unk25 <hidden=true>; Assert(unk25 == 0); // ?
+    ubyte unk26 <hidden=true>; Assert(unk26 == 0); // ?
+    ubyte unk27 <hidden=true>; Assert(unk27 == 0); // ?
+
+    uquad unk28 <hidden=true>; Assert(unk28 == 0); // Padding?
+    uquad unk30 <hidden=true>; Assert(unk30 == 0); // Padding?
+    uquad unk38 <hidden=true>; Assert(unk38 == 0); // Padding?
+    uint unk40 <hidden=true>; Assert(unk40 == 0); // ?
+    ubyte brightness;
+    ubyte unk45 <hidden=true>; Assert(unk45 == 0); // Padding?
+    ubyte volume_music;
+    ubyte volume_effects;
+    ubyte volume_voice;
+    ubyte unk49;
+    ubyte com_voice;
+    ubyte unk4B;
+    uint unk4C <hidden=true>; Assert(unk4C == 0); // Padding?
+    ubyte gauge_shading;
+    ubyte unk51;
+    ubyte coloring;
+    ubyte unk53 <hidden=true>; Assert(unk53 == 0); // Padding?
+    ubyte unk54[60];
+} Options <bgcolor=cLtRed>;
+
+// Part of Options?
+typedef struct
+{
+    uint unk00;
+    uint unk04;
+    uint unk08;
+    uint unk0C;
+} UnkD0 <bgcolor=cLtRed>;
+
+typedef struct
+{
+    uint fmgID; // 0 when comment is used, set to an FMG comment otherwise.
+    wchar_t comment[34];
+} Comment <bgcolor=cRed, read=ReadComment>;
+
+wstring ReadComment(Comment& comment)
+{
+    return Str("<%d> %s", comment.fmgID, comment.comment);
+}
+
+typedef struct
+{
+    int unk00;
+    int unk04;
+    int unk08;
+    float unk0C;
+    float unk10;
+    float unk14;
+    float unk18;
+    wchar_t online_comment[34];
+} OnlinePlayer;
+
+typedef struct
+{
+    ushort unk00;
+    ubyte unk02[62];
+    wchar_t team_name[64];
+} Team <bgcolor=cDkBlue>;
+
+typedef struct
+{
+    wchar_t name[32];
+    Options OSET;
+    UnkD0 unkD0;
+    Comment comments[80];
+    OnlinePlayer online_player;
+    Team team;
+} SETTING <bgcolor=cLtRed>;
+
+//------------------------------------------------
+
+SETTING settings;

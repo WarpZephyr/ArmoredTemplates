@@ -1,0 +1,19 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.2 Binary Template
+//
+//      File: Radiator.bt
+//   Authors: WarpZephyr
+//   Version: 1.0.0
+//   Purpose: Radiator part stats in ACFF.
+//  Category: Stats
+// File Mask: *.bin
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+LittleEndian();
+
+typedef struct
+{
+    byte data[64];
+} Radiator <optimize=false>;

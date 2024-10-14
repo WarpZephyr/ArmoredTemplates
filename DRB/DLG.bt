@@ -1,0 +1,64 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.1 Binary Template
+//
+//      File: DLG.bt
+//   Authors: WarpZephyr
+//   Version: 1.0.1
+//   Purpose: DRB Dialogs, groups together Dialog Objects as a parent UI element.
+//  Category: Dantelion
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+typedef struct {
+    int nameOffset <format=hex, hidden=true>;
+    int shapOffset <format=hex, hidden=true>;
+    int ctrlOffset <format=hex, hidden=true>; Assert(ctrlOffset == shapOffset);
+    int unk0C <hidden=true>; Assert(unk0C == 0);
+    int unk10 <hidden=true>; Assert(unk10 == 0);
+    int unk14 <hidden=true>; Assert(unk14 == 0);
+    int unk18 <hidden=true>; Assert(unk18 == 0);
+    int unk1C <hidden=true>; Assert(unk1C == 0);
+    int dlgoCount <hidden=true>;
+    int dlgoOffset <format=hex, hidden=true>;
+    short leftEdge;
+    short topEdge;
+    short rightEdge;
+    short bottomEdge;
+    short unk30;
+
+    if (version == VERSION_ACFA)
+    {
+        ushort messageHandlerID;
+    }
+    else
+    {
+        short unk32;
+    }
+    short unk34;
+    short unk36;
+    short unk38;
+    short unk3A <hidden=true>; Assert(unk3A == 0);
+    int unk3C <hidden=true>; Assert(unk3C == 0);
+    
+    local quad pos <hidden=true> = FTell();
+    FSeek(offsets.str + nameOffset);
+    wstring name;
+
+    FSeek(offsets.shap + shapOffset);
+    SHAPEntry shapEntry <bgcolor=cLtBlue>;
+
+    FSeek(offsets.ctrl + ctrlOffset);
+    CTRLEntry ctrlEntry <bgcolor=cAqua>;
+
+    if (dlgoCount > 0) {
+        FSeek(offsets.dlgo + dlgoOffset);
+        DLGOEntry dlgoEntries[dlgoCount] <bgcolor=cLtRed, optimize=false>;
+    }
+    FSeek(pos);
+} DLGEntry <read=ReadDLGEntry, optimize=false>;
+
+wstring ReadDLGEntry(DLGEntry& entry) {
+    return entry.name;
+}

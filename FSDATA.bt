@@ -1,0 +1,71 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.2 Binary Template
+//
+//      File: FSDATA.bt
+//   Authors: WarpZephyr
+//   Version: 1.0.3
+//   Purpose: Early FromSoftware "DATA.BIN" archives.
+//  Category: Archives
+// File Mask: *DATA.BIN
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+// It's possible the entry counts aren't as large as previously thought and only align to 0x1000 afterwards.
+// An entry count may only be 2000 entries instead of 2048 for example, until someone tests this or looks into an executable, I don't know.
+
+// Set entry count according to how many entries are used:
+// ERDATA:   4096
+// AC2DATA:  4096
+// AC25DATA: 8192
+// AC3DATA:  8192
+// ac3data:  8192
+
+// Set compression if the archive uses it:
+// ERDATA: 0
+// AC2DATA: 0
+// AC25DATA: 0
+// AC3DATA: 0
+// ac3data: 1
+
+LittleEndian();
+
+// Whether or not the FSDATA being read is using compression.
+local ubyte COMPRESSION = 0;
+
+local int ENTRY_SIZE = 8;
+if (COMPRESSION) ENTRY_SIZE += 4;
+
+local int ENTRY_COUNT = 8192;
+local int BASE_ADDRESS = ENTRY_SIZE * ENTRY_COUNT; 
+local int SECTOR_SIZE = 0x800;
+local int ALIGNMENT = 0x8000;
+
+//------------------------------------------------
+
+typedef struct
+{
+    int start_sector;
+    if (COMPRESSION) int decompressed_sector_count;
+    int sector_count;
+
+    // If start was not zero it wouldn't matter as there's no reason to jump to it anyways if count is zero.
+    if (sector_count != 0)
+    {
+        local quad pos <hidden=true> = FTell();
+        FSeek(BASE_ADDRESS + (start_sector * SECTOR_SIZE));
+        ubyte data[sector_count * SECTOR_SIZE] <bgcolor=cAqua>;
+        FSeek(pos);
+    }
+} Entry <bgcolor=cLtGreen, read=ReadEntry, optimize=false>;
+
+string ReadEntry(Entry &entry)
+{
+    local string str;
+    if (COMPRESSION) return SPrintf(str, "%d %d %d", entry.start_sector, entry.decompressed_sector_count, entry.sector_count);
+    return SPrintf(str, "%d %d", entry.start_sector, entry.sector_count);
+}
+
+//------------------------------------------------
+
+Entry entries[ENTRY_COUNT];

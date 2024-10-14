@@ -34,8 +34,7 @@ typedef struct
 
 string ReadEntry(Entry& entry)
 {
-    string str;
-    return SPrintf(str, "%i %i ID: %i Blocked: %i", entry.category, entry.blockCategory, entry.partID, entry.blockedPartID);
+    return Str("%d/%d : %d/%d", entry.category, entry.blockCategory, entry.partID, entry.blockedPartID);
 }
 
 //------------------------------------------------

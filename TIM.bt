@@ -1,0 +1,168 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.2 Binary Template
+//
+//      File: TIM.bt
+//   Authors: WarpZephyr
+//   Version: 1.0.0
+//   Purpose: Playstation 1 TIM textures.
+//  Category: Textures
+// File Mask: *,*.TIM,*.tim
+//  ID Bytes: 10
+//   History: 
+//------------------------------------------------
+
+LittleEndian();
+
+//------------------------------------------------
+
+enum <uint> Type
+{
+    BPP4NoCLUT = 0,
+    BPP8NoCLUT = 1,
+    BPP16 = 2,
+    BPP24 = 3,
+    BPP4 = 8,
+    BPP8 = 9
+};
+
+typedef struct
+{
+    ubyte tag; Assert(tag == 0x10);
+    ubyte version; Assert(version == 0);
+    ubyte unk02 <hidden=true>; Assert(unk02 == 0);
+    ubyte unk03 <hidden=true>; Assert(unk03 == 0);
+    Type type;
+} Header <bgcolor=cLtRed>;
+
+typedef struct
+{
+    ubyte value : 4;
+} Pixel4Bit <read=ReadPixel4Bit, optimize=false>;
+
+string ReadPixel4Bit(Pixel4Bit& pixel)
+{
+    local string str;
+    if (exists(tim.colorLookupTable))
+    {
+        return SPrintf(str, "%i %i %i", tim.colorLookupTable.palettes[0].colors[pixel.value].r * 8,
+                                        tim.colorLookupTable.palettes[0].colors[pixel.value].g * 8,
+                                        tim.colorLookupTable.palettes[0].colors[pixel.value].b * 8);
+    }
+
+    return SPrintf(str, "%i", pixel.value);
+}
+
+typedef struct
+{
+    ubyte value;
+} Pixel8Bit <read=ReadPixel8Bit, optimize=false>;
+
+string ReadPixel8Bit(Pixel8Bit& pixel)
+{
+    local string str;
+    if (exists(tim.colorLookupTable))
+    {
+        return SPrintf(str, "%i %i %i", tim.colorLookupTable.palettes[0].colors[pixel.value].r * 8,
+                                        tim.colorLookupTable.palettes[0].colors[pixel.value].g * 8,
+                                        tim.colorLookupTable.palettes[0].colors[pixel.value].b * 8);
+    }
+
+    return SPrintf(str, "%i", pixel.value);
+}
+
+typedef struct
+{
+    // Is this order correct?
+    ubyte b;
+    ubyte g;
+    ubyte r;
+} PixelRGB <read=ReadPixelRGB>;
+
+string ReadPixelRGB(PixelRGB& color)
+{
+    local string str;
+    return SPrintf(str, "%i %i %i", color.r, color.g, color.b);
+}
+
+typedef struct
+{
+    ushort a : 1;
+    ushort b : 5;
+    ushort g : 5;
+    ushort r : 5;
+} A1B5G5R5 <read=ReadA1B5G5R5, optimize=false>;
+
+string ReadA1B5G5R5(A1B5G5R5& color)
+{
+    local string str;
+    return SPrintf(str, "%i %i %i %i", color.r * 8, color.g * 8, color.b * 8, color.a * 255);
+}
+
+typedef struct (ushort width)
+{
+    A1B5G5R5 colors[width];
+} Palette <optimize=false>;
+
+typedef struct
+{
+    uint length;
+    ushort x;
+    ushort y;
+    ushort colorCount;
+    ushort paletteCount;
+    Palette palettes(colorCount)[paletteCount];
+} ColorLookupTable <bgcolor=cRed>;
+
+typedef struct
+{
+    uint length;
+    ushort x;
+    ushort y;
+    ushort width;
+    ushort height;
+    switch (header.type)
+    {
+        case BPP4NoCLUT:
+            BitfieldDisablePadding();
+            Pixel4Bit pixels[height * (width * 2)];
+            break;
+        case BPP8NoCLUT:
+            ubyte pixels[height * (width * 2)];
+            break;
+        case BPP4:
+            BitfieldDisablePadding();
+            Pixel4Bit pixelPaletteIndices[height * (width * 4)];
+            break;
+        case BPP8:
+            Pixel8Bit pixelPaletteIndices[height * (width * 2)];
+            break;
+        case BPP16:
+            A1B5G5R5 pixels[height * width];
+            break;
+        case BPP24:
+            PixelRGB pixels[height * (width / 2)];
+            break;
+    }
+} Image <bgcolor=cLtGreen>;
+
+typedef struct
+{
+    Header header;
+    switch (header.type)
+    {
+        case BPP4NoCLUT:
+        case BPP8NoCLUT:
+        case BPP16:
+        case BPP24:
+            Image image;
+            break;
+        case BPP4:
+        case BPP8:
+            ColorLookupTable colorLookupTable;
+            Image image;
+    }
+} TIM;
+
+//------------------------------------------------
+
+TIM tim;

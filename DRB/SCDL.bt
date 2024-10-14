@@ -1,0 +1,35 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.1 Binary Template
+//
+//      File: SCDL.bt
+//   Authors: WarpZephyr
+//   Version: 1.0.1
+//   Purpose: DRB SCDL.
+//  Category: Dantelion
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+typedef struct {
+    int nameOffset <format=hex, hidden=true>;
+    int scdoCount <hidden=true>;
+    int scdoOffset <format=hex, hidden=true>;
+    int unk0C;
+    
+    local quad pos <hidden=true> = FTell();
+    FSeek(offsets.str + nameOffset);
+    wstring name;
+
+    if (scdoCount > 0) {
+        FSeek(offsets.scdo + scdoOffset);
+        SCDOEntry scdoEntries[scdoCount] <bgcolor=cGreen, optimize=false>;
+    }
+    FSeek(pos);
+} SCDLEntry <read=ReadSCDLEntry, optimize=false>;
+
+wstring ReadSCDLEntry(SCDLEntry& entry) {
+    string str;
+    SPrintf(str, "%3i %s", entry.unk0C, entry.name);
+    return str;
+}

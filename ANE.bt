@@ -31,17 +31,6 @@ typedef struct
 
 typedef struct
 {
-    short index;
-} Index <bgcolor=cGreen, read=ReadIndex>;
-
-string ReadIndex(Index& index)
-{
-    string str;
-    return SPrintf(str, "Index: %d", index.index);
-}
-
-typedef struct
-{
     short unk00;
     short unk02;
     byte unk03;
@@ -87,7 +76,7 @@ typedef struct
 Header header;
 
 FSeek(header.indicesOffset);
-Index indices[header.indexCount];
+short indices[header.indexCount] <bgcolor=cGreen>;
 
 FSeek(header.animationEntryOffset);
 AnimationEntry animationEntries[header.animationEntryCount];

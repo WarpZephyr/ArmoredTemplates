@@ -1,0 +1,48 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.2 Binary Template
+//
+//      File: ACLR_AC_BIN.bt
+//   Authors: WarpZephyr
+//   Version: 1.0.0
+//   Purpose: Armored Core Last Raven Portable AC.BIN archive.
+//  Category: Archive
+// File Mask: AC.BIN
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+#define BASE_ADDRESS 0x20000
+#define BLOCK_SIZE 0x800
+LittleEndian();
+
+//------------------------------------------------
+
+typedef struct
+{
+    int id;
+    int start_block;
+    int decompressed_block_count;
+    int compressed_block_count;
+
+    if (compressed_block_count > 0)
+    {
+        local quad end = FTell();
+        FSeek(BASE_ADDRESS + (start_block * BLOCK_SIZE));
+        byte bytes[compressed_block_count * BLOCK_SIZE];
+        FSeek(end);
+    }
+} FileEntry <bgcolor=cLtRed, read=ReadFileEntry, optimize=false>;
+
+string ReadFileEntry(FileEntry& entry)
+{
+    if (entry.id + entry.start_block + entry.decompressed_block_count + entry.compressed_block_count == 0)
+    {
+        return "Empty";
+    }
+
+    return Str("%d", entry.id);
+}
+
+//------------------------------------------------
+
+FileEntry fileEntries[8192];

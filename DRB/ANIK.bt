@@ -1,0 +1,77 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.1 Binary Template
+//
+//      File: ANIK.bt
+//   Authors: WarpZephyr
+//   Version: 1.0.1
+//   Purpose: DRB animation keys.
+//  Category: Dantelion
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+typedef struct (int anioIndex)
+{
+    int nameOffset <format=hex, hidden=true>;
+    int unk04; // Frame count?
+    byte unk08; Assert(unk08 >= 0 && unk08 <= 1);
+    byte unk09; Assert(unk09 >= 1 && unk09 <= 2);
+    short unk0A <hidden=true>; Assert(unk0A == 0);
+    int intpOffset;
+    int anipOffset;
+    int unk14 <hidden=true>; Assert(unk14 == 0);
+    int unk18 <hidden=true>; Assert(unk18 == 0);
+    int unk1C <hidden=true>; Assert(unk1C == 0);
+    
+    local quad pos <hidden=true> = FTell();
+    FSeek(offsets.str + nameOffset);
+    wstring name;
+
+    if (unk09 == 2)
+    {
+        FSeek(offsets.intp + intpOffset);
+        float intp00;
+        float intp04;
+        float intp08;
+        float intp0C;
+    }
+
+    FSeek(offsets.anip + anipOffset);
+    /*if (anioIndex == 0)
+    {
+        short anio00;
+        short anio02;
+    }
+    else if (anioIndex == 1)
+    {
+        short anio00;
+        short anio02;
+    }
+    else if (anioIndex == 2)
+    {
+        int anio00;
+        if (anio00 == 2)
+        {
+            int anio04;
+        }
+        else
+        {
+            byte anio04;
+        }
+    }
+    else
+    {
+        int anio00; Assert(anio00 == 0);
+        float anio04;
+    }*/
+    FSeek(pos);
+} ANIKEntry <read=ReadANIKEntry, optimize=false>;
+
+wstring ReadANIKEntry(ANIKEntry& entry)
+{
+    string str;
+    SPrintf(str, "%3i %i %i %s %4X %4X",
+        entry.unk04, entry.unk08, entry.unk09, entry.name, entry.intpOffset, entry.anipOffset);
+    return str;
+}

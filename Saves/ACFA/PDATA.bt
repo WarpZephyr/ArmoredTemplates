@@ -1,0 +1,53 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.2 Binary Template
+//
+//      File: PDATA.bt
+//   Authors: WarpZephyr
+//   Version: 1.0.1
+//   Purpose: Armored Core For Answer player data save file.
+//  Category: Saves
+// File Mask: PDATA.DAT
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+BigEndian();
+
+enum <byte> Rank
+{
+    NotCompleted = -1,
+    E = 0,
+    D = 1,
+    C = 2,
+    B = 3,
+    A = 4,
+    S = 5,
+    SS = 6
+};
+
+//------------------------------------------------
+
+typedef struct
+{
+    wchar_t lynx_name[32]; // Often has garbage in the remaining name space
+    Rank total_rank;
+    ubyte complete; // Includes arena and mission completions
+    ubyte collared_rank;
+    ubyte orca_rank;
+    int coam;
+    float play_time_seconds; // Play time is in seconds, with HH : MM : SS as the formatting in game.
+    ubyte unk4C[256] <bgcolor=cBlack>; // Always null
+} PDATA <bgcolor=cLtRed, read=ReadPDATA>;
+
+string ReadPDATA(PDATA& data)
+{
+    float hours = data.play_time_seconds / 3600;
+    float minutes = (data.play_time_seconds / 60) % 60;
+    float seconds = data.play_time_seconds % 60;
+    return Str("PLAY TIME: %02d:%02d:%02d | LYNX: %s | CASH: %d C | COMPLETE: %d | TOTAL RANK: %s",
+                hours, minutes, seconds, data.lynx_name, data.coam, data.complete, EnumToString(data.total_rank));
+}
+
+//------------------------------------------------
+
+PDATA data;

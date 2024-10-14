@@ -1,0 +1,226 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.2 Binary Template
+//
+//      File: BND_Kuon.bt
+//   Authors: WarpZephyr
+//   Version: 1.1.1
+//   Purpose: FromSoftware Binder archives in Kuon and Yoshitsune Eiyuuden Shura.
+//  Category: Archives
+// File Mask: *.BND,*.bnd
+//  ID Bytes: 42 4E 44 00
+//   History: 
+//------------------------------------------------
+
+LittleEndian();
+
+void Align(int align)
+{
+    if (FTell() % align > 0)
+    {
+        FSkip(align - (FTell() % align));
+    }
+}
+
+// Attempt to get sizeless data by offset calculations when defined.
+#define GET_SIZELESS_DATA_BY_OFFSET
+
+// Used for asserting file offsets are not invalid.
+local byte HEADER_SIZE = 16;
+local byte FILE_ENTRY_SIZE = 16;
+
+// Settings for whether or not certain fields exist.
+// Header field settings, set them accordingly.
+local byte FIELD_HEADER_FILE_VERSION = 1;
+local byte FIELD_HEADER_FILE_SIZE = 1;
+local byte FIELD_HEADER_FILE_NUM = 1;
+local byte FIELD_HEADER_ALIGNMENT_SIZE = 0;
+
+// File entry field settings, set them accordingly.
+local byte FIELD_FILE_ENTRY_ID = 1;
+local byte FIELD_FILE_ENTRY_OFFSET = 1;
+local byte FIELD_FILE_ENTRY_SIZE = 0;
+local byte FIELD_FILE_ENTRY_NAME_OFFSET = 1;
+
+// Different BND field configurations:
+//  ALL.BND:
+//   file_version
+//   file_size      
+//   file_num
+//   id
+//   offset
+//   size
+//   name_offset
+//
+//  Most other BND:
+//   file_version
+//   file_size      
+//   file_num
+//   id
+//   offset
+//   name_offset
+//
+//  Some other BND:
+//   file_version
+//   file_size      
+//   file_num
+//   offset
+//   size
+
+//------------------------------------------------
+
+typedef struct 
+{
+    char magic[4]; Assert(magic == "BND\0");
+    if (FIELD_HEADER_FILE_VERSION)   uint file_version;
+    if (FIELD_HEADER_FILE_SIZE)      uint file_size;
+    if (FIELD_HEADER_FILE_NUM)       uint file_num;
+    if (FIELD_HEADER_ALIGNMENT_SIZE) uint alignment_size;
+    Align(0x10);
+} Header <bgcolor=cLtRed, read=ReadHeader, optimize=false>;
+
+string ReadHeader(Header& header)
+{
+    local string str;
+    local string temp;
+    
+    if (exists(header.file_version))
+    {
+        str += SPrintf(temp, "Version: %i", header.file_version);
+    }
+
+    if (exists(header.file_size))
+    {
+        if (str != "") str += " | ";
+        str += SPrintf(temp, "Size: %i", header.file_size);
+    }
+
+    if (exists(header.file_num))
+    {
+        if (str != "") str += " | ";
+        str += SPrintf(temp, "Count: %i", header.file_num);
+    }
+
+
+    if (exists(header.alignment_size))
+    {
+        if (str != "") str += " | ";
+        str += SPrintf(temp, "Alignment: %i", header.alignment_size);
+    }
+
+    return str;
+}
+
+typedef struct
+{
+    if (FIELD_FILE_ENTRY_ID)          uint id;
+    if (FIELD_FILE_ENTRY_OFFSET)      uint offset;
+    if (FIELD_FILE_ENTRY_SIZE)        uint size;
+    if (FIELD_FILE_ENTRY_NAME_OFFSET) uint name_offset;
+
+    local quad end <hidden=true> = FTell();
+    if (exists(offset))
+    {
+        FSeek(offset);
+    }
+
+    if (exists(size))
+    {
+        ubyte data[size];
+    }
+    else
+    {
+        ubyte dataMarker;
+    }
+
+    if (exists(name_offset) && name_offset != 0)
+    {
+        FSeek(name_offset);
+        string name;
+    }
+    FSeek(end);
+} File <bgcolor=cLtGreen, read=ReadFile, optimize=false>;
+
+string ReadFile(File& file)
+{
+    local string str;
+    local string temp;
+
+    if (exists(file.id))
+    {
+        str += SPrintf(temp, "ID: %i", file.id);
+    }
+
+    if (exists(file.offset))
+    {
+        if (str != "") str += " | ";
+        str += SPrintf(temp, "Offset: %i", file.offset);
+    }
+
+    if (exists(file.size))
+    {
+        if (str != "") str += " | ";
+        str += SPrintf(temp, "Size: %i", file.size);
+    }
+
+    if (exists(file.name))
+    {
+        if (str != "") str += " | ";
+        str += SPrintf(temp, "Name: %s", file.name);
+    }
+
+    return str;
+}
+
+//------------------------------------------------
+
+Header header;
+if (header.file_num > 0)
+{
+    File files[header.file_num];
+}
+
+#ifdef GET_SIZELESS_DATA_BY_OFFSET
+
+// Helper Struct
+typedef struct(int i, int size)
+{
+    // Store index to reference file info for read function
+    local int _index <hidden=true> = i;
+    ubyte data[size];
+} FileBytes <read=ReadFileBytes>;
+
+string ReadFileBytes(FileBytes& bytes)
+{
+    return ReadFile(files[bytes._index]);
+}
+
+if (header.file_num > 0 && !FIELD_FILE_ENTRY_SIZE && FIELD_FILE_ENTRY_OFFSET)
+{
+    // Go to first file start
+    FSeek(files[0].offset);
+
+    // Get data + padding
+    struct
+    {
+        local int i <hidden=true> = 0;
+        local int lastIndex <hidden=true> = header.file_num - 1;
+        local int offset <hidden=true>;
+        local int nextOffset <hidden=true>;
+        for (i; i < lastIndex; i++)
+        {
+            offset = files[i].offset;
+            nextOffset = files[i+1].offset;
+            if (nextOffset <= offset)
+            {
+                Assert(false, Str("Cannot read file bytes properly as entries are out of order: Cur/Next: %d/%d", offset, nextOffset));
+            }
+            
+            FileBytes bytes(i, nextOffset - offset);
+        }
+
+        // Get last file
+        FileBytes bytes(lastIndex, FileSize() - files[lastIndex].offset);
+    } FileData <bgcolor=cAqua>;
+}
+
+#endif

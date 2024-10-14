@@ -11,10 +11,13 @@
 //   History: 
 //------------------------------------------------
 
+#include "Util.bt"
 #include "CGType.bt"
 #include "CGResource.bt"
 #include "CGEnum.bt"
+#include "CGUtilities.bt"
 
+//#define GLSL_STYLE
 BigEndian();
 
 enum <uint> PROFILE_SCE
@@ -31,14 +34,6 @@ enum <uint> PROFILE_SCE
     PROFILE_SCE_VP_TYPEC = 7005,
     PROFILE_SCE_FP_TYPEC = 7006
 };
-
-//------------------------------------------------
-
-void Align(int align) {
-    if (FTell() % align > 0) {
-        FSkip(align - (FTell() % align));
-    }
-}
 
 //------------------------------------------------
 
@@ -106,7 +101,7 @@ typedef struct
     if (defaultValueOffset > 0)
     {
         FSeek(start + defaultValueOffset);
-        DefaultValue defaultValue(type);
+        ReadDefaultValue(type);
         Align(0x10);
     }
 
@@ -123,7 +118,131 @@ typedef struct
     }
 
     FSeek(end);
-} CgBinaryParameter <bgcolor=cLtYellow, optimize=false>;
+} CgBinaryParameter <bgcolor=cLtYellow, read=ReadCgBinaryParameter, optimize=false>;
+
+string ReadCgBinaryParameter(CgBinaryParameter& parameter)
+{
+    local string result <hidden=true>;
+
+    // Get type
+    local string typeStr <hidden=true> = CGTypeToStr(parameter.type);
+    if (typeStr == "sampler1d")
+    {
+        typeStr == "sampler1D";
+    }
+    else if (typeStr == "sampler2d")
+    {
+        typeStr == "sampler2D";
+    }
+    else if (typeStr == "sampler3d")
+    {
+        typeStr == "sampler3D";
+    }
+    else if (typeStr == "samplerrect")
+    {
+        typeStr == "samplerRECT";
+    }
+    else if (typeStr == "samplercube")
+    {
+        typeStr == "samplerCUBE";
+    }
+
+    // Get variability
+    local string varStr <hidden=true>;
+    switch (parameter.var)
+    {
+        case CG_MIXED:
+            varStr = "mixed";
+            break;
+        case CG_VARYING:
+            varStr = "var";
+            break;
+        case CG_UNIFORM:
+            varStr = "uniform";
+            break;
+        case CG_CONSTANT:
+            varStr = "const";
+            break;
+        default:
+            Assert(false, Str("Unknown variability: %s(%d)", EnumToString(parameter.var), parameter.var));
+    }
+
+    // Get direction
+    local string dirStr <hidden=true>;
+    switch (parameter.direction)
+    {
+        case CG_IN:
+            dirStr = "in";
+            break;
+        case CG_OUT:
+            dirStr = "out";
+            break;
+        case CG_INOUT:
+            dirStr = "in out";
+            break;
+        default:
+            Assert(false, Str("Unknown direction: %s(%d)", EnumToString(parameter.direction), parameter.direction));
+    }
+
+    // Get name
+    local string nameStr <hidden=true>;
+    if (parameter.nameOffset > 0)
+    {
+        nameStr = parameter.name;
+    }
+    else
+    {
+        nameStr = CGResourceLowerToStr(parameter.res);
+        if (nameStr == "c")
+        {
+            nameStr = Str("c%d", parameter.resIndex);
+        }
+    }
+
+    // Get semantic
+    local string semanticStr <hidden=true>;
+    if (parameter.semanticOffset > 0)
+    {
+        semanticStr = parameter.semantic;
+    }
+    else
+    {
+        semanticStr = CGResourceToStr(parameter.res, parameter.resIndex);
+    }
+
+    // Process final result
+#ifdef GLSL_STYLE
+    local string varDirStr <hidden=true>;
+    if (varStr == "uniform" || varStr == "const")
+    {
+        varDirStr = varStr;
+    }
+    else
+    {
+        varDirStr = dirStr;
+    }
+
+    if (varStr != "const" && parameter.resIndex > -1)
+    {
+        varDirStr = Str("layout(location = %d) %s", parameter.resIndex, varDirStr);
+    }
+
+    result = Str("%s %s %s;", varDirStr, CGTypeToGlslType(typeStr), nameStr);
+#else
+    local string varDirStr <hidden=true>;
+    if (varStr == "uniform" || varStr == "const")
+    {
+        varDirStr = varStr;
+    }
+    else
+    {
+        varDirStr = dirStr;
+    }
+    result = Str("%s %s %s : %s;", varDirStr, typeStr, nameStr, semanticStr);
+#endif
+
+    return result;
+}
 
 typedef struct
 {
@@ -162,5 +281,6 @@ typedef struct
 
 //------------------------------------------------
 
-local quad start = FTell();
+
+local quad start <hidden=true> = FTell();
 CgBinaryProgram program;

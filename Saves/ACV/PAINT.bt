@@ -1,0 +1,32 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.2 Binary Template
+//
+//      File: PAINT.bt
+//   Authors: WarpZephyr
+//   Version: 1.0.0
+//   Purpose: Armored Core V Paint Save Data
+//  Category: Saves
+// File Mask: PAINT.DAT
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+#include "..\..\Util.bt"
+#include "Emblem.bt"
+BigEndian();
+
+//------------------------------------------------
+
+typedef struct
+{
+    ushort unk00;
+    ushort unk02;
+    ColorSet colorsets[16];
+    ColorRGBA userPalette[36];
+    int unk;
+    Emblem images[64];
+} Paint <bgcolor=cLtGreen>;
+
+//------------------------------------------------
+
+Paint paint;

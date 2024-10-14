@@ -1,0 +1,38 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.2 Binary Template
+//
+//      File: FSPR.bt
+//   Authors: WarpZephyr
+//   Version: 1.0.0
+//   Purpose: MenuResource FormSprites, used as a shape that contains shapes.
+//  Category: Dantelion
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+
+typedef struct
+{
+    int nameOffset;
+    int shapCount;
+    int shapOffset;
+    int unk0C;
+
+    local quad pos <hidden=true> = FTell();
+    FSeek(offsetsStr + nameOffset);
+    string name;
+
+    if (shapCount > 0)
+    {
+        FSeek(offsetsShap + shapOffset);
+        SHAPEntry shapEntries[shapCount] <bgcolor=GetSectionBgcolorByType("SHAP")>;
+    }
+
+    FSeek(pos);
+} FSPREntry <read=ReadFSPREntry, optimize=false>;
+
+string ReadFSPREntry(FSPREntry& entry)
+{
+    return entry.name;
+}

@@ -1,0 +1,60 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.2 Binary Template
+//
+//      File: SHAP.bt
+//   Authors: WarpZephyr
+//   Version: 1.0.0
+//   Purpose: MenuResource shapes.
+//  Category: Dantelion
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+typedef struct
+{    
+    int typeOffset;
+    int shprOffset;
+
+    local quad pos <hidden=true> = FTell();
+    if (VERSION != VER_ACFF_NO_SHAP_TYPE)
+    {
+        FSeek(offsetsStr + typeOffset);
+        string type;
+    }
+
+    FSeek(offsetsShpr + shprOffset); 
+    if (VERSION == VER_ACFF_NO_SHAP_TYPE)
+    {
+        ubyte shprMarker <bgcolor=cBlack>;
+    }  
+    else
+    {
+        switch (type)
+        {
+            case "Null":          ShprNull      shape <bgcolor=GetSectionBgcolorByType("SHPR")>; break;
+            case "MonoRect":      MonoRect      shape <bgcolor=GetSectionBgcolorByType("SHPR")>; break;
+            case "GouraudRect":   GouraudRect   shape <bgcolor=GetSectionBgcolorByType("SHPR")>; break;
+            case "MonoFrame":     MonoFrame     shape <bgcolor=GetSectionBgcolorByType("SHPR")>; break;
+            case "GouraudFrame":  GouraudFrame  shape <bgcolor=GetSectionBgcolorByType("SHPR")>; break;
+            case "Sprite":        Sprite        shape <bgcolor=GetSectionBgcolorByType("SHPR")>; break;
+            case "SimpleSprite":  SimpleSprite  shape <bgcolor=GetSectionBgcolorByType("SHPR")>; break;
+            case "GouraudSprite": GouraudSprite shape <bgcolor=GetSectionBgcolorByType("SHPR")>; break;
+            case "FormSprite":    FormSprite    shape <bgcolor=GetSectionBgcolorByType("SHPR")>; break;
+            case "StaticText":    StaticText    shape <bgcolor=GetSectionBgcolorByType("SHPR")>; break;
+            default:
+                Assert(false, Str("Shape Type not recognized: %s", type));
+        }
+    }
+    
+    // Mark shape data position
+    FSeek(offsetsShpr + shprOffset);
+    byte mark <hidden=true, bgcolor=cBlack, fgcolor=cWhite>;
+    
+    FSeek(pos);
+} SHAPEntry <read=ReadSHAPEntry, optimize=false>;
+
+string ReadSHAPEntry(SHAPEntry& entry)
+{
+    return exists(entry.type) ? entry.type : "TYPELESS_SHPR";
+}

@@ -25,7 +25,7 @@ enum <int> ModelType
 typedef struct
 {
     
-    byte unk00;
+    byte lightID;
     byte unk01;
     byte unk02;
     byte unk03;
@@ -40,6 +40,7 @@ typedef struct
     byte unk09;
     byte unk0A;
     byte unk0B;
+	
     int unk0C;
     short unk10;
     byte unk12;
@@ -71,6 +72,7 @@ typedef struct
     // Read Data
     int nameOffset <format=hex>;
     ModelType type;
+
     int id;
     int resourceOffset <format=hex>;
     int instanceCount;

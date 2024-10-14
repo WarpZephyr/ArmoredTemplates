@@ -1,0 +1,115 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.2 Binary Template
+//
+//      File: SMD
+//   Authors: WarpZephyr
+//   Version: 1.0.0
+//   Purpose: Metal Wolf Chaos SMD files.
+//  Category: Models
+// File Mask: *.smd
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+#include "Util.bt"
+LittleEndian();
+
+enum <int> SMD_VERSION
+{
+    MWC = 0,
+    Otogi = 1
+};
+
+local SMD_VERSION VERSION = MWC;
+local int COUNT = 0;
+
+//------------------------------------------------
+
+typedef struct
+{
+    int fileSize;
+    int nodeCount;
+    int indexCount;
+    int vertexCount;
+    int nodeOffset;
+    int indicesOffset;
+    int vertexOffset;
+    int indexCount2;
+    int vertexCount2;
+    int triangleCount;
+    int unk28 <hidden=true>; Assert(unk28 == 0);
+    int unk2C <hidden=true>; Assert(unk2C == 0);
+} Header <bgcolor=cLtRed>;
+
+// Mesh?
+typedef struct
+{
+    if (VERSION == MWC)
+    {
+        int unk00; COUNT += unk00;
+        int indexCount;
+        int vertexCount;
+        int indexStart;
+        int unk10 <hidden=true>; Assert(unk10 == 0);
+    }
+    else if (VERSION == Otogi)
+    {
+        Vector3 position;
+        Vector3 rotation;
+        Vector3 scale;
+        int parentIndex;
+        int childIndex;
+        int nextSiblingIndex;
+        int indexCount;
+        int indexStart;
+        int vertexCount;
+        int unk3C <hidden=true>; Assert(unk3C == 0);
+    }
+    else
+    {
+        Assert(false, Str("Unknown version: %d", VERSION));
+    }
+} Node <bgcolor=cLtGreen, read=ReadNode, optimize=false>;
+
+string ReadNode(Node& node)
+{
+    if (VERSION == MWC)
+    {
+        return Str("[%d/%d] (%d) %d", node.indexStart, node.indexCount, node.vertexCount, node.unk00);
+    }
+    else if (VERSION == Otogi)
+    {
+        return Str("[%d/%d] (%d)", node.indexStart, node.indexCount, node.vertexCount);
+    }
+    else
+    {
+        Assert(false, Str("Unknown version: %d", VERSION));
+    }
+    
+    return "";
+}
+
+typedef struct
+{
+    Vector3 position;
+    short unk0C;
+    short unk0E;
+} Vertex <bgcolor=cAqua, read=ReadVertex>;
+
+string ReadVertex(Vertex& vertex)
+{
+    return ReadVector3(vertex.position);
+}
+
+//------------------------------------------------
+
+Header header;
+
+FSeek(header.nodeOffset);
+Node nodes[header.nodeCount];
+
+FSeek(header.indicesOffset);
+ushort indices[header.indexCount] <bgcolor=cYellow>;
+
+FSeek(header.vertexOffset);
+Vertex vertices[header.vertexCount];

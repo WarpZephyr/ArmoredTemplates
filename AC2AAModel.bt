@@ -1,0 +1,257 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.2 Binary Template
+//
+//      File: AC2AAModel.bt
+//   Authors: WarpZephyr
+//   Version: 1.0.0
+//   Purpose: Model files in Armored Core 2 Another Age
+//  Category: Model
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+LittleEndian();
+#include "Util.bt"
+
+//------------------------------------------------
+
+typedef struct
+{
+    int fileSize;
+    int unk04;
+    int texturesOffset;
+    int unk0C;
+    short countUnk1;
+    short countUnk2;
+    short countUnk3;
+    short unk16;
+    short unk18;
+    short unk1A;
+    int unk1C;
+    Null null_1[112] <hidden=true>;
+    Vector4 unk90;
+    Null null_2[80] <hidden=true>;
+    int unkF0;
+    Null null_3[60] <hidden=true>;
+    int sceiOffset;
+    int unkDataOffset;
+    Null null_4[32] <hidden=true>;
+    int sceiLength;
+    int unkDataLength;
+    Null null_5[32] <hidden=true>;
+    Vector4 unk180;
+    Vector4 unk190;
+    Vector4 unk1A0;
+    Vector4 unk1B0;
+    Vector4 unk1C0;
+    Vector4 unk1D0;
+    Vector4 unk1E0;
+    Vector4 unk1F0;
+    Null null_6[144];
+} Header <bgcolor=cLtRed>;
+
+typedef struct
+{
+    Vector4 translation;
+    Vector4 rotation;
+    Vector4 scale;
+    int unk30;
+    int unk34;
+    int unk38;
+    int unk3C;
+    Null null_1[36] <hidden=true>;
+    int unk64;
+    int unk68;
+    int unk6C;
+    int unk70;
+    float unk74;
+    Null null_2[8] <hidden=true>;
+} Unk1 <bgcolor=cLtGreen, optimize=false>;
+
+typedef struct
+{
+    Vector4 translation;
+    Vector4 rotation;
+    Vector4 scale;
+    int unk30;
+    int unk34;
+    int unk38;
+    int unk3C;
+    int unk40;
+    int unk44;
+    int unk48;
+    int unk4C;
+    int unk50;
+    int unk54;
+    int unk58;
+    int unk5C;
+    int unk60;
+    int unk64;
+    int unk68;
+    int unk6C;
+    int unk70;
+    int unk74;
+    int unk78;
+    int unk7C;
+} Unk2 <bgcolor=cGreen, optimize=false>;
+
+typedef struct
+{
+    Vector4 translation;
+    Vector4 rotation;
+    Vector4 scale;
+    int unk30;
+    int unk34;
+    int unk38;
+    int unk3C;
+    int unk40;
+    int unk44;
+    int unk48;
+    int unk4C;
+    int unk50;
+    int unk54;
+    int unk58;
+    int unk5C;
+    int unk60;
+    int unk64;
+    int unk68;
+    int unk6C;
+    int unk70;
+    int unk74;
+    int unk78;
+    int unk7C;
+} Unk3 <bgcolor=cDkGreen, optimize=false>;
+
+typedef struct
+{
+    ubyte unk00[0x4000];
+} Unk4 <bgcolor=cLtYellow>;
+
+typedef struct
+{
+    Vector4 unk00;
+    Vector4 unk10;
+    int unk20;
+    int unk24;
+    int unk28;
+    short unk2C;
+    short unk2E;
+    short unk30;
+    short unk32;
+    short unk34;
+    short unk36;
+    short unk38;
+    short unk3A;
+    short unk3C;
+    short unk3E;
+} Unk5 <bgcolor=cYellow, optimize=false>;
+
+typedef struct
+{
+    Null null[36] <hidden=true>;
+    int unk24;
+    int unk28;
+    short unk2C;
+    short unk2E;
+    short unk30;
+    short unk32;
+    short unk34;
+    short unk36;
+    short unk38;
+    short unk3A;
+    short unk3C;
+    short unk3E;
+} Unk6 <bgcolor=cDkYellow, optimize=false>;
+
+typedef struct
+{
+    short indices[0x2000];
+} Unk7 <bgcolor=cLtPurple>;
+
+// 32 Indices from Unk7 are not -1, so they might be related to the 32 entries of Unk8, Unk9, and Unk10.
+typedef struct
+{
+    int unk00;
+    int unk04;
+    int unk08;
+    int unk0C;
+    int unk10;
+    int unk14;
+    Vector2 unk18;
+} Unk8 <bgcolor=cPurple, optimize=false>;
+
+typedef struct
+{
+    Vector4 unk00;
+    Vector4 unk10;
+    Vector4 unk20;
+    Vector4 unk30;
+    Vector4 unk40;
+    Vector4 unk50;
+    Vector4 unk60;
+    Vector4 unk70;
+} Unk9 <bgcolor=cDkPurple>;
+
+typedef struct
+{
+    Vector4 unk00;
+} Unk10 <bgcolor=cLtGray>;
+
+typedef struct
+{
+    ubyte data[header.sceiLength];
+} SCEIData <bgcolor=cLtAqua>;
+
+typedef struct
+{
+    ubyte data[header.unkDataLength];
+} UnkData <bgcolor=cAqua>;
+
+typedef struct
+{
+    local quad start = FTell();
+    int size;
+    FSeek(start);
+    ubyte data[size];
+} TextureData <bgcolor=cDkAqua>;
+
+//------------------------------------------------
+
+Header header;
+
+Unk1 unk1s[header.countUnk1];
+FSkip((1024 - header.countUnk1) * 128);
+
+Unk2 unk2s[header.countUnk2];
+FSkip((1024 - header.countUnk2) * 128);
+
+Unk3 unk3s[header.countUnk3];
+FSkip((256 - header.countUnk3) * 128);
+
+Unk4 unk4;
+
+Unk5 unk5s[header.countUnk1];
+FSkip((1024 - header.countUnk1) * 64);
+
+Unk6 unk6s[header.countUnk2];
+FSkip((1024 - header.countUnk2) * 64);
+
+Unk7 unk7;
+
+Unk8 unk8s[32];
+
+Unk9 unk9s[32];
+
+Unk10 unk10s[32];
+
+ubyte data;
+
+FSeek(header.sceiOffset);
+SCEIData sceiData;
+
+FSeek(header.unkDataOffset);
+UnkData unkData;
+
+FSeek(header.texturesOffset);
+TextureData textureData;

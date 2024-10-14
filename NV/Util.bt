@@ -1,0 +1,167 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.2 Binary Template
+//
+//      File: Util.bt
+//   Authors: WarpZephyr
+//   Version: 1.0.0
+//   Purpose: Utility functions.
+//  Category: Utility
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+// Align the current position to the specified alignment.
+void Align(int alignment)
+{
+    if (FTell() % alignment > 0)
+    {
+        FSkip(alignment - (FTell() % alignment));
+    }
+}
+
+// Get the index a char appears at in a string of the specified length, or -1 if it never does.
+int GetCharIndexFixed(string str, char c, int len)
+{
+    local int i <hidden=true> = 0;
+    for (i; i < len; i++)
+    {
+        if (str[i] == c)
+        {
+            return i;
+        }
+    }
+
+    return -1;
+}
+
+// Get the index a char appears at in a string, or -1 if it never does.
+// Uses Strlen to get the length of the string.
+int GetCharIndex(string str, char c)
+{
+    return GetCharIndexFixed(str, c, Strlen(str));
+}
+
+// Convert a string of the specified length to lowercase.
+string StrToLowerFixed(string value, int len)
+{
+    local int i <hidden=true>;
+    for (i = 0; i < len; i++)
+    {
+        value[i] = ToLower(value[i]);
+    }
+    return value; 
+}
+
+// Convert a string to lowercase.
+// Uses Strlen to get the length of the string.
+string StrToLower(string value)
+{
+    return StrToLowerFixed(value, Strlen(value));
+}
+
+// Trim the start of the string by the specified amount.
+string StrTrimStart(string value, int count)
+{
+    local int len <hidden=true> = Strlen(value);
+    local int nlen <hidden=true> = len - count;
+    local int i <hidden=true> = 0;
+    local int ni <hidden=true> = count;
+    for (i; i < nlen; i++)
+    {
+        value[i] = value[ni];
+        ni++;
+    }
+    value[nlen] = 0;
+    return value;
+}
+
+ubyte StrContainsAtIndexFixed(string str, string value, int index, int len)
+{
+    local int ilen <hidden=true> = len + index;
+    local int i <hidden=true> = index;
+    for (i; i < ilen; i++)
+    {
+        if (str[i] != value[i])
+        {
+            return 0;
+        }
+    }
+
+    return 1;
+}
+
+ubyte StrContainsAtIndex(string str, string value, int index)
+{
+    local int aI <hidden=true> = Strstr(value);
+    if (aI == index)
+        return 1;
+    
+    return 0;
+}
+
+ubyte StrStartsWith(string str, string value)
+{
+    local int index <hidden=true> = Strstr(value);
+    if (index == 0)
+        return 1;
+    
+    return 0;
+}
+
+ubyte StrEndsWith(string str, string value)
+{
+    local int index <hidden=true> = Strstr(value);
+    if (index == -1)
+        return 0;
+
+    local int slen <hidden=true> = StrLen(str);    
+    local int vlen <hidden=true> = StrLen(value);
+    if ((slen - vlen) == index)
+        return 1;
+
+    return 0;
+}
+
+// Remove all trailing zeros in a decimal that don't need to be there.
+string TrimDecimalZeros(string str)
+{
+    // Get string length
+    local int len <hidden=true> = Strlen(str);
+
+    // Get the index of the dot char and return if it isn't found.
+    local int dotIndex <hidden=true> = GetCharIndexFixed(str, '.', len);
+    if (dotIndex == -1)
+    {
+        return str;
+    }
+    
+    // Calculate indexes
+    // The first decimal number index is the num after the decimal
+    // i is the current index going backwards
+    // eI is the end index, or where we will set null
+    local int firstDecIndex <hidden=true> = dotIndex + 1;
+    local int i <hidden=true> = len - 1;
+    local int eI <hidden=true> = len;
+    
+    // Loop through the string backwards until the first decimal number index,
+    // Break if a value is not the 0 char
+    // Subtract from the end index otherwise
+    for (i; i > firstDecIndex; i--)
+    {
+        if (str[i] != '0')
+        {
+            break;
+        }
+    
+        eI--;
+    }
+
+    // If the end index changed at all set it to null to set the new string length
+    if (eI < len)
+    {
+        str[eI] = 0;
+    }
+
+    return str;
+}

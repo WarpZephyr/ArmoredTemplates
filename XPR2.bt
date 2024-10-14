@@ -1,0 +1,82 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.2 Binary Template
+//
+//      File: XPR2.bt
+//   Authors: WarpZephyr
+//   Version: 1.0.0
+//   Purpose: XPR texture containers.
+//  Category: Textures
+// File Mask: *.xpr
+//  ID Bytes: 58 50 52 32
+//   History: 
+//------------------------------------------------
+
+BigEndian();
+local short ALIGNMENT <hidden=true> = 0x1000;
+
+void Align(int align)
+{
+    local quad pos = FTell();
+    if (pos % align > 0)
+    {
+        FSkip(align - (pos % align));
+    }
+}
+
+//------------------------------------------------
+
+typedef struct
+{
+    local quad start <hidden=true> = FTell();
+    char magic[4]; Assert(magic == "XPR2");
+    int size04;
+    int dataSize;
+    int textureCount;
+} Header <bgcolor=cLtRed>;
+
+typedef struct
+{
+    int unk00;
+    int unk04;
+    int unk08;
+    int unk0C;
+    int unk10;
+    int unk14 <format=hex>;
+    int unk18 <format=hex>;
+    short unk1C <format=binary>;
+    short unk1E;
+    int unk20;
+    int unk24;
+    int unk28;
+    int unk2C;
+    int unk30;
+} TextureInfo <bgcolor=cDkRed>;
+
+typedef struct
+{
+    string name;
+} TextureName <bgcolor=cRed, read=ReadTextureName, optimize=false>;
+
+string ReadTextureName(TextureName& name)
+{
+    return name.name;
+}
+
+typedef struct
+{
+    char type[4]; Assert(type == "TX2D"); // I haven't seen others yet.
+    int textureInfoOffset; // Unfortunately these seem to be pointing to just after the string padding, but not adding the additional 0x10 padding.
+    int offset08;
+    int offset0C;
+} TextureEntry <bgcolor=cRed, optimize=false>;
+
+//------------------------------------------------
+
+Header header;
+TextureEntry textureEntries[header.textureCount];
+TextureName textureNames[header.textureCount];
+Align(0x10);
+
+TextureInfo texureInfos[header.textureCount];
+Align(ALIGNMENT);
+byte textureData[header.dataSize] <bgcolor=cLtGreen>;
