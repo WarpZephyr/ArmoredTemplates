@@ -3,7 +3,7 @@
 //
 //      File: Tree.bt
 //   Authors: WarpZephyr
-//   Version: 1.1.1
+//   Version: 1.1.2
 //   Purpose: Armored Core V Trees.
 //  Category: Maps
 // File Mask: 
@@ -30,6 +30,5 @@ typedef struct
 
 string ReadTreeNode(TreeNode& node)
 {
-    local string str;
-    return SPrintf(str, "[%d] %7.2f", node.partCount, node.radius);
+    return Str("[%d] %7.2f", node.partCount, node.radius);
 }

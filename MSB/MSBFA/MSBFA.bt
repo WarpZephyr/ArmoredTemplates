@@ -3,7 +3,7 @@
 //
 //      File: MSBFA.bt
 //   Authors: WarpZephyr
-//   Version: 1.1.0
+//   Version: 1.1.1
 //   Purpose: Armored Core For Answer map layouts.
 //  Category: Maps
 // File Mask: *.msb
@@ -128,11 +128,11 @@ typedef struct
     for (i = 0; i < param.count - 1; i++)
     {
         FSeek(param.offsets[i].val);
-        Tree tree;
+        TreeNode node;
     }
-} MapstudioTree <read=ReadMapstudioTree, bgcolor=cLtBlue>;
+} MapStudioTree <read=ReadMapStudioTree, bgcolor=cLtBlue>;
 
-string ReadMapstudioTree(MapstudioTree& mapstudioTree)
+string ReadMapStudioTree(MapStudioTree& mapstudioTree)
 {
     return ReadParam(mapstudioTree.param);
 }
@@ -157,7 +157,7 @@ if (parts.param.nextParamOffset.val > 0)
     while (nextParamOffset != 0)
     {
         FSeek(nextParamOffset);
-        MapstudioTree trees;
+        MapStudioTree trees;
         nextParamOffset = trees.param.nextParamOffset.val;
     }
 
@@ -174,3 +174,5 @@ if (parts.param.nextParamOffset.val > 0)
             && trees[3].param.count == 1);
     }
 }
+
+Assert(exists(trees));

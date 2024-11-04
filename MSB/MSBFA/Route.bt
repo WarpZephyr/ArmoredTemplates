@@ -3,13 +3,19 @@
 //
 //      File: Route.bt
 //   Authors: WarpZephyr
-//   Version: 1.1.1
+//   Version: 1.2.0
 //   Purpose: Armored Core For Answer MSB Routes.
 //  Category: Maps
 // File Mask: 
 //  ID Bytes: 
 //   History: 
 //------------------------------------------------
+
+enum <int> RouteType
+{
+    RouteTypeDefault = 1,
+    RouteTypeAI = 10
+};
 
 typedef struct
 {
@@ -19,7 +25,7 @@ typedef struct
     int nameOffset;
     int startPoint;
     int endPoint;
-    int unk0C;
+    RouteType type;
     int id;
     int unk14;
     Null null[104];
@@ -31,6 +37,13 @@ typedef struct
 
 string ReadRoute(Route& route)
 {
-    local string str;
-    return SPrintf(str, "ID: %d | %s", route.id, route.name);
+    local string type <hidden=true>;
+    switch (route.type)
+    {
+        case RouteTypeDefault: type = "Default"; break;
+        case RouteTypeAI: type = "AI"; break;
+        default: type = "UnknownType";
+    }
+    
+    return Str("ID: %d | %s | %s", route.id, type, route.name);
 }

@@ -3,7 +3,7 @@
 //
 //      File: Point.bt
 //   Authors: WarpZephyr
-//   Version: 1.2.0
+//   Version: 1.2.1
 //   Purpose: Armored Core For Answer MSB Points.
 //  Category: Maps
 // File Mask: 
@@ -86,9 +86,9 @@ typedef struct
     ubyte unk01;
     ubyte unk02;
     ubyte unk03;
-    int unk01;
-    int unk02;
-    int unk03;
+    int unk04;
+    int unk08;
+    int unk0C;
 } PointSpawn;
 
 typedef struct
@@ -142,15 +142,25 @@ typedef struct
 
 typedef struct
 {
-    short unk00;
-    short unk02;
-} PointUnk1;
+    short count;
+    if (count > 0)
+    {
+        short pointIndexes[count];
+    }
+    
+    Align(4);
+} PointLinkPrevious;
 
 typedef struct
 {
-    short unk00;
-    short unk02;
-} PointUnk2;
+    short count;
+    if (count > 0)
+    {
+        short pointIndexes[count];
+    }
+    
+    Align(4);
+} PointLinkNext;
 
 typedef struct
 {
@@ -195,8 +205,8 @@ typedef struct
     ShapeType shapeType;
     Vector3 position;
     Vector3 rotation;
-    int offsetUnk1; Assert(offsetUnk1 > 0);
-    int offsetUnk2; Assert(offsetUnk2 > 0);
+    int linkPreviousOffset; Assert(linkPreviousOffset > 0);
+    int linkNextOffset; Assert(linkNextOffset > 0);
     int pointID;
     int shapeDataOffset;
     int offsetArea;
@@ -210,7 +220,7 @@ typedef struct
     int offsetUnk3; Assert(offsetUnk3 > 0);
     int offsetAntiAirArea;
     int offsetAntiAirCamera;
-    int offsetUnk4; Assert(offsetUnk4 > 0);
+    int offsetUnk4;
     int offsetHerd;
     int offsetSkirtRoom;
     int offset7C <hidden=true>; Assert(offset7C == 0);
@@ -221,11 +231,11 @@ typedef struct
     FSeek(start + nameOffset);
     string name;
 
-    FSeek(start + offsetUnk1);
-    PointUnk1 unk1;
+    FSeek(start + linkPreviousOffset);
+    PointLinkPrevious linkPrevious;
     
-    FSeek(start + offsetUnk2);
-    PointUnk2 unk2;
+    FSeek(start + linkNextOffset);
+    PointLinkNext linkNext;
 
     if (shapeDataOffset > 0)
     {
@@ -305,8 +315,11 @@ typedef struct
         PointAntiAirCamera antiAirCamera;
     }
     
-    FSeek(start + offsetUnk4);
-    PointUnk4 unk4;
+    if (offsetUnk4 > 0)
+    {
+        FSeek(start + offsetUnk4);
+        PointUnk4 unk4;
+    }
 
     if (offsetHerd > 0)
     {

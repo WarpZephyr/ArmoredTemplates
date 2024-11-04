@@ -3,7 +3,7 @@
 //
 //      File: Event.bt
 //   Authors: WarpZephyr
-//   Version: 1.1.1
+//   Version: 1.1.2
 //   Purpose: Armored Core For Answer MSB Events.
 //  Category: Maps
 // File Mask: 
@@ -45,11 +45,20 @@ typedef struct
 typedef struct
 {
     int unk00;
-    float unk04;
+    ubyte unk04;
+    ubyte unk05;
+    ubyte unk06;
+    ubyte unk07;
     float unk08;
-    float unk0C;
+    ubyte unk0C;
+    ubyte unk0D;
+    ubyte unk0E;
+    ubyte unk0F;
     ubyte unk10;
-    Null null[111];
+    ubyte unk11;
+    ubyte unk12;
+    ubyte unk13;
+    Null null[108];
 } EventFilterUnk1438;
 
 typedef struct
@@ -127,8 +136,11 @@ typedef struct
     Null null[468];
 
     // Get Offset Structs
-    FSeek(start + offset28);
-    EventFilterUnk0428 eventFilterUnk0428;
+    if (offset28 > 0)
+    {
+        FSeek(start + offset28);
+        EventFilterUnk0428 eventFilterUnk0428;
+    }
 } EventFilterUnk04;
 
 typedef struct
@@ -259,15 +271,20 @@ typedef struct
 
 typedef struct
 {
-    float unk00;
+    short unk00;
+    short unk02;
     float unk04;
     float unk08;
     float unk0C;
     float unk10;
     float unk14;
     float unk18;
-    float unk1C;
-    float unk20;
+    short unk1C;
+    short unk1E;
+    ubyte unk20;
+    ubyte unk21;
+    ubyte unk22;
+    ubyte unk23;
     int unk24;
     float unk28;
     Null null[468];
@@ -539,7 +556,11 @@ typedef struct
 
 typedef struct
 {
-    int unk00;
+    // Revision version values?
+    ubyte unk00;
+    ubyte unk01;
+    ubyte unk02;
+    ubyte unk03;
     Null null[60];
 } EventRev;
 
