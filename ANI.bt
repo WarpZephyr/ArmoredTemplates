@@ -154,8 +154,8 @@ typedef struct
         int nameOffset;         Assert(nameOffset > 0);
         ObjectType type;        
         short objectIndex;        Assert(objectIndex < header.objectCount);
-        short siblingObjectIndex;   Assert(type == Geom ? siblingObjectIndex < header.objectCount : siblingObjectIndex == -1);
-        short parentObjectIndex;  Assert(parentObjectIndex < header.objectCount);
+        short geomIndex;   Assert(type == Geom ? geomIndex < header.objectCount : geomIndex == -1);
+        short parentIndex;  Assert(parentIndex < header.objectCount);
         short childIndex;       Assert(childIndex < header.objectCount);
         short nextSiblingIndex; Assert(nextSiblingIndex < header.objectCount);
         short unkIndex12;       Assert(unkIndex12 < header.objectCount);

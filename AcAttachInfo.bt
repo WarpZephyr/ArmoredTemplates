@@ -15,6 +15,14 @@ BigEndian();
 
 //------------------------------------------------
 
+enum <ubyte> Category
+{
+    Head = 0,
+    Core = 1,
+    Arms = 2,
+    Legs = 3
+};
+
 typedef struct
 {
     int entryCount;
@@ -23,28 +31,27 @@ typedef struct
     int unk0C <hidden=true>; Assert(unk0C == 0);
 } Header <bgcolor=cLtRed>;
 
-typedef struct (int stringsOffset)
+typedef struct (int namesOffset)
 {
-    ubyte category;
-    ubyte attachID;
-    byte unk02;
-    byte unk03;
-    int stringOffset;
+    Category category;
+    ubyte id;
+    ubyte unk02;
+    ubyte unk03;
+    int nameOffset;
     int unk08 <hidden=true>; Assert(unk08 == 0);
-    byte unk0C; Assert(unk0C == 0 || unk0C == 1);
-    byte unk0E <hidden=true>; Assert(unk0E == 0);
+    ubyte unk0C; Assert(unk0C == 0 || unk0C == 1);
+    ubyte unk0E <hidden=true>; Assert(unk0E == 0);
     short unk10 <hidden=true>; Assert(unk0E == 0);
 
     local long pos = FTell();
-    FSeek(stringsOffset + stringOffset);
+    FSeek(namesOffset + nameOffset);
     string boneName;
     FSeek(pos);
 } Entry <bgcolor=cLtGreen, read=ReadEntry, optimize=false>;
 
 string ReadEntry(Entry& entry)
 {
-    local string str;
-    return SPrintf(str, "%s\t\t(%i,%i)\t\t[%i,%i] %s", entry.boneName, entry.category, entry.attachID, entry.unk02, entry.unk03, (entry.unk0C == 1 ? "T" : "F"));
+    return Str("%s | %s | [%d,%d,%d,%d]", entry.boneName, EnumToString(entry.category), entry.id, entry.unk02, entry.unk03, entry.unk0C );
 }
 
 //------------------------------------------------

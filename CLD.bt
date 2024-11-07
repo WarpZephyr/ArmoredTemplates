@@ -1,0 +1,111 @@
+//------------------------------------------------
+//--- 010 Editor v15.0.1 Binary Template
+//
+//      File: CLD.bt
+//   Authors: WarpZephyr
+//   Version: 1.0.0
+//   Purpose: Armored Core 4 skyclouds render.
+//  Category: Render
+// File Mask: *.cld
+//  ID Bytes: 0D 53 6B 79 43 6C 6F 75 64 73
+//   History: 
+//------------------------------------------------
+
+LittleEndian();
+#include "Util.bt"
+
+//------------------------------------------------
+
+// Type and DataSize could be used to determine how many members to read next.
+// In it's current state of unuse, it's hard to tell.
+// They may have intended for it to be easy to read properties across versions.
+
+// Type - DataSize:
+// 6 - DataSize indicates value count
+// 7 - DataSize indicates byte count
+// 11 - DataSize indicates byte count
+// 13 - DataSize indicates member count
+// 14 - DataSize indicates byte count
+typedef struct(ubyte typeAssert, string nameAssert)
+{
+    ubyte type; Assert(type == typeAssert);
+    char name[31]; Assert(name == nameAssert);
+    int unk20;
+    int dataSize;
+} Section <read=ReadSection>;
+
+string ReadSection(Section& section)
+{
+    return section.name;    
+}
+
+typedef struct
+{
+    Section section(7, "CldRadius");
+    float radius;
+} CldRadius <bgcolor=cYellow>;
+
+typedef struct(int numParticles)
+{
+    Section section(14, "CldParticleRadii");
+    float radii[numParticles];
+} CldParticleRadii <bgcolor=cAqua>;
+
+typedef struct(int numParticles)
+{
+    Section section(14, "CldParticlePositions");
+    Vector3 positions[numParticles];
+} CldParticlePositions <bgcolor=cAqua>;
+
+typedef struct(int numParticles)
+{
+    Section section(14, "CldParticleColors");
+    Vector4 colors[numParticles];
+} CldParticleColors <bgcolor=cAqua>;
+
+typedef struct
+{
+    Section section(6, "CldNumParticles");
+    int numParticles;
+} CldNumParticles <bgcolor=cYellow>;
+
+typedef struct
+{
+    Section section(11, "CldCenter");
+    Vector3 center;
+} CldCenter <bgcolor=cYellow>;
+
+typedef struct
+{
+    Section section(13, "Cloud");
+    CldCenter center;
+    CldNumParticles numParticles;
+    CldParticleColors particleColors(numParticles.numParticles);
+    CldParticlePositions particlePositions(numParticles.numParticles);
+    CldParticleRadii particleRadii(numParticles.numParticles);
+    CldRadius radius;
+} Cloud <bgcolor=cLtGreen, optimize=false>;
+
+typedef struct
+{
+    Section section(6, "CldNumClouds");
+    int numClouds;
+} CldNumClouds <bgcolor=cRed>;
+
+typedef struct
+{
+    Section section(7, "SkyCloudVersion");
+    float version;
+} SkyCloudVersion <bgcolor=cRed>;
+
+typedef struct
+{
+    Section section(13, "SkyClouds");
+    CldNumClouds numClouds;
+    Cloud clouds[numClouds.numClouds];
+    SkyCloudVersion cloudVersion;
+} SkyClouds <bgcolor=cLtRed>;
+
+//------------------------------------------------
+
+SkyClouds skyclouds;

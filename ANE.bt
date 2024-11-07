@@ -62,8 +62,7 @@ typedef struct
 
 string ReadAnimationEntry(AnimationEntry& entry)
 {
-    string str;
-    return SPrintf(str, "%d %d %d", entry.unk00, entry.unk02, entry.animationDataOffset);
+    return Str("%d %d", entry.unk00, entry.unk02);
 }
 
 typedef struct

@@ -1,0 +1,702 @@
+//------------------------------------------------
+//--- 010 Editor v15.0.1 Binary Template
+//
+//      File: MLB_AC4.bt
+//   Authors: WarpZephyr
+//   Version: 1.2.0
+//   Purpose: Lists model related resources inside of binder archives along with additional information.
+//  Category: Dantelion
+// File Mask: *.mlb
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+BigEndian();
+
+enum <int> ResourceType
+{
+    Model = 3,
+    Texture = 4
+};
+
+// Structs
+//------------------------------------------------
+
+typedef struct
+{
+    int entriesOffset; Assert(entriesOffset == 0x10);
+    int entryCount;
+    ResourceType type;
+    int unk0C <hidden=true>; Assert(unk0C == 0);
+} Header <bgcolor=cLtRed>;
+
+typedef struct
+{
+    float unk00;
+    float unk04;
+    float unk08;
+    int unk0C <hidden=true>; Assert(unk0C == 0);
+    int unk10 <hidden=true>; Assert(unk10 == 0);
+    int unk14 <hidden=true>; Assert(unk14 == 0);
+    float unk18;
+    float unk1C;
+    float unk20;
+    int unk24 <hidden=true>; Assert(unk24 == 0);
+    int unk28 <hidden=true>; Assert(unk28 == 0);
+    int unk2C <hidden=true>; Assert(unk2C == 0);
+    int unk30 <hidden=true>; Assert(unk30 == 0);
+    int unk34 <hidden=true>; Assert(unk34 == 0);
+    int unk38 <hidden=true>; Assert(unk38 == 0);
+    int unk3C <hidden=true>; Assert(unk3C == 0);
+} Material04;
+
+typedef struct
+{
+    local quad start <hidden=true> = FTell();
+
+    // Values
+    int nameOffset;
+    int offset04;
+    int unk08 <hidden=true>; Assert(unk08 == 0);
+    int unk0C <hidden=true>; Assert(unk0C == 0);
+    int unk10 <hidden=true>; Assert(unk10 == 0);
+    int unk14 <hidden=true>; Assert(unk14 == 0);
+    int unk18 <hidden=true>; Assert(unk18 == 0);
+    int unk1C <hidden=true>; Assert(unk1C == 0);
+    
+    // Offset Structs
+    FSeek(start + nameOffset);
+    string name;
+
+    if (offset04 > 0)
+    {
+        FSeek(start + offset04);
+        Material04 material04;
+    }
+} MaterialEntry <bgcolor=cRed, read=ReadMaterialEntry>;
+
+string ReadMaterialEntry(MaterialEntry& entry)
+{
+    return entry.name;
+}
+
+typedef struct
+{
+    short unk00;
+    short unk02 <hidden=true>; Assert(unk02 == 0);
+    short unk04 <hidden=true>; Assert(unk04 == 0);
+    short unk06 <hidden=true>; Assert(unk06 == 0);
+    short unk08 <hidden=true>; Assert(unk08 == 0);
+    short unk0A <hidden=true>; Assert(unk0A == 0);
+    short unk0C <hidden=true>; Assert(unk0C == 0);
+    short unk0E <hidden=true>; Assert(unk0E == 0);
+    short unk10 <hidden=true>; Assert(unk10 == 0);
+    short unk12 <hidden=true>; Assert(unk12 == 0);
+    short unk14 <hidden=true>; Assert(unk14 == 0);
+    short unk16 <hidden=true>; Assert(unk16 == 0);
+    short unk18 <hidden=true>; Assert(unk18 == 0);
+    short unk1A <hidden=true>; Assert(unk1A == 0);
+    short unk1C <hidden=true>; Assert(unk1C == 0);
+    short unk1E <hidden=true>; Assert(unk1E == 0);
+} BoneModel_04;
+
+typedef struct
+{
+    ubyte unk00;
+    ubyte unk01 <hidden=true>; Assert(unk01 == 0);
+    ubyte unk02 <hidden=true>; Assert(unk02 == 0);
+    ubyte unk03 <hidden=true>; Assert(unk03 == 0);
+} BoneModel_08_00;
+
+typedef struct
+{
+    local quad start <hidden=true> = FTell();
+
+    // Values
+    int offset00;
+    int unk04 <hidden=true>; Assert(unk04 == 0);
+    int unk08 <hidden=true>; Assert(unk08 == 0);
+    int unk0C <hidden=true>; Assert(unk0C == 0);
+    int unk10 <hidden=true>; Assert(unk10 == 0);
+    int unk14 <hidden=true>; Assert(unk14 == 0);
+    int unk18 <hidden=true>; Assert(unk18 == 0);
+    int unk1C <hidden=true>; Assert(unk1C == 0);
+
+    // Offset Structs
+    if (offset00 > 0)
+    {
+        FSeek(start + offset00);
+        BoneModel_08_00 boneModel_08_00;
+    }
+} BoneModel_08;
+
+typedef struct
+{
+    int unk00 <hidden=true>; Assert(unk00 == 0);
+    int unk04 <hidden=true>; Assert(unk04 == 0);
+    int unk08 <hidden=true>; Assert(unk08 == 0);
+    int unk0C <hidden=true>; Assert(unk0C == 0);
+    int unk10 <hidden=true>; Assert(unk10 == 0);
+    int unk14 <hidden=true>; Assert(unk14 == 0);
+    int unk18 <hidden=true>; Assert(unk18 == 0);
+    int unk1C <hidden=true>; Assert(unk1C == 0);
+    int unk20 <hidden=true>; Assert(unk20 == 0);
+    int unk24 <hidden=true>; Assert(unk24 == 0);
+    int unk28 <hidden=true>; Assert(unk28 == 0);
+    int unk2C <hidden=true>; Assert(unk2C == 0);
+    int unk30 <hidden=true>; Assert(unk30 == 0);
+    int unk34 <hidden=true>; Assert(unk34 == 0);
+    int unk38 <hidden=true>; Assert(unk38 == 0);
+    int unk3C <hidden=true>; Assert(unk3C == 0);
+} BoneModel_10;
+
+typedef struct
+{
+    short unk00;
+    short unk02;
+    short unk04;
+    short unk06 <hidden=true>; Assert(unk06 == 0);
+    short unk08 <hidden=true>; Assert(unk08 == 0);
+    short unk0A <hidden=true>; Assert(unk0A == 0);
+    short unk0C <hidden=true>; Assert(unk0C == 0);
+    short unk0E <hidden=true>; Assert(unk0E == 0);
+} BoneModel_14;
+
+typedef struct
+{
+    int unk00;
+    int unk04 <hidden=true>; Assert(unk04 == 0);
+    int unk08 <hidden=true>; Assert(unk08 == 0);
+    int unk0C <hidden=true>; Assert(unk0C == 0);
+    int unk10 <hidden=true>; Assert(unk10 == 0);
+    int unk14 <hidden=true>; Assert(unk14 == 0);
+    int unk18 <hidden=true>; Assert(unk18 == 0);
+    int unk1C <hidden=true>; Assert(unk1C == 0);
+} BoneModel_18;
+
+typedef struct
+{
+    local quad start <hidden=true> = FTell();
+
+    // Values
+    int unk00 <hidden=true>; Assert(unk00 == 0);
+    int offset04;
+    int offset08;
+    int unk0C <hidden=true>; Assert(unk0C == 0);
+    int offset10;
+    int offset14;
+    int offset18;
+    int unk1C <hidden=true>; Assert(unk1C == 0);
+
+    // Offset Structs
+    if (offset04 > 0)
+    {
+        FSeek(start + offset04);
+        BoneModel_04 boneModel_04;
+    }
+
+    if (offset08 > 0)
+    {
+        FSeek(start + offset08);
+        BoneModel_08 boneModel_08;
+    }
+
+    if (offset10 > 0)
+    {
+        FSeek(start + offset10);
+        BoneModel_10 boneModel_10;
+    }
+
+    if (offset14 > 0)
+    {
+        FSeek(start + offset14);
+        BoneModel_14 boneModel_14;
+    }
+
+    if (offset18 > 0)
+    {
+        FSeek(start + offset18);
+        BoneModel_18 boneModel_18;
+    }
+} BoneModel;
+
+typedef struct
+{
+    float unk00;
+    float unk04;
+    float unk08;
+    float unk0C;
+    float unk10;
+    float unk14;
+    int unk18 <hidden=true>; Assert(unk18 == 0);
+    int unk1C <hidden=true>; Assert(unk1C == 0);
+} AniBoneModel;
+
+typedef struct
+{
+    int unk00 <hidden=true>; Assert(unk00 == 0);
+    int unk04 <hidden=true>; Assert(unk04 == 0);
+    int unk08 <hidden=true>; Assert(unk08 == 0);
+    int unk0C <hidden=true>; Assert(unk0C == 0);
+    int unk10 <hidden=true>; Assert(unk10 == 0);
+    int unk14 <hidden=true>; Assert(unk14 == 0);
+    int unk18 <hidden=true>; Assert(unk18 == 0);
+    int unk1C <hidden=true>; Assert(unk1C == 0);
+} BoneCollision;
+
+typedef struct
+{
+    local quad start <hidden=true> = FTell();
+
+    // Values
+    int nameOffset;
+    ubyte unk04;
+    ubyte unk05 <hidden=true>; Assert(unk05 == 0);
+    ubyte unk06 <hidden=true>; Assert(unk06 == 0);
+    ubyte unk07 <hidden=true>; Assert(unk07 == 0);
+    int offsetModel;
+    int offsetCollision;
+    int unk10 <hidden=true>; Assert(unk10 == 0);
+    int unk14 <hidden=true>; Assert(unk14 == 0);
+    int unk18 <hidden=true>; Assert(unk18 == 0);
+    int unk1C <hidden=true>; Assert(unk1C == 0);
+    
+    // Offset Structs
+    FSeek(start + nameOffset);
+    string name;
+
+    if (offsetModel > 0)
+    {
+        FSeek(start + offsetModel);
+        if (unk04 == 0)
+        {
+            // Model
+            BoneModel boneModel;
+        }
+        else if (unk04 == 1)
+        {
+            // Animation
+            AniBoneModel aniBoneModel;
+        }
+    }
+
+    if (offsetCollision > 0)
+    {
+        FSeek(start + offsetCollision);
+        BoneCollision boneCollision;
+    }
+} BoneEntry <bgcolor=cRed, read=ReadBoneEntry>;
+
+string ReadBoneEntry(BoneEntry& entry)
+{
+    return entry.name;
+}
+
+typedef struct
+{
+    local quad start <hidden=true> = FTell();
+    
+    // Values
+    int pathOffset;
+    int relativePathOffset;
+    int fileArgOffset;
+    int typeArgOffset;
+    int mipArgOffset;
+
+    // Offset Structs
+    FSeek(start + pathOffset);
+    string path;
+
+    FSeek(start + relativePathOffset);
+    string relativePath;
+
+    FSeek(start + fileArgOffset);
+    string fileArg;
+
+    FSeek(start + typeArgOffset);
+    string typeArg;
+
+    FSeek(start + mipArgOffset);
+    string mipArg;
+} TextureEntry <bgcolor=cDkRed, read=ReadTextureEntry, optimize=false>;
+
+string ReadTextureEntry(TextureEntry& entry)
+{
+    return entry.path;
+}
+
+typedef struct
+{
+    float distance;
+    int unk04 <hidden=true>; Assert(unk04 == 0);
+    int unk08 <hidden=true>; Assert(unk08 == 0);
+    int unk0C <hidden=true>; Assert(unk0C == 0);
+    int unk10 <hidden=true>; Assert(unk10 == 0);
+    int unk14 <hidden=true>; Assert(unk14 == 0);
+    int unk18 <hidden=true>; Assert(unk18 == 0);
+    int unk1C <hidden=true>; Assert(unk1C == 0);
+} ModelLod;
+
+typedef struct
+{
+    int unk00 <hidden=true>; Assert(unk00 == 0);
+    int unk04 <hidden=true>; Assert(unk04 == 0);
+    int unk08 <hidden=true>; Assert(unk08 == 0);
+    int unk0C <hidden=true>; Assert(unk0C == 0);
+    int unk10 <hidden=true>; Assert(unk10 == 0);
+    int unk14 <hidden=true>; Assert(unk14 == 0);
+    int unk18 <hidden=true>; Assert(unk18 == 0);
+    int unk1C;
+} ModelBreak_04;
+
+typedef struct
+{
+    ubyte unk00;
+    ubyte unk01 <hidden=true>; Assert(unk01 == 0);
+    ubyte unk02 <hidden=true>; Assert(unk02 == 0);
+    ubyte unk03 <hidden=true>; Assert(unk03 == 0);
+} ModelBreak_08_00;
+
+typedef struct
+{
+    local quad start <hidden=true> = FTell();
+
+    // Values
+    int offset00;
+    int unk04 <hidden=true>; Assert(unk04 == 0);
+    int unk08 <hidden=true>; Assert(unk08 == 0);
+    int unk0C <hidden=true>; Assert(unk0C == 0);
+    int unk10 <hidden=true>; Assert(unk10 == 0);
+    int unk14 <hidden=true>; Assert(unk14 == 0);
+    int unk18 <hidden=true>; Assert(unk18 == 0);
+    int unk1C <hidden=true>; Assert(unk1C == 0);
+    
+    // Offset Structs
+    if (offset00 > 0)
+    {
+        FSeek(start + offset00);
+        ModelBreak_08_00 modelBreak_08_00;
+    }
+} ModelBreak_08;
+
+typedef struct
+{
+    float unk00;
+    int unk04 <hidden=true>; Assert(unk04 == 0);
+    float unk08;
+    int unk0C <hidden=true>; Assert(unk0C == 0);
+    int unk10 <hidden=true>; Assert(unk10 == 0);
+    int unk14 <hidden=true>; Assert(unk14 == 0);
+    ubyte unk18;
+    ubyte unk19;
+    ubyte unk1A;
+    ubyte unk1B <hidden=true>; Assert(unk1B == 0);
+    short unk1C;
+    short unk1E <hidden=true>; Assert(unk1E == 0);
+    int unk20 <hidden=true>; Assert(unk20 == 0);
+    int unk24 <hidden=true>; Assert(unk24 == 0);
+    int unk28 <hidden=true>; Assert(unk28 == 0);
+    int unk2C <hidden=true>; Assert(unk2C == 0);
+    int unk30 <hidden=true>; Assert(unk30 == 0);
+    int unk34 <hidden=true>; Assert(unk34 == 0);
+    int unk38 <hidden=true>; Assert(unk38 == 0);
+    int unk3C <hidden=true>; Assert(unk3C == 0);
+} ModelBreak_0C;
+
+typedef struct
+{
+    int unk00 <hidden=true>; Assert(unk00 == 0);
+    int unk04 <hidden=true>; Assert(unk04 == 0);
+    int unk08 <hidden=true>; Assert(unk08 == 0);
+    int unk0C <hidden=true>; Assert(unk0C == 0);
+    int unk10 <hidden=true>; Assert(unk10 == 0);
+    int unk14 <hidden=true>; Assert(unk14 == 0);
+    int unk18 <hidden=true>; Assert(unk18 == 0);
+    int unk1C <hidden=true>; Assert(unk1C == 0);
+    int unk20 <hidden=true>; Assert(unk20 == 0);
+    int unk24 <hidden=true>; Assert(unk24 == 0);
+    int unk28 <hidden=true>; Assert(unk28 == 0);
+    int unk2C <hidden=true>; Assert(unk2C == 0);
+    int unk30 <hidden=true>; Assert(unk30 == 0);
+    int unk34 <hidden=true>; Assert(unk34 == 0);
+    int unk38 <hidden=true>; Assert(unk38 == 0);
+    int unk3C <hidden=true>; Assert(unk3C == 0);
+} ModelBreak_10;
+
+typedef struct
+{
+    int unk00;
+    int unk04 <hidden=true>; Assert(unk04 == 0);
+    int unk08 <hidden=true>; Assert(unk08 == 0);
+    int unk0C <hidden=true>; Assert(unk0C == 0);
+    int unk10 <hidden=true>; Assert(unk10 == 0);
+    int unk14 <hidden=true>; Assert(unk14 == 0);
+    int unk18 <hidden=true>; Assert(unk18 == 0);
+    int unk1C <hidden=true>; Assert(unk1C == 0);
+} ModelBreak_14;
+
+typedef struct
+{
+    local quad start <hidden=true> = FTell();
+
+    // Values
+    ubyte unk00;
+    ubyte unk01;
+    ubyte unk02 <hidden=true>; Assert(unk02 == 0);
+    ubyte unk03 <hidden=true>; Assert(unk03 == 0);
+    int offset04;
+    int offset08;
+    int offset0C;
+    int offset10;
+    int offset14;
+    int unk18 <hidden=true>; Assert(unk18 == 0);
+    int unk1C <hidden=true>; Assert(unk1C == 0);
+
+    // Offset Structs
+    if (offset04 > 0)
+    {
+        FSeek(start + offset04);
+        ModelBreak_04 modelBreak_04;
+    }
+
+    if (offset08 > 0)
+    {
+        FSeek(start + offset08);
+        ModelBreak_08 modelBreak_08;
+    }
+
+    if (offset0C > 0)
+    {
+        FSeek(start + offset0C);
+        ModelBreak_0C modelBreak_0C;
+    }
+
+    if (offset10 > 0)
+    {
+        FSeek(start + offset10);
+        ModelBreak_10 modelBreak_10;
+    }
+
+    if (offset14 > 0)
+    {
+        FSeek(start + offset14);
+        ModelBreak_14 modelBreak_14;
+    }
+} ModelBreak;
+
+typedef struct
+{
+    float unk00;
+    int unk04 <hidden=true>; Assert(unk04 == 0);
+    int unk08 <hidden=true>; Assert(unk08 == 0);
+    int unk0C <hidden=true>; Assert(unk0C == 0);
+    int unk10 <hidden=true>; Assert(unk10 == 0);
+    int unk14 <hidden=true>; Assert(unk14 == 0);
+    int unk18 <hidden=true>; Assert(unk18 == 0);
+    int unk1C <hidden=true>; Assert(unk1C == 0);
+} ModelShadow;
+
+typedef struct
+{
+    short unk00;
+    short unk02 <hidden=true>; Assert(unk02 == 0);
+    short unk04 <hidden=true>; Assert(unk04 == 0);
+    short unk06 <hidden=true>; Assert(unk06 == 0);
+    short unk08 <hidden=true>; Assert(unk08 == 0);
+    short unk0A <hidden=true>; Assert(unk0A == 0);
+    short unk0C <hidden=true>; Assert(unk0C == 0);
+    short unk0E <hidden=true>; Assert(unk0E == 0);
+    short unk10 <hidden=true>; Assert(unk10 == 0);
+    short unk12 <hidden=true>; Assert(unk12 == 0);
+    short unk14 <hidden=true>; Assert(unk14 == 0);
+    short unk16 <hidden=true>; Assert(unk16 == 0);
+    short unk18 <hidden=true>; Assert(unk18 == 0);
+    short unk1A <hidden=true>; Assert(unk1A == 0);
+    short unk1C <hidden=true>; Assert(unk1C == 0);
+    short unk1E <hidden=true>; Assert(unk1E == 0);
+} ModelCollision;
+
+// ModelLod?
+typedef struct
+{
+    int unk00 <hidden=true>; Assert(unk00 == 0);
+    int unk04 <hidden=true>; Assert(unk04 == 0);
+    int unk08 <hidden=true>; Assert(unk08 == 0);
+    int unk0C <hidden=true>; Assert(unk0C == 0);
+    int unk10 <hidden=true>; Assert(unk10 == 0);
+    int unk14 <hidden=true>; Assert(unk14 == 0);
+    int unk18 <hidden=true>; Assert(unk18 == 0);
+    int unk1C <hidden=true>; Assert(unk1C == 0);
+} Ani10;
+
+typedef struct
+{
+    local quad start <hidden=true> = FTell();
+    
+    // Values
+    int pathOffset;
+    int relativePathOffset;
+
+    local int i <hidden=true>;
+    if (pathOffset == 0x80)
+    {
+        // Model
+        int materialOffset;
+        int materialCount;
+        int unk10 <hidden=true>; Assert(unk10 == 0);
+        int unk14 <hidden=true>; Assert(unk14 == 0);
+        int boneOffset;
+        int boneCount;
+        int offsetLod;
+        int offsetBreak;
+        int offsetShadow;
+        int offsetCollision;
+        int unk30 <hidden=true>; Assert(unk30 == 0);
+        int unk34 <hidden=true>; Assert(unk34 == 0);
+        int unk38 <hidden=true>; Assert(unk38 == 0);
+        int unk3C <hidden=true>; Assert(unk3C == 0);
+        int unk40 <hidden=true>; Assert(unk40 == 0);
+        int unk44 <hidden=true>; Assert(unk44 == 0);
+        int unk48 <hidden=true>; Assert(unk48 == 0);
+        int unk4C <hidden=true>; Assert(unk4C == 0);
+        int unk50 <hidden=true>; Assert(unk50 == 0);
+        int unk54 <hidden=true>; Assert(unk54 == 0);
+        int unk58 <hidden=true>; Assert(unk58 == 0);
+        int unk5C <hidden=true>; Assert(unk5C == 0);
+        int unk60 <hidden=true>; Assert(unk60 == 0);
+        int unk64 <hidden=true>; Assert(unk64 == 0);
+        int unk68 <hidden=true>; Assert(unk68 == 0);
+        int unk6C <hidden=true>; Assert(unk6C == 0);
+        int unk70 <hidden=true>; Assert(unk70 == 0);
+        int unk74 <hidden=true>; Assert(unk74 == 0);
+        int unk78 <hidden=true>; Assert(unk78 == 0);
+        int unk7C <hidden=true>; Assert(unk7C == 0);
+        
+        // Offset Structs
+        if (materialOffset > 0 && materialCount > 0)
+        {
+            FSeek(materialOffset);
+            int materialOffsets[materialCount];
+                
+            struct
+            {
+                for (i = 0; i < materialCount; i++)
+                {
+                    FSeek(materialOffsets[i]);
+                    MaterialEntry materials;
+                }
+            } Materials;
+        }
+
+        if (boneOffset > 0 && boneCount > 0)
+        {
+            FSeek(boneOffset);
+            int boneOffsets[boneCount];
+
+            struct
+            {
+                for (i = 0; i < boneCount; i++)
+                {
+                    FSeek(boneOffsets[i]);
+                    BoneEntry bones;
+                }
+            } Bones;
+        }
+
+        if (offsetLod > 0)
+        {
+            FSeek(start + offsetLod);
+            ModelLod modelLod;
+        }
+
+        if (offsetBreak > 0)
+        {
+            FSeek(start + offsetBreak);
+            ModelBreak modelBreak;
+        }
+
+        if (offsetShadow > 0)
+        {
+            FSeek(start + offsetShadow);
+            ModelShadow modelShadow;
+        }
+
+        if (offsetCollision > 0)
+        {
+            FSeek(start + offsetCollision);
+            ModelCollision modelCollision;
+        }
+    }
+    else if (pathOffset == 0x14)
+    {
+        // Animation
+        int boneOffset;
+        int boneCount;
+        int offset10;
+
+        if (boneOffset > 0 && boneCount > 0)
+        {
+            FSeek(boneOffset);
+            int boneOffsets[boneCount];
+            
+            struct
+            {
+                for (i = 0; i < boneCount; i++)
+                {
+                    FSeek(boneOffsets[i]);
+                    BoneEntry bones;
+                }
+            } Bones;
+        }
+        
+        if (offset10 > 0)
+        {
+            FSeek(start + offset10);
+            Ani10 ani10;
+        }
+    }
+
+    // Common Offset Structs
+    FSeek(start + pathOffset);
+    string path;
+
+    FSeek(start + relativePathOffset);
+    string relativePath;
+} ModelEntry <bgcolor=cDkRed, read=ReadModelEntry, optimize=false>;
+
+string ReadModelEntry(ModelEntry& entry)
+{
+    return entry.path;
+}
+
+// Declarations
+//------------------------------------------------
+
+Header header;
+
+if (header.entriesOffset > 0 && header.entryCount > 0)
+{
+    FSeek(header.entriesOffset);
+    int entryOffsets[header.entryCount] <bgcolor=cLtRed>;
+    
+    local int i <hidden=true>;
+    struct
+    {
+        for (i = 0; i < header.entryCount; i++)
+        {
+            FSeek(entryOffsets[i]);
+            
+            switch (header.type)
+            {
+                case Model:
+                    ModelEntry models;
+                    break;
+                case Texture:
+                    TextureEntry textures;
+                    break;
+                default:
+                    Assert(false);
+            }
+        }
+    } Entries <optimize=false>;
+}
