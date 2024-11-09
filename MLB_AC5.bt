@@ -3,7 +3,7 @@
 //
 //      File: MLB_AC5.bt
 //   Authors: WarpZephyr
-//   Version: 1.0.0
+//   Version: 1.0.1
 //   Purpose: Lists model related resources inside of binder archives along with additional information.
 //  Category: Dantelion
 // File Mask: *.mlb
@@ -40,9 +40,9 @@ typedef struct
     float unk18;
     float unk1C;
     float unk20;
-    int unk24 <hidden=true>; Assert(unk24 == 0);
-    int unk28 <hidden=true>; Assert(unk28 == 0);
-    int unk2C <hidden=true>; Assert(unk2C == 0);
+    float unk24;
+    float unk28;
+    float unk2C;
     int unk30 <hidden=true>; Assert(unk30 == 0);
     int unk34 <hidden=true>; Assert(unk34 == 0);
     int unk38 <hidden=true>; Assert(unk38 == 0);
@@ -83,13 +83,16 @@ typedef struct
 {
     int unk00;
     int unk04;
-    int unk08 <hidden=true>; Assert(unk08 == 0);
+    ubyte unk08;
+    ubyte unk09 <hidden=true>; Assert(unk09 == 0);
+    ubyte unk10 <hidden=true>; Assert(unk10 == 0);
+    ubyte unk11 <hidden=true>; Assert(unk11 == 0);
     int unk0C <hidden=true>; Assert(unk0C == 0);
     int unk10 <hidden=true>; Assert(unk10 == 0);
     int unk14 <hidden=true>; Assert(unk14 == 0);
     int unk18 <hidden=true>; Assert(unk18 == 0);
     int unk1C <hidden=true>; Assert(unk1C == 0);
-} BoneModel;
+} BoneBreak;
 
 typedef struct
 {
@@ -117,11 +120,8 @@ typedef struct
 
     // Values
     int nameOffset;
-    ubyte unk04 <hidden=true>; Assert(unk04 == 0);
-    ubyte unk05 <hidden=true>; Assert(unk05 == 0);
-    ubyte unk06 <hidden=true>; Assert(unk06 == 0);
-    ubyte unk07 <hidden=true>; Assert(unk07 == 0);
-    int offsetModel;
+    int unk04 <hidden=true>; Assert(unk04 == 0);
+    int offsetBreak;
     int offsetCollision;
     int unk10 <hidden=true>; Assert(unk10 == 0);
     int unk14 <hidden=true>; Assert(unk14 == 0);
@@ -132,10 +132,10 @@ typedef struct
     FSeek(start + nameOffset);
     string name;
 
-    if (offsetModel > 0)
+    if (offsetBreak > 0)
     {
-        FSeek(start + offsetModel);
-        BoneModel boneModel;
+        FSeek(start + offsetBreak);
+        BoneBreak boneBreak;
     }
 
     if (offsetCollision > 0)
@@ -164,11 +164,8 @@ typedef struct
 
 typedef struct
 {
-    local quad start <hidden=true> = FTell();
-
-    // Values
     int unk00;
-    int unk04; Assert(unk04 == 0 || unk04 == -1);
+    int unk04;
     int unk08 <hidden=true>; Assert(unk08 == 0);
     int unk0C <hidden=true>; Assert(unk0C == 0);
     int unk10 <hidden=true>; Assert(unk10 == 0);
