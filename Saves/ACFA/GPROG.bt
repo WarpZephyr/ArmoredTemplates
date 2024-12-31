@@ -3,7 +3,7 @@
 //
 //      File: GPROG.bt
 //   Authors: WarpZephyr
-//   Version: 1.1.0
+//   Version: 1.1.1
 //   Purpose: Armored Core For Answer game progress save file.
 //  Category: Saves
 // File Mask: GPROG.DAT
@@ -72,13 +72,13 @@ enum <ubyte> PartCategory
 
 enum <byte> Rank
 {
-    NotCompleted = -1,
-    E = 0,
-    D = 1,
-    C = 2,
-    B = 3,
-    A = 4,
-    S = 5
+    RankNotCompleted = -1,
+    RankE = 0,
+    RankD = 1,
+    RankC = 2,
+    RankB = 3,
+    RankA = 4,
+    RankS = 5
 };
 
 //------------------------------------------------

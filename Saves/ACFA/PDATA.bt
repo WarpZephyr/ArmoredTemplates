@@ -3,7 +3,7 @@
 //
 //      File: PDATA.bt
 //   Authors: WarpZephyr
-//   Version: 1.0.1
+//   Version: 1.0.2
 //   Purpose: Armored Core For Answer player data save file.
 //  Category: Saves
 // File Mask: PDATA.DAT
@@ -13,16 +13,16 @@
 
 BigEndian();
 
-enum <byte> Rank
+enum <byte> TotalRank
 {
-    NotCompleted = -1,
-    E = 0,
-    D = 1,
-    C = 2,
-    B = 3,
-    A = 4,
-    S = 5,
-    SS = 6
+    TotalRankNotCompleted = -1,
+    TotalRankE = 0,
+    TotalRankD = 1,
+    TotalRankC = 2,
+    TotalRankB = 3,
+    TotalRankA = 4,
+    TotalRankS = 5,
+    TotalRankSS = 6
 };
 
 //------------------------------------------------
@@ -30,7 +30,7 @@ enum <byte> Rank
 typedef struct
 {
     wchar_t lynx_name[32]; // Often has garbage in the remaining name space
-    Rank total_rank;
+    TotalRank total_rank;
     ubyte complete; // Includes arena and mission completions
     ubyte collared_rank;
     ubyte orca_rank;
@@ -41,13 +41,48 @@ typedef struct
 
 string ReadPDATA(PDATA& data)
 {
-    float hours = data.play_time_seconds / 3600;
-    float minutes = (data.play_time_seconds / 60) % 60;
-    float seconds = data.play_time_seconds % 60;
+    local float hours <hidden=true> = data.play_time_seconds / 3600;
+    local float minutes <hidden=true> = (data.play_time_seconds / 60) % 60;
+    local float seconds <hidden=true> = data.play_time_seconds % 60;
+    local string rankStr <hidden=true>;
+    switch (data.total_rank)
+    {
+        case TotalRankNotCompleted:
+            rankStr = "NotCompleted";
+            break;
+        case TotalRankE:
+            rankStr = "E";
+            break;
+        case TotalRankD:
+            rankStr = "D";
+            break;
+        case TotalRankC:
+            rankStr = "C";
+            break;
+        case TotalRankB:
+            rankStr = "B";
+            break;
+        case TotalRankA:
+            rankStr = "A";
+            break;
+        case TotalRankS:
+            rankStr = "S";
+            break;
+        case TotalRankSS:
+            rankStr = "SS";
+            break;
+        default:
+            rankStr = "Undefined";
+            break;
+    }
+    
     return Str("PLAY TIME: %02d:%02d:%02d | LYNX: %s | CASH: %d C | COMPLETE: %d | TOTAL RANK: %s",
-                hours, minutes, seconds, data.lynx_name, data.coam, data.complete, EnumToString(data.total_rank));
+                hours, minutes, seconds, data.lynx_name, data.coam, data.complete, rankStr);
 }
 
 //------------------------------------------------
 
+// define _PLAYER_DATA_NO_CALL to prevent calling while using in APGD saves
+#ifndef _PLAYER_DATA_NO_CALL
 PDATA data;
+#endif

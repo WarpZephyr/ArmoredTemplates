@@ -3,7 +3,7 @@
 //
 //      File: Design.bt
 //   Authors: WarpZephyr
-//   Version: 1.1.1
+//   Version: 1.1.2
 //   Purpose: Armored Core For Answer design structures.
 //  Category: Saves
 // File Mask: 
@@ -187,7 +187,7 @@ wstring ReadDesign(Design& design)
 //------------------------------------------------
 
 // For design files like ACDES
-// define _DESIGN_NO_CALL to prevent calling while using in DESDOC saves
+// define _DESIGN_NO_CALL to prevent calling while using in DESDOC and APGD saves
 #ifndef _DESIGN_NO_CALL
 BigEndian();
 Design design;
