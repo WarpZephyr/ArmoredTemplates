@@ -25,7 +25,8 @@ typedef struct
 
 typedef struct
 {
-    short type;
+    byte type;
+    byte unk;
     short size;
     
     if (type == -1)
@@ -40,7 +41,7 @@ typedef struct
 
 string ReadEntry(Entry& entry)
 {
-    return Str("%d [%d]", entry.type, entry.size);
+    return Str("%d <%d> [%d]", entry.type, entry.unk, entry.size);
 }
 
 //------------------------------------------------

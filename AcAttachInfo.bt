@@ -13,15 +13,51 @@
 
 BigEndian();
 
-//------------------------------------------------
-
-enum <ubyte> Category
+enum <ubyte> PartCategory
 {
     Head = 0,
     Core = 1,
     Arms = 2,
-    Legs = 3
+    Legs = 3,
+    FCS = 4,
+    Generator = 5,
+    MainBooster = 6,
+    BackBooster = 7,
+    SideBooster = 8,
+    OveredBooster = 9,
+    RightArmUnit = 10,
+    LeftArmUnit = 11,
+    RightBackUnit = 12,
+    LeftBackUnit = 13,
+    ShoulderUnit = 14,
+    HangerR = 15,
+    HangerL = 16,
+    HeadTop = 17,
+    HeadLeft = 18,
+    HeadRight = 19,
+    CoreUpperRight = 20,
+    CoreUpperLeft = 21,
+    CoreLowerRight = 22,
+    CoreLowerLeft = 23,
+    RightArmStabilizer = 24,
+    LeftArmStabilizer = 25,
+    LegsBack = 26,
+    LegsRightUpper = 27,
+    LegsLeftUpper = 28,
+    LegsRightBackUpper = 29,
+    LegsLeftBackUpper = 30,
+    LegsRightMiddle = 31,
+    LegsLeftMiddle = 32,
+    LegsRightBackMiddle = 33,
+    LegsLeftBackMiddle = 34,
+    LegsRightLower = 35,
+    LegsLeftLower = 36,
+    LegsRightBackLower = 37,
+    LegsLeftBackLower = 38,
+    VOB = 39
 };
+
+//------------------------------------------------
 
 typedef struct
 {
@@ -33,9 +69,9 @@ typedef struct
 
 typedef struct (int namesOffset)
 {
-    Category category;
+    PartCategory srcCategory;
     ubyte id;
-    ubyte unk02;
+    PartCategory destCategory;
     ubyte unk03;
     int nameOffset;
     int unk08 <hidden=true>; Assert(unk08 == 0);
@@ -51,7 +87,7 @@ typedef struct (int namesOffset)
 
 string ReadEntry(Entry& entry)
 {
-    return Str("%s | %s | [%d,%d,%d,%d]", entry.boneName, EnumToString(entry.category), entry.id, entry.unk02, entry.unk03, entry.unk0C );
+    return Str("(%s, %s) | %s | [%d,%d,%d]", EnumToString(entry.srcCategory), EnumToString(entry.destCategory), entry.boneName, entry.id, entry.unk03, entry.unk0C );
 }
 
 //------------------------------------------------

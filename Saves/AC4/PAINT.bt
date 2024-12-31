@@ -11,6 +11,13 @@
 //   History: 
 //------------------------------------------------
 
+local ubyte _PAINT_XBOX <hidden=true> = 0;
+local quad _PAINT_FILE_SIZE <hidden=true> = FileSize();
+if (_PAINT_FILE_SIZE == 8980)
+{
+    _PAINT_XBOX = 1;
+}
+
 #include "Color.bt"
 #include "Emblem.bt"
 BigEndian();
@@ -23,6 +30,11 @@ BigEndian();
 
 typedef struct
 {
+    if (_PAINT_XBOX == 1)
+    {
+        int unk00;
+    }
+    
     ColorSet colorsets[COLORSET_COUNT];
     ColorRGBA user_palette[PALETTE_COUNT];
     Emblem emblems[EMBLEM_COUNT] <optimize=false>;

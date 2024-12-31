@@ -136,37 +136,37 @@ typedef struct
     ubyte unk01 <hidden=true>; Assert(unk01 == 0);
     ushort part_id;
     PartUnlockStatus part_unlock_status;
-} Part <read=ReadPart, optimize=false>;
+} PartUnlock <read=ReadPartUnlock, optimize=false>;
 
-string ReadPart(Part &part)
+string ReadPartUnlock(PartUnlock &partUnlock)
 {
-    return Str("%d | %s | %s", part.part_id, EnumToString(part.part_unlock_status), EnumToString(part.part_category));
+    return Str("%d | %s | %s", partUnlock.part_id, EnumToString(partUnlock.part_unlock_status), EnumToString(partUnlock.part_category));
 }
 
 typedef struct
 {
     int count;
-    Part parts[RESERVED_PART_COUNT];
-} Parts <bgcolor=cLtYellow>;
+    PartUnlock partUnlocks[RESERVED_PART_COUNT];
+} PartUnlocks <bgcolor=cLtYellow>;
 
 typedef struct
 {
     int count;
     short design_ids[RESERVED_DESIGN_COUNT];
-} Designs <bgcolor=cYellow>;
+} DesignUnlocks <bgcolor=cYellow>;
 
 typedef struct
 {
     int count;
     ubyte emblem_ids[RESERVED_EMBLEM_COUNT];
-} Emblems <bgcolor=cAqua>;
+} EmblemUnlocks <bgcolor=cAqua>;
 
 typedef struct
 {
     int frs_amount;
     int count;
     ubyte frs_ids[RESERVED_FRS_COUNT];
-} FRS <bgcolor=cGreen>;
+} FRSUnlocks <bgcolor=cGreen>;
 
 typedef struct
 {
@@ -177,14 +177,17 @@ typedef struct
     MissionRank rank_normal[NORMAL_MISSION_COUNT];
     MissionRank rank_hard[HARD_MISSION_COUNT];
     Matches matches;
-    Parts parts;
-    Designs designs;
+    PartUnlocks parts;
+    DesignUnlocks designs;
     ubyte unk19F0[40] <bgcolor=cBlack>;
-    Emblems emblems;
-    FRS frs;
+    EmblemUnlocks emblems;
+    FRSUnlocks frs;
     ubyte unk1B5C[4] <bgcolor=cBlack>;
 } GPROG <bgcolor=cLtRed>;
 
 //------------------------------------------------
 
+// define _PROGRESS_NO_CALL to prevent calling while using in APGD saves
+#ifndef _PROGRESS_NO_CALL
 GPROG progress;
+#endif

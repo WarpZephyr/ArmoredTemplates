@@ -169,12 +169,10 @@ wstring ReadDesign(Design& design)
 {
     if (exists(_DESIGN_ENCODING_WIDE) && _DESIGN_ENCODING_WIDE == 0)
     {
-        return StringToWString(design.design_name);
+        return Str("%s / %s", StringToWString(design.design_name), StringToWString(design.designer_name));
     }
-    else
-    {
-        return design.design_name;
-    }
+	
+    return Str("%s / %s", design.design_name, design.designer_name);
 }
 
 //------------------------------------------------

@@ -13,20 +13,23 @@
 
 #define _ACCOLORSET_NO_CALL
 #define _ACTHUMBNAIL_NO_CALL
+local ubyte _DESIGN_ENCODING_WIDE_BOOL <hidden=true> = 0;
 
-#ifndef _DESIGN_ENCODING_AUTO
-#define _DESIGN_ENCODING_AUTO
+#ifdef _DESIGN_ENCODING_WIDE
+_DESIGN_ENCODING_WIDE_BOOL = 1;
+#else
+#ifdef _DESIGN_ENCODING_AUTO
 
 // Auto detect based on file size
 // 24,280 means 2 byte encoding is being used (US)
 // 24,184 means 1 byte encoding is being used (JP)
-local ubyte _DESIGN_ENCODING_WIDE <hidden=true> = 0;
 local quad _DESDOC_FILE_SIZE <hidden=true> = FileSize();
 if (_DESDOC_FILE_SIZE == 24280)
 {
-    _DESIGN_ENCODING_WIDE = 1;
+    _DESIGN_ENCODING_WIDE_BOOL = 1;
 }
 
+#endif
 #endif
 
 #include "../../Util.bt"
@@ -143,7 +146,7 @@ typedef struct
 
 typedef struct
 {
-    if (exists(_DESIGN_ENCODING_WIDE) && _DESIGN_ENCODING_WIDE == 0)
+    if (_DESIGN_ENCODING_WIDE_BOOL == 0)
     {
         char design_name[48];
         char designer_name[48];
@@ -176,7 +179,7 @@ wstring ReadDesign(Design& design)
         return "";
     }
     
-    if (exists(_DESIGN_ENCODING_WIDE) && _DESIGN_ENCODING_WIDE == 0)
+    if (_DESIGN_ENCODING_WIDE_BOOL == 0)
     {
         return Str("%d / %s / %s", timestamp, StringToWString(design.design_name), StringToWString(design.designer_name));
     }

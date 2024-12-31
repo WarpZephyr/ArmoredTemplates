@@ -1,0 +1,36 @@
+//------------------------------------------------
+//--- 010 Editor v15.0.1 Binary Template
+//
+//      File: APGD.bt
+//   Authors: WarpZephyr
+//   Version: 1.0.0
+//   Purpose: Armored Core For Answer Xbox 360 progress saves.
+//  Category: Saves
+// File Mask: APGD.DAT
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+#define _DESIGN_NO_CALL
+#define _PROGRESS_NO_CALL
+#define _DESIGN_ENCODING_WIDE
+
+#include "Design.bt"
+#include "GPROG.bt"
+BigEndian();
+
+//------------------------------------------------
+
+typedef struct
+{
+    ushort unk00;
+    ushort unk02;
+    ushort unk04;
+    ushort unk06;
+    Design design;
+    GPROG progress;
+} APGD <bgcolor=cLtRed>;
+
+//------------------------------------------------
+
+APGD apgd;

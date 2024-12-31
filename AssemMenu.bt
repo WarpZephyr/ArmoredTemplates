@@ -14,17 +14,17 @@
 BigEndian();
 local ubyte HEADER_SIZE = 36;
 local ubyte TEXT_SIZE = 8;
-local ubyte MENU_SIZE = 8;
+local ubyte PARAMLIST_SIZE = 8;
 local ubyte UNK3_SIZE = 8;
 local ubyte STAT_SIZE = 8;
-local ubyte DESC_SIZE = 16;
+local ubyte PARAM_SIZE = 16;
 local ubyte UNK6_SIZE = 8;
 local quad HEADER_OFFSET;
 local quad TEXT_OFFSET;
-local quad MENU_OFFSET;
+local quad PARAMLIST_OFFSET;
 local quad UNK3_OFFSET;
 local quad STAT_OFFSET;
-local quad DESC_OFFSET;
+local quad PARAM_OFFSET;
 local quad UNK6_OFFSET;
 local quad TEXT_DATA_OFFSET;
 
@@ -45,9 +45,9 @@ typedef struct
 {
     HEADER_OFFSET = FTell();
     uint countText;
-    uint countMenu;
+    uint countParamList;
     uint countUnk3;
-    uint countDesc;
+    uint countParam;
     uint countUnk6;
     uint countStat;
     uint unk18; Assert(unk18 == 0);
@@ -55,17 +55,17 @@ typedef struct
     uint unk20; Assert(unk20 == 0);
 
     local quad sizeTexts = countText * TEXT_SIZE;
-    local quad sizeMenus = countMenu * MENU_SIZE;
+    local quad sizeParamLists = countParamList * PARAMLIST_SIZE;
     local quad sizeUnk3s = countUnk3 * UNK3_SIZE;
     local quad sizeStats = countStat * STAT_SIZE;
-    local quad sizeDescs = countDesc * DESC_SIZE;
+    local quad sizeParams = countParam * PARAM_SIZE;
     local quad sizeUnk6s = countUnk6 * UNK6_SIZE;
     TEXT_OFFSET = HEADER_SIZE;
-    MENU_OFFSET = TEXT_OFFSET + sizeTexts;
-    UNK3_OFFSET = MENU_OFFSET + sizeMenus;
+    PARAMLIST_OFFSET = TEXT_OFFSET + sizeTexts;
+    UNK3_OFFSET = PARAMLIST_OFFSET + sizeParamLists;
     STAT_OFFSET = UNK3_OFFSET + sizeUnk3s;
-    DESC_OFFSET = STAT_OFFSET + sizeStats;
-    UNK6_OFFSET = DESC_OFFSET + sizeDescs;
+    PARAM_OFFSET = STAT_OFFSET + sizeStats;
+    UNK6_OFFSET = PARAM_OFFSET + sizeParams;
     TEXT_DATA_OFFSET = UNK6_OFFSET + sizeUnk6s;
 } Header <bgcolor=cLtRed>;
 
@@ -73,6 +73,7 @@ typedef struct
 {
     uint id;
     uint offset;
+    local uint _textOffset <hidden=true> = TEXT_DATA_OFFSET + offset;
 
     local quad pos <hidden=true> = FTell();
     FSeek(TEXT_DATA_OFFSET + offset);
@@ -88,14 +89,13 @@ wstring ReadText(Text& entry)
 
 typedef struct
 {
-    ushort id;
-    ushort descCount;
-    uint descIndex;
-} Menu <bgcolor=cGreen, read=ReadMenu, optimize=false>;
+    uint unk00; Assert(unk00 >= 0 && unk00 <= 5);
+    uint unk04;
+} Unk6 <bgcolor=cDkYellow, read=ReadUnk6, optimize=false>;
 
-string ReadMenu(Menu& entry)
+string ReadUnk6(Unk6& entry)
 {
-    return Str("ID: %d | Desc Cnt/Indx: %d/%d", entry.id, entry.descCount, entry.descIndex);
+    return Str("%d/%d", entry.unk00, entry.unk04);
 }
 
 typedef struct
@@ -113,48 +113,49 @@ string ReadUnk3(Unk3& entry)
 typedef struct
 {
     ushort id;
-    ushort unk02;
+    ushort unk3ID;
     StatImprovement improvementType;
     ushort unk06 <hidden=true>; Assert(unk06 == 0);
 } Stat <bgcolor=cLtYellow, read=ReadStat, optimize=false>;
 
 string ReadStat(Stat& entry)
 {
-    return Str("ID: %d | Unk: %d | %s", entry.id, entry.unk02, EnumToString(entry.improvementType));
+    return Str("ID: %d | Unk3ID: %d | %s", entry.id, entry.unk3ID, EnumToString(entry.improvementType));
+}
+
+typedef struct
+{
+    ushort nameTextID;
+    ushort descTextID;
+    ushort statID;
+    ushort unk06 <hidden=true>; Assert(unk06 == 0);
+    uint unk08 <hidden=true>; Assert(unk08 == 0);
+    uint unk0C <hidden=true>; Assert(unk0C == 0);
+} Param <bgcolor=cYellow, read=ReadParam, optimize=false>;
+
+wstring ReadParam(Param& entry)
+{
+    return Str("Name: %d | Desc: %d | Stat: %d", entry.nameTextID, entry.descTextID, entry.statID);
 }
 
 typedef struct
 {
     ushort id;
-    ushort textID; Assert(textID == id + 10000);
-    ushort statID;
-    ushort unk06 <hidden=true>; Assert(unk06 == 0);
-    uint unk08 <hidden=true>; Assert(unk08 == 0);
-    uint unk0C <hidden=true>; Assert(unk0C == 0);
-} Description <bgcolor=cYellow, read=ReadDescription, optimize=false>;
+    ushort paramCount;
+    uint paramIndex;
+} ParamList <bgcolor=cGreen, read=ReadParamList, optimize=false>;
 
-string ReadDescription(Description& entry)
+string ReadParamList(ParamList& entry)
 {
-    return Str("ID: %d | Text: %d | Stat: %d", entry.id, entry.textID, entry.statID);
-}
-
-typedef struct
-{
-    uint unk00; Assert(unk00 >= 0 && unk00 <= 5);
-    uint unk04;
-} Unk6 <bgcolor=cDkYellow, read=ReadUnk6, optimize=false>;
-
-string ReadUnk6(Unk6& entry)
-{
-    return Str("Unk00/Unk04: %d/%d", entry.unk00, entry.unk04);
+    return Str("ID: %d | Params: %d (+%d)", entry.id, entry.paramIndex, entry.paramCount);
 }
 
 //------------------------------------------------
 
 Header header;
 Text texts[header.countText];
-Menu menus[header.countMenu];
+ParamList paramLists[header.countParamList];
 Unk3 unk3s[header.countUnk3];
 Stat stats[header.countStat];
-Description descriptions[header.countDesc];
+Param params[header.countParam];
 Unk6 unk6s[header.countUnk6];

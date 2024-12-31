@@ -97,7 +97,7 @@ typedef struct (int animationType)
 			short angle;
 			short angleInTangent;
 			short angleOutTangent;
-			short scale; Assert(scale == 1);
+			short scale;
             break;
         case 4:
             short angle;

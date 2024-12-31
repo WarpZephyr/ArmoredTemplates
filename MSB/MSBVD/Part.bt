@@ -149,7 +149,7 @@ typedef struct
 
 typedef struct
 {
-    short layerMask <format=binary>;
+    short layerID;
     short unk02;
 } PartLayer;
 
