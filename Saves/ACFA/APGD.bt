@@ -13,7 +13,16 @@
 
 #define _DESIGN_NO_CALL
 #define _PROGRESS_NO_CALL
-#define _DESIGN_ENCODING_WIDE
+#define _DESIGN_ENCODING_AUTO
+
+// Auto detect based on file size
+// 31,832 means 2 byte encoding is being used (US)
+local ubyte _DESIGN_ENCODING_WIDE <hidden=true> = 0;
+local quad _DESDOC_FILE_SIZE <hidden=true> = FileSize();
+if (_DESDOC_FILE_SIZE == 31832)
+{
+    _DESIGN_ENCODING_WIDE = 1;
+}
 
 #include "Design.bt"
 #include "GPROG.bt"
