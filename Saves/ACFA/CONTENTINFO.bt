@@ -1,0 +1,28 @@
+//------------------------------------------------
+//--- 010 Editor v15.0.1 Binary Template
+//
+//      File: CONTENTINFO.bt
+//   Authors: WarpZephyr
+//   Version: 1.0.0
+//   Purpose: Armored Core For Answer Xbox 360 saves content file header.
+//  Category: Saves
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+BigEndian();
+
+//------------------------------------------------
+
+typedef struct
+{
+    int unk00;
+    int saveSize;
+    int contentSize; // Thumbnail + CONTENT file
+    int unk0C;
+} CONTENTINFO <bgcolor=cLtRed>;
+
+//------------------------------------------------
+
+CONTENTINFO contentinfo;

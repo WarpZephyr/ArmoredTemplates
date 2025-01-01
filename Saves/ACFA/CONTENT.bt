@@ -1,0 +1,77 @@
+//------------------------------------------------
+//--- 010 Editor v15.0.1 Binary Template
+//
+//      File: CONTENT.bt
+//   Authors: WarpZephyr
+//   Version: 1.0.0
+//   Purpose: Armored Core For Answer Xbox 360 saves content file.
+//  Category: Saves
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+#define _PLAYER_DATA_NO_CALL
+#include "PDATA.bt"
+BigEndian();
+
+//------------------------------------------------
+
+typedef struct
+{
+    int unk00;
+    wchar_t lynx_name[32];
+    wchar_t ac_name[48];
+    ubyte unkA4[96];
+    TotalRank total_rank;
+    ubyte complete; // Includes arena and mission completions
+    ubyte collared_rank;
+    ubyte orca_rank;
+    int coam;
+    float play_time_seconds; // Play time is in seconds, with HH : MM : SS as the formatting in game.
+} CONTENT <bgcolor=cLtRed, read=ReadCONTENT>;
+
+string ReadCONTENT(CONTENT& content)
+{
+    local float hours <hidden=true> = content.play_time_seconds / 3600;
+    local float minutes <hidden=true> = (content.play_time_seconds / 60) % 60;
+    local float seconds <hidden=true> = content.play_time_seconds % 60;
+    local string rankStr <hidden=true>;
+    switch (content.total_rank)
+    {
+        case TotalRankNotCompleted:
+            rankStr = "NotCompleted";
+            break;
+        case TotalRankE:
+            rankStr = "E";
+            break;
+        case TotalRankD:
+            rankStr = "D";
+            break;
+        case TotalRankC:
+            rankStr = "C";
+            break;
+        case TotalRankB:
+            rankStr = "B";
+            break;
+        case TotalRankA:
+            rankStr = "A";
+            break;
+        case TotalRankS:
+            rankStr = "S";
+            break;
+        case TotalRankSS:
+            rankStr = "SS";
+            break;
+        default:
+            rankStr = "Undefined";
+            break;
+    }
+    
+    return Str("PLAY TIME: %02d:%02d:%02d | LYNX: %s | AC: %s | CASH: %d C | COMPLETE: %d | TOTAL RANK: %s",
+                hours, minutes, seconds, content.lynx_name, content.ac_name, content.coam, content.complete, rankStr);
+}
+
+//------------------------------------------------
+
+CONTENT content;
