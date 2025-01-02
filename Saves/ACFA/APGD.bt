@@ -16,6 +16,7 @@
 #define _OPTIONS_NO_CALL
 #define _PLAYER_DATA_NO_CALL
 #define _DESIGN_ENCODING_AUTO
+#define _XBOX_TIME
 
 // Auto detect based on file size
 // 31,832 means 2 byte encoding is being used (US)

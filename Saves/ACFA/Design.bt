@@ -154,7 +154,11 @@ typedef struct
         wchar_t designer_name[48];
     }
 
+#ifdef _XBOX_TIME
+    FILETIME creation_timestamp; // Standard Win32 filetime.
+#else
     uquad creation_timestamp; // In microseconds, starting from 01/01/01 00:00:00
+#endif
     ubyte protect : 1; // Depreciated and not enforced in ACFA, but still exists clearly as category is unaffected.
     ubyte category : 7;
     ubyte unkC9[15] <bgcolor=cBlack>; // Usually 0, sometimes has stuff like floats that may just be garbage from memory leaking.
@@ -170,18 +174,25 @@ typedef struct
 
 wstring ReadDesign(Design& design)
 {
+    local string timeStr;
+#ifdef _XBOX_TIME
+    timeStr = FileTimeToString(design.creation_timestamp);
+#else
     local double timestamp = (design.creation_timestamp / 31557600000000) + 1;
-    if (timestamp == 1 && design.design_name == "" && design.designer_name == "")
+    timeStr = Str("%d", timestamp);
+#endif
+
+    if (timeStr == "1" && design.design_name == "" && design.designer_name == "")
     {
         return "";
     }
     
     if (exists(_DESIGN_ENCODING_WIDE) && _DESIGN_ENCODING_WIDE == 0)
     {
-        return Str("%d / %s / %s", timestamp, StringToWString(design.design_name), StringToWString(design.designer_name));
+        return Str("%s / %s / %s", timeStr, StringToWString(design.design_name), StringToWString(design.designer_name));
     }
 	
-    return Str("%d / %s / %s", timestamp, design.design_name, design.designer_name);
+    return Str("%s / %s / %s", timeStr, design.design_name, design.designer_name);
 }
 
 //------------------------------------------------
