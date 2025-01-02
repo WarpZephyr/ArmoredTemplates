@@ -83,7 +83,7 @@ typedef struct
 {
     ubyte en_output;
     ubyte en_capacity;
-    ubyte kp_ouput;
+    ubyte kp_output;
     ubyte load;
     ubyte en_weapon_skill;
     ubyte maneuverability;
