@@ -66,23 +66,41 @@ typedef struct
     Key switch_right;
     Key switch_left;
     Key pause;
+#ifdef _XBOX_OPTIONS
+    Key unk_key_20;
+    Key unk_key_21;
+    Key unk_key_22;
+    Key unk_key_23;
+    Key unk_key_24;
+#endif
 } Keys <bgcolor=cLtYellow>;
 
 typedef struct
 {
+#ifdef _XBOX_OPTIONS
+    Keys customA;
+    Keys customB;
+#else
     ubyte control_type;
     Keys customA;
     Keys customB;
+#endif
     ubyte auto_sighting : 1;
     ubyte auto_boost : 1;
     ubyte auto_switch : 1;
-    ubyte unk27 : 5;
+    ubyte unk_1 : 5;
+#ifdef _XBOX_OPTIONS
+    ubyte unk_2[31]; // Seems random, might be unused setting data though.
+#endif
     ubyte brightness;
-    ubyte unk29; // A setting?
+    ubyte unk_3; // A setting?
     ubyte volume_music;
     ubyte volume_effects;
     ubyte volume_voice;
-    ubyte unk2D; // Some kind of volume setting? (Since it's set to 80 for max)
+    ubyte unk_4; // Some kind of volume setting? (Since it's set to 80 for max)
+#ifdef _XBOX_OPTIONS
+    ubyte unk_5[6]; // More volume related settings not in use? Memory leak?
+#endif
     char regulation[16];
 } OSET <bgcolor=cLtRed>;
 

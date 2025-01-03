@@ -79,11 +79,6 @@ typedef struct
     Key right;
     Key left;
     Key assault_armor;
-} Keys <bgcolor=cYellow>;
-
-typedef struct
-{
-    Keys keys;
     ubyte control_type; // Seems to be control type, the game doesn't care what it is though.
     ubyte unk1B; // Flags? The game doesn't seem to care what they are
     int unk1C; // Always 0

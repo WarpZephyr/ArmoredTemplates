@@ -12,14 +12,21 @@
 //------------------------------------------------
 
 BigEndian();
-BigEndian();
 #define MISSION_COUNT 40
 #define MATCH_COUNT 48
 #define DATA_PACK_COUNT 16
 #define RESERVED_PART_COUNT 500
 #define RESERVED_DESIGN_COUNT 100
 #define RESERVED_EMBLEM_COUNT 64
+
+// Unsure about this.
+// Armored Core For Answer looks like it has space for 248.
+// AC4 normally doesn't, but in APGD.DAT on Xbox 360 saves it seems like does.
+#ifdef _XBOX_GPROG
+#define RESERVED_FRS_COUNT 248
+#else
 #define RESERVED_FRS_COUNT 24
+#endif
 
 enum <byte> Rank
 {
@@ -182,6 +189,13 @@ typedef struct
     EmblemUnlockList emblem_unlocks;
     int frs_amount;
     FrsUnlockList frs_unlocks;
+    
+    // Unsure about this
+    // This seems like a value that appeared in Armored Core For Answer.
+    // But it is only present in APGD on Xbox 360 saves.
+#ifdef _XBOX_GPROG
+    int unkF08;
+#endif
 } GPROG <bgcolor=cLtRed>;
 
 //------------------------------------------------

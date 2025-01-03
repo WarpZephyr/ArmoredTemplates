@@ -21,8 +21,8 @@
 // Auto detect based on file size
 // 31,832 means 2 byte encoding is being used (US)
 local ubyte _DESIGN_ENCODING_WIDE <hidden=true> = 0;
-local quad _DESDOC_FILE_SIZE <hidden=true> = FileSize();
-if (_DESDOC_FILE_SIZE == 31832)
+local quad _APGD_FILE_SIZE <hidden=true> = FileSize();
+if (_APGD_FILE_SIZE == 31832)
 {
     _DESIGN_ENCODING_WIDE = 1;
 }

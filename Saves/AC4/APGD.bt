@@ -17,12 +17,14 @@
 #define _PLAYER_DATA_NO_CALL
 #define _DESIGN_ENCODING_AUTO
 #define _XBOX_TIME
+#define _XBOX_GPROG
+#define _XBOX_OPTIONS
 
 // Auto detect based on file size
 // 11,928 means 2 byte encoding is being used (US)
 local ubyte _DESIGN_ENCODING_WIDE <hidden=true> = 0;
-local quad _DESDOC_FILE_SIZE <hidden=true> = FileSize();
-if (_DESDOC_FILE_SIZE == 11928)
+local quad _APGD_FILE_SIZE <hidden=true> = FileSize();
+if (_APGD_FILE_SIZE == 11928)
 {
     _DESIGN_ENCODING_WIDE = 1;
 }
@@ -40,8 +42,7 @@ typedef struct
     ushort unk00;
     ushort unk02;
     Design design;
-    ubyte progress[3624];
-    ubyte unk2CDC[274];
+    GPROG progress;
     OSET options;
     ubyte unk2E2C[32];
     PDATA playerData;

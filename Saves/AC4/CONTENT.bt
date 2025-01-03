@@ -3,8 +3,8 @@
 //
 //      File: CONTENT.bt
 //   Authors: WarpZephyr
-//   Version: 1.0.1
-//   Purpose: Armored Core For Answer Xbox 360 saves content file.
+//   Version: 1.0.0
+//   Purpose: Armored Core 4 Xbox 360 saves content file.
 //  Category: Saves
 // File Mask: 
 //  ID Bytes: 
@@ -25,8 +25,8 @@ typedef struct
     ubyte unkA4[96];
     TotalRank total_rank;
     ubyte complete; // Includes arena and mission completions
-    ubyte collared_rank;
-    ubyte orca_rank;
+    ubyte unk106;
+    ubyte unk107;
     int coam;
     float play_time_seconds; // Play time is in seconds, with HH : MM : SS as the formatting in game.
 } CONTENT <bgcolor=cLtRed, read=ReadCONTENT>;
@@ -68,7 +68,7 @@ string ReadCONTENT(CONTENT& content)
             break;
     }
     
-    return Str("PLAY TIME: %02d:%02d:%02d | LYNX: %s | AC: %s | CASH: %d C | COMPLETE: %d | TOTAL RANK: %s",
+    return Str("PLAY TIME: %02d:%02d:%02d | LINX: %s | AC: %s | CASH: %d C | COMPLETE: %d | MISSION RANK: %s",
                 hours, minutes, seconds, content.lynx_name, content.ac_name, content.coam, content.complete, rankStr);
 }
 
