@@ -18,9 +18,11 @@ BigEndian();
 typedef struct
 {
     int unk00;
-    int saveSize;
-    int contentSize; // Thumbnail + CONTENT file
-    int unk0C;
+    int contentSize;
+    int infoSize; // Thumbnail + CONTENT file
+    ushort unk0C;
+    ubyte unk0E;
+    ubyte unk0F;
 } CONTENTINFO <bgcolor=cLtRed>;
 
 //------------------------------------------------

@@ -1,0 +1,52 @@
+//------------------------------------------------
+//--- 010 Editor v15.0.1 Binary Template
+//
+//      File: APGD
+//   Authors: WarpZephyr
+//   Version: 1.0.0
+//   Purpose: Armored Core 4 Xbox 360 progress saves.
+//  Category: Saves
+// File Mask: APGD.DAT
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+#define _DESIGN_NO_CALL
+#define _PROGRESS_NO_CALL
+#define _OPTIONS_NO_CALL
+#define _PLAYER_DATA_NO_CALL
+#define _DESIGN_ENCODING_AUTO
+#define _XBOX_TIME
+
+// Auto detect based on file size
+// 11,928 means 2 byte encoding is being used (US)
+local ubyte _DESIGN_ENCODING_WIDE <hidden=true> = 0;
+local quad _DESDOC_FILE_SIZE <hidden=true> = FileSize();
+if (_DESDOC_FILE_SIZE == 11928)
+{
+    _DESIGN_ENCODING_WIDE = 1;
+}
+
+#include "Design.bt"
+#include "GPROG.bt"
+#include "OSET.bt"
+#include "PDATA.bt"
+BigEndian();
+
+//------------------------------------------------
+
+typedef struct
+{
+    ushort unk00;
+    ushort unk02;
+    Design design;
+    ubyte progress[3624];
+    ubyte unk2CDC[274];
+    OSET options;
+    ubyte unk2E2C[32];
+    PDATA playerData;
+} APGD <bgcolor=cLtRed>;
+
+//------------------------------------------------
+
+APGD apgd;

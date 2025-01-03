@@ -15,7 +15,7 @@ BigEndian();
 
 enum <byte> TotalRank
 {
-    TotalRankNotCompleted = -1,
+    TotalRankNone = -1,
     TotalRankE = 0,
     TotalRankD = 1,
     TotalRankC = 2,
@@ -47,8 +47,8 @@ string ReadPDATA(PDATA& data)
     local string rankStr <hidden=true>;
     switch (data.total_rank)
     {
-        case TotalRankNotCompleted:
-            rankStr = "NotCompleted";
+        case TotalRankNone:
+            rankStr = "None";
             break;
         case TotalRankE:
             rankStr = "E";

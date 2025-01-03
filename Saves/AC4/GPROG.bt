@@ -12,14 +12,181 @@
 //------------------------------------------------
 
 BigEndian();
+BigEndian();
+#define MISSION_COUNT 40
+#define MATCH_COUNT 48
+#define DATA_PACK_COUNT 16
+#define RESERVED_PART_COUNT 500
+#define RESERVED_DESIGN_COUNT 100
+#define RESERVED_EMBLEM_COUNT 64
+#define RESERVED_FRS_COUNT 24
+
+enum <byte> Rank
+{
+    RankNone = -1,
+    RankE = 0,
+    RankD = 1,
+    RankC = 2,
+    RankB = 3,
+    RankA = 4,
+    RankS = 5
+};
+
+enum <ushort> PartUnlockStatus
+{
+    Hidden = 0,
+    InShop = 4096,
+    Owned = 8192
+};
+
+enum <ubyte> PartCategory
+{
+    Head = 0,
+    Core = 1,
+    Arms = 2,
+    Legs = 3,
+    FCS = 4,
+    Generator = 5,
+    MainBooster = 6,
+    BackBooster = 7,
+    SideBooster = 8,
+    OveredBooster = 9,
+    RightArmUnit = 10,
+    LeftArmUnit = 11,
+    RightBackUnit = 12,
+    LeftBackUnit = 13,
+    ShoulderUnit = 14,
+    StabilizerHeadTop = 17,
+    StabilizerHeadRight = 18,
+    StabilizerHeadLeft = 19,
+    StabilizerCoreUpperRight = 20,
+    StabilizerCoreUpperLeft = 21,
+    StabilizerCoreLowerRight = 22,
+    StabilizerCoreLowerLeft = 23,
+    StabilizerArmRight = 24,
+    StabilizerArmLeft = 25,
+    StabilizerLegsBack = 26,
+    StabilizerLegsUpperRight = 27,
+    StabilizerLegsUpperLeft = 28,
+    StabilizerLegsUpperRightBack = 29,
+    StabilizerLegsUpperLeftBack = 30,
+    StabilizerLegsMiddleRight = 31,
+    StabilizerLegsMiddleLeft = 32,
+    StabilizerLegsMiddleRightBack = 33,
+    StabilizerLegsMiddleLeftBack = 34,
+    StabilizerLegsLowerRight = 35,
+    StabilizerLegsLowerLeft = 36,
+    StabilizerLegsLowerRightBack = 37,
+    StabilizerLegsLowerLeftBack = 38,
+};
 
 //------------------------------------------------
 
 typedef struct
 {
+    int count;
+    short mission_ids[MISSION_COUNT];
+} MissionList <bgcolor=cRed>;
+
+// Wrapping in struct to prevent strange 010Editor bug with showing enum array value for some reason.
+typedef struct
+{
+    Rank rank;
+} MissionRank <bgcolor=cRed, read=ReadMissionRank>;
+
+string ReadMissionRank(MissionRank& rank)
+{
+    local string rankStr <hidden=true>;
+    switch (rank.rank)
+    {
+        case RankNone:
+            rankStr = "None";
+            break;
+        case RankE:
+            rankStr = "E";
+            break;
+        case RankD:
+            rankStr = "D";
+            break;
+        case RankC:
+            rankStr = "C";
+            break;
+        case RankB:
+            rankStr = "B";
+            break;
+        case RankA:
+            rankStr = "A";
+            break;
+        case RankS:
+            rankStr = "S";
+            break;
+        default:
+            rankStr = "Undefined";
+            break;
+    }
     
+    return rankStr;
+}
+
+typedef struct
+{
+    PartCategory part_category;
+    ubyte unk01 <hidden=true>; Assert(unk01 == 0);
+    ushort part_id;
+    PartUnlockStatus part_unlock_status;
+} PartUnlock <read=ReadPartUnlock, optimize=false>;
+
+string ReadPartUnlock(PartUnlock &partUnlock)
+{
+    return Str("%d | %s | %s", partUnlock.part_id, EnumToString(partUnlock.part_unlock_status), EnumToString(partUnlock.part_category));
+}
+
+typedef struct
+{
+    int count;
+    PartUnlock part_unlocks[RESERVED_PART_COUNT];
+} PartUnlockList <bgcolor=cLtYellow>;
+
+typedef struct
+{
+    int count;
+    ushort design_ids[RESERVED_DESIGN_COUNT];
+} DesignUnlockList <bgcolor=cYellow>;
+
+typedef struct
+{
+    int count;
+    ubyte emblem_ids[RESERVED_EMBLEM_COUNT];
+} EmblemUnlockList <bgcolor=cAqua>;
+
+typedef struct
+{
+    int count;
+    ubyte frs_ids[RESERVED_FRS_COUNT];
+} FrsUnlockList <bgcolor=cGreen>;
+
+typedef struct
+{
+    ubyte unk00;
+    ubyte unk01;
+    ubyte unk02;
+    ubyte unk03;
+    MissionList story_missions;
+    MissionList free_missions;
+    MissionRank rank_normal[MISSION_COUNT];
+    MissionRank rank_hard[MISSION_COUNT];
+    ubyte matches_won[MATCH_COUNT];
+    ubyte data_pack_unlocks[DATA_PACK_COUNT];
+    PartUnlockList part_unlocks;
+    DesignUnlockList design_unlocks;
+    EmblemUnlockList emblem_unlocks;
+    int frs_amount;
+    FrsUnlockList frs_unlocks;
 } GPROG <bgcolor=cLtRed>;
 
 //------------------------------------------------
 
+// define _PROGRESS_NO_CALL to prevent calling while using in APGD saves
+#ifndef _PROGRESS_NO_CALL
 GPROG progress;
+#endif

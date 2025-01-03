@@ -13,13 +13,12 @@
 
 typedef struct
 {
-    ubyte unk00;
-    ubyte unk01 <hidden=true>; Assert(unk01 == 0);
-    ushort chunkCount;
+    ushort width;
+    ushort height;
     uint unk04 <hidden=true>; Assert(unk04 == 0);
     uint unk08 <hidden=true>; Assert(unk08 == 0);
     int dataSize;
-    ubyte data[128 * 128];
+    ubyte data[dataSize];
 } Thumbnail <bgcolor=cLtGreen>;
 
 //------------------------------------------------

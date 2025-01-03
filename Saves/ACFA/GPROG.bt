@@ -3,7 +3,7 @@
 //
 //      File: GPROG.bt
 //   Authors: WarpZephyr
-//   Version: 1.1.1
+//   Version: 1.2.0
 //   Purpose: Armored Core For Answer game progress save file.
 //  Category: Saves
 // File Mask: GPROG.DAT
@@ -13,12 +13,10 @@
 
 BigEndian();
 #define MISSION_COUNT 42
-#define NORMAL_MISSION_COUNT 42
-#define HARD_MISSION_COUNT 42
-#define COLLARED_MATCH_COUNT 30
-#define ORCA_MATCH_COUNT 12
+#define MATCH_COUNT 48
+#define DATA_PACK_COUNT 16
 #define RESERVED_PART_COUNT 1024
-#define RESERVED_DESIGN_COUNT 80
+#define RESERVED_DESIGN_COUNT 100
 #define RESERVED_EMBLEM_COUNT 64
 #define RESERVED_FRS_COUNT 248 // Assumption
 
@@ -72,7 +70,7 @@ enum <ubyte> PartCategory
 
 enum <byte> Rank
 {
-    RankNotCompleted = -1,
+    RankNone = -1,
     RankE = 0,
     RankD = 1,
     RankC = 2,
@@ -85,11 +83,9 @@ enum <byte> Rank
 
 typedef struct
 {
-    int story_count;
-    short story_ids[MISSION_COUNT];
-    int free_count;
-    short free_ids[MISSION_COUNT];
-} Missions <bgcolor=cRed>;
+    int count;
+    short mission_ids[MISSION_COUNT];
+} MissionList <bgcolor=cRed>;
 
 // Wrapping in struct to prevent strange 010Editor bug with showing enum array value for some reason.
 typedef struct
@@ -99,36 +95,37 @@ typedef struct
 
 string ReadMissionRank(MissionRank& rank)
 {
-    return EnumToString(rank.rank);
+    local string rankStr <hidden=true>;
+    switch (rank.rank)
+    {
+        case RankNone:
+            rankStr = "None";
+            break;
+        case RankE:
+            rankStr = "E";
+            break;
+        case RankD:
+            rankStr = "D";
+            break;
+        case RankC:
+            rankStr = "C";
+            break;
+        case RankB:
+            rankStr = "B";
+            break;
+        case RankA:
+            rankStr = "A";
+            break;
+        case RankS:
+            rankStr = "S";
+            break;
+        default:
+            rankStr = "Undefined";
+            break;
+    }
+    
+    return rankStr;
 }
-
-typedef struct
-{
-    ubyte unk00;
-    ubyte matches_won_collared[COLLARED_MATCH_COUNT];
-    ubyte matches_won_orca[ORCA_MATCH_COUNT];
-    ubyte unk2B;
-    ubyte unk2C;
-    ubyte unk2D;
-    ubyte unk2E;
-    ubyte unk2F;
-    ubyte arena_unlocked; Assert(arena_unlocked == 0 || arena_unlocked == 1);
-    ubyte orca_arena_unlocked; Assert(orca_arena_unlocked == 0 || orca_arena_unlocked == 1);
-    ubyte unk32;
-    ubyte unk33;
-    ubyte unk34;
-    ubyte unk35;
-    ubyte unk36;
-    ubyte unk37;
-    ubyte unk38;
-    ubyte unk39;
-    ubyte unk3A;
-    ubyte unk3B;
-    ubyte unk3C;
-    ubyte unk3D;
-    ubyte unk3E;
-    ubyte unk3F;
-} Matches <bgcolor=cDkRed>;
 
 typedef struct
 {
@@ -146,42 +143,43 @@ string ReadPartUnlock(PartUnlock &partUnlock)
 typedef struct
 {
     int count;
-    PartUnlock partUnlocks[RESERVED_PART_COUNT];
-} PartUnlocks <bgcolor=cLtYellow>;
+    PartUnlock part_unlocks[RESERVED_PART_COUNT];
+} PartUnlockList <bgcolor=cLtYellow>;
 
 typedef struct
 {
     int count;
     short design_ids[RESERVED_DESIGN_COUNT];
-} DesignUnlocks <bgcolor=cYellow>;
+} DesignUnlockList <bgcolor=cYellow>;
 
 typedef struct
 {
     int count;
     ubyte emblem_ids[RESERVED_EMBLEM_COUNT];
-} EmblemUnlocks <bgcolor=cAqua>;
+} EmblemUnlockList <bgcolor=cAqua>;
 
 typedef struct
 {
-    int frs_amount;
     int count;
     ubyte frs_ids[RESERVED_FRS_COUNT];
-} FRSUnlocks <bgcolor=cGreen>;
+} FrsUnlockList <bgcolor=cGreen>;
 
 typedef struct
 {
-    short game_completions;
+    ushort game_completions;
     ubyte show_intro; Assert(show_intro == 0 || show_intro == 1);
     ubyte unk03;
-    Missions missions;
-    MissionRank rank_normal[NORMAL_MISSION_COUNT];
-    MissionRank rank_hard[HARD_MISSION_COUNT];
-    Matches matches;
-    PartUnlocks parts;
-    DesignUnlocks designs;
-    ubyte unk19F0[40] <bgcolor=cBlack>;
-    EmblemUnlocks emblems;
-    FRSUnlocks frs;
+    MissionList story_missions;
+    MissionList free_missions;
+    MissionRank rank_normal[MISSION_COUNT];
+    MissionRank rank_hard[MISSION_COUNT];
+    ubyte matches_won[MATCH_COUNT];
+    ubyte data_pack_unlocks[DATA_PACK_COUNT];
+    PartUnlockList part_unlocks;
+    DesignUnlockList design_unlocks;
+    EmblemUnlockList emblem_unlocks;
+    int frs_amount;
+    FrsUnlockList frs_unlocks;
     ubyte unk1B5C[4] <bgcolor=cBlack>;
 } GPROG <bgcolor=cLtRed>;
 
