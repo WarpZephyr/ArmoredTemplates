@@ -3,7 +3,7 @@
 //
 //      File: APGD
 //   Authors: WarpZephyr
-//   Version: 1.0.0
+//   Version: 1.1.0
 //   Purpose: Armored Core 4 Xbox 360 progress saves.
 //  Category: Saves
 // File Mask: APGD.DAT
@@ -20,8 +20,9 @@
 #define _XBOX_GPROG
 #define _XBOX_OPTIONS
 
-// Auto detect based on file size
-// 11,928 means 2 byte encoding is being used (US)
+// Auto detect based on file size.
+// This may not be necessary for AC4 Xbox 360.
+// 11,928 means 2 byte encoding is being used (US, JP)
 local ubyte _DESIGN_ENCODING_WIDE <hidden=true> = 0;
 local quad _APGD_FILE_SIZE <hidden=true> = FileSize();
 if (_APGD_FILE_SIZE == 11928)

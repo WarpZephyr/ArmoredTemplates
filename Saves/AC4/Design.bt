@@ -3,7 +3,7 @@
 //
 //      File: Design.bt
 //   Authors: WarpZephyr
-//   Version: 1.1.1
+//   Version: 1.1.2
 //   Purpose: Armored Core 4 design structures.
 //  Category: Saves
 // File Mask: 
@@ -17,8 +17,8 @@
 #define _DESIGN_ENCODING_AUTO
 
 // Auto detect based on file size
-// 7,856 means 2 byte encoding is being used (US)
-// 7,760 means 1 byte encoding is being used (JP)
+// 7,856 means 2 byte encoding is being used (US, JP, for Xbox 360) (US for PS3)
+// 7,760 means 1 byte encoding is being used (JP for PS3)
 local ubyte _DESIGN_ENCODING_WIDE <hidden=true> = 0;
 local quad _DESDOC_FILE_SIZE <hidden=true> = FileSize();
 if (_DESDOC_FILE_SIZE == 7856)

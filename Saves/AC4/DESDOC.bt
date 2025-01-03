@@ -3,7 +3,7 @@
 //
 //      File: DESDOC.bt
 //   Authors: WarpZephyr
-//   Version: 1.0.4
+//   Version: 1.0.5
 //   Purpose: Armored Core 4 design documents.
 //  Category: Saves
 // File Mask: DESDOC.DAT
@@ -16,9 +16,9 @@
 #define _DESIGN_ENCODING_AUTO
 
 // Auto detect based on file size
-// 1,005,576 means 2 byte encoding is being used (US) (Xbox 360)
-// 1,005,572 means 2 byte encoding is being used (US) (PS3)
-// 993,284 means 1 byte encoding is being used (JP) (PS3)
+// 1,005,576 means 2 byte encoding is being used (US, JP for Xbox 360)
+// 1,005,572 means 2 byte encoding is being used (US for PS3)
+// 993,284 means 1 byte encoding is being used (JP for PS3)
 local ubyte _DESIGN_ENCODING_WIDE <hidden=true> = 0;
 local quad _DESDOC_FILE_SIZE <hidden=true> = FileSize();
 if (_DESDOC_FILE_SIZE == 1005572 || _DESDOC_FILE_SIZE == 1005576)

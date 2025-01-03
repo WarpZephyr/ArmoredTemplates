@@ -16,8 +16,8 @@
 #define _DESIGN_ENCODING_AUTO
 
 // Auto detect based on file size
-// 4,856,328 means 2 byte encoding is being used (US)
-// 4,837,128 means 1 byte encoding is being used (JP)
+// 4,856,328 means 2 byte encoding is being used (US, JP for Xbox 360) (US for PS3)
+// 4,837,128 means 1 byte encoding is being used (JP for PS3)
 local ubyte _DESIGN_ENCODING_WIDE <hidden=true> = 0;
 local quad _DESDOC_FILE_SIZE <hidden=true> = FileSize();
 if (_DESDOC_FILE_SIZE == 4856328)

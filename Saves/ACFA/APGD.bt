@@ -3,7 +3,7 @@
 //
 //      File: APGD.bt
 //   Authors: WarpZephyr
-//   Version: 1.1.0
+//   Version: 1.1.1
 //   Purpose: Armored Core For Answer Xbox 360 progress saves.
 //  Category: Saves
 // File Mask: APGD.DAT
@@ -19,7 +19,8 @@
 #define _XBOX_TIME
 
 // Auto detect based on file size
-// 31,832 means 2 byte encoding is being used (US)
+// This may not be necessary for ACFA Xbox 360.
+// 31,832 means 2 byte encoding is being used (US, JP)
 local ubyte _DESIGN_ENCODING_WIDE <hidden=true> = 0;
 local quad _APGD_FILE_SIZE <hidden=true> = FileSize();
 if (_APGD_FILE_SIZE == 31832)
