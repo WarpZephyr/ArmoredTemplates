@@ -157,7 +157,7 @@ typedef struct
 #ifdef _XBOX_TIME
     FILETIME creation_timestamp; // Standard Win32 filetime.
 #else
-    uquad creation_timestamp; // In microseconds, starting from 01/01/01 00:00:00
+    uquad creation_timestamp; // In microseconds, starting from 01/01/01 12:00:00, also known as gregorian time.
 #endif
     ubyte protect : 1; // Depreciated and not enforced in ACFA, but still exists clearly as category is unaffected.
     ubyte category : 7;
