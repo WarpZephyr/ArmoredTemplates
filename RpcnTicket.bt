@@ -1,0 +1,132 @@
+//------------------------------------------------
+//--- 010 Editor v15.0.1 Binary Template
+//
+//      File: RpcnTicket.bt
+//   Authors: WarpZephyr
+//   Version: 1.0.0
+//   Purpose: RPCN ticket format.
+//  Category: Networking
+// File Mask: 
+//  ID Bytes: 
+//   History: https://github.com/RipleyTom/rpcn/blob/master/src/server/client/ticket.rs
+//------------------------------------------------
+
+BigEndian();
+
+enum <ushort> TicketDataType
+{
+    Empty = 0,
+    U32 = 1,
+    U64 = 2,
+    BString = 4,
+    Time = 7,
+    Binary = 8,
+    BlobUserdata = 0x3000,
+    BlobSignature = 0x3002
+};
+
+//------------------------------------------------
+
+struct TicketData;
+
+typedef struct
+{
+    TicketData serial <read=ReadTicketDataBinaryString>;
+    TicketData issuer_id;
+    TicketData issued_date;
+    TicketData expire_date;
+    TicketData user_id;
+    TicketData online_id;
+    TicketData region <read=ReadTicketDataBinaryString>;
+    TicketData domain;
+    TicketData service_id <read=ReadTicketDataBinaryString>;
+    TicketData status;
+    if (ReadUShort(FTell()) != Empty)
+    {
+        TicketData cookie;    
+    }
+    
+    TicketData empty_1;
+    TicketData empty_2;
+} UserdataBlob <bgcolor=cLtGreen>;
+
+typedef struct
+{
+    TicketData signer <read=ReadTicketDataBinaryString>;
+    TicketData signature;
+} SignatureBlob <bgcolor=cAqua>;
+
+typedef struct
+{
+    TicketDataType type <bgcolor=cLtYellow>;
+    ushort length <bgcolor=cLtYellow>;
+    
+    switch (type)
+    {
+        case Empty:
+            break;
+        case U32:
+            Assert(length == 4);
+            uint32 value;
+            break;
+        case U64:
+            Assert(length == 8);
+            uint64 value;
+            break;
+        case Time:
+            Assert(length == 8);
+            uint64 value;
+            break;
+        case BString:
+        case Binary:
+            char value[length];
+            break;
+        case BlobUserdata:
+            UserdataBlob userdata;
+            break;
+        case BlobSignature:
+            SignatureBlob signature;
+            break;
+        default:
+            Assert(false);
+            break;
+    }
+} TicketData <read=ReadTicketData>;
+
+string ReadTicketData(TicketData& data)
+{
+    switch (data.type)
+    {
+        case U32:
+            return Str("%u", data.value);
+        case U64:
+            return Str("%Lu", data.value);
+        case Time:
+            return Time64TToString(data.value / 1000L, "MM/dd/yyyy hh:mm:ss");
+        case BString:
+            return data.value;
+        case Empty:
+        case Binary:
+        case BlobUserdata:
+        case BlobSignature:
+        default:
+            return "";
+    }
+}
+
+string ReadTicketDataBinaryString(TicketData& data)
+{
+    return data.value;
+}
+
+typedef struct
+{
+    uint32 version <format=hex, bgcolor=cLtRed>;
+    uint32 size <bgcolor=cRed>;
+    TicketData userdata;
+    TicketData signature; 
+} Ticket;
+
+//------------------------------------------------
+
+Ticket ticket;

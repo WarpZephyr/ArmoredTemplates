@@ -1,0 +1,123 @@
+//------------------------------------------------
+//--- 010 Editor v15.0.1 Binary Template
+//
+//      File: JNT.bt
+//   Authors: WarpZephyr
+//   Version: 1.0.0
+//   Purpose: Armored Core Last Raven part file.
+//  Category: Parts
+// File Mask: *.jnt
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+#define MAX_SECTION_COUNT 24
+#define _ACPARTS_NO_CALL
+#define _TIM2_NO_CALL
+
+#include "AcParts.bt"
+#include "TIM2.bt"
+LittleEndian();
+
+//------------------------------------------------
+
+enum <ubyte> SectionType
+{
+    SectionTypePart = 1,
+    SectionTypeUnk2 = 2,
+    SectionTypeUnk3 = 3,
+    SectionTypeUnk5 = 5,
+    SectionTypeUnk6 = 6,
+    SectionTypeUnk35 = 35,
+    SectionTypeUnk36 = 36,
+    SectionTypeUnkPart1 = 37,
+    SectionTypeUnkPart2 = 38,
+    SectionTypeTexture = 39,
+    SectionTypeUnk41 = 41
+};
+
+//------------------------------------------------
+
+#ifndef _NULL_STRUCT
+#define _NULL_STRUCT
+
+typedef struct
+{
+    ubyte value; Assert(value == 0);
+} Null <hidden=true, bgcolor=cBlack, optimize=false>;
+
+#endif
+
+typedef struct
+{
+    uint fileSize; Assert(fileSize == FileSize());
+    ushort unk04;
+    ushort unk06;
+    float unk08;
+    Null unk0C[36];
+} Header <bgcolor=cLtRed>;
+
+typedef struct(uint size)
+{
+    ubyte bytes[size];
+} Section <bgcolor=cAqua>;
+
+typedef struct(uint dataStart)
+{
+    int offset00; Assert(offset00 == (header.fileSize - 128));
+    ubyte category;
+    ubyte id;
+    ushort sectionCount; Assert(sectionCount > 0);
+    uint sectionOffsets[MAX_SECTION_COUNT];
+    uint sectionSizes[MAX_SECTION_COUNT];
+    SectionType sectionTypes[MAX_SECTION_COUNT];
+    Null unkE0[32];
+    
+    local int i <hidden=true>;
+    for (i = 0; i < sectionCount; i++)
+    {
+        FSeek(dataStart + sectionOffsets[i]);
+        switch (sectionTypes[i])
+        {
+            case SectionTypePart:
+                Part part;
+                break;
+            case SectionTypeUnkPart1:
+                Part unk_part_1;
+                break;
+            case SectionTypeUnkPart2:
+                Part unk_part_2;
+                break;
+            case SectionTypeTexture:
+                TIM2 texture;
+                break;
+            case SectionTypeUnk2:
+            case SectionTypeUnk3:
+            case SectionTypeUnk5:
+            case SectionTypeUnk6:
+            case SectionTypeUnk35:
+            case SectionTypeUnk36:
+            case SectionTypeUnk41:
+                Section section(sectionSizes[i]);
+                break;
+            default:
+                Section section(sectionSizes[i]);
+                Assert(false, "Unknown section type.");
+                break;
+        }
+    }
+} SectionsHeader <bgcolor=cLtRed>;
+
+typedef struct
+{
+    uint dataStart; Assert(dataStart == 0x80);
+    Null unk04[76];
+} DataHeader <bgcolor=cLtRed>;
+
+//------------------------------------------------
+
+Header header;
+DataHeader dataHeader;
+
+FSeek(dataHeader.dataStart);
+SectionsHeader sectionsHeader(dataHeader.dataStart);

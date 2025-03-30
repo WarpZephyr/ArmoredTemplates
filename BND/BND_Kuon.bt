@@ -38,7 +38,7 @@ local byte FIELD_HEADER_ALIGNMENT_SIZE = 0;
 // File entry field settings, set them accordingly.
 local byte FIELD_FILE_ENTRY_ID = 1;
 local byte FIELD_FILE_ENTRY_OFFSET = 1;
-local byte FIELD_FILE_ENTRY_SIZE = 0;
+local byte FIELD_FILE_ENTRY_SIZE = 1;
 local byte FIELD_FILE_ENTRY_NAME_OFFSET = 1;
 
 // Different BND field configurations:

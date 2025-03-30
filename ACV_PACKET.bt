@@ -1,14 +1,14 @@
 //------------------------------------------------
-//--- 010 Editor v13.0.2 Binary Template
+//--- 010 Editor v15.0.1 Binary Template
 //
-//      File: ACVD_PACKET.bt
+//      File: ACV_PACKET.bt
 //   Authors: WarpZephyr
 //   Version: 1.0.0
-//   Purpose: Armored Core Verdict Day Packet format
+//   Purpose: Armored Core V Packet format
 //  Category: Networking
 // File Mask: 
 //  ID Bytes: 
-//   History: https://timleonard.uk/2022/06/02/reverse-engineering-dark-souls-3-networking-part-2
+//   History: See ACVD_PACKET.bt
 //------------------------------------------------
 
 BigEndian();
@@ -32,17 +32,18 @@ typedef struct
 
 typedef struct
 {
-    ushort sequence;
     ushort padding <hidden=true>; Assert(padding == 0);
+    ushort sequence;
     uint payload_length;
     uint payload_length_2;
 } PacketHeader <bgcolor=cRed>;
 
 typedef struct 
 {
-    uint header_size;
     message_type type;
     uint sequence;
+    uint unk08 <hidden=true>; Assert(unk08 == 0);
+    uint unk0C <hidden=true>; Assert(unk0C == 0);
 } MessageHeader <bgcolor=cDkRed>;
 
 typedef struct

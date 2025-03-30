@@ -1,0 +1,108 @@
+//------------------------------------------------
+//--- 010 Editor v15.0.1 Binary Template
+//
+//      File: FAT.bt
+//   Authors: WarpZephyr
+//   Version: 1.0.0
+//   Purpose: Yoshitsune Eiyuuden Shura file allocation table.
+//  Category: Archive
+// File Mask: *.FAT
+//  ID Bytes: 46 41 54 00
+//   History: 
+//------------------------------------------------
+
+// This is a fast-lookup file allocation table that uses buckets
+// Buckets contain groups of files
+// Each file name has a hash generated for it
+// This hash is used to find the index of the bucket it should be in
+// This allows the game to search much smaller lists of files instead of all 10000+ each time
+// This technology appears in much newer FromSoftware games as BHD5
+
+// The strategy for finding an index from a name is:
+// Hash(Name) % BucketCount = BucketIndex
+// This is known as a modulus strategy
+
+// The prime used for calculating the 32-bit hashes is 37
+// The algorithm in C# is "name.Aggregate(0u, (i, c) => i * 37u + c)"
+
+LittleEndian();
+
+//------------------------------------------------
+
+typedef struct
+{
+    char magic[4]; Assert(magic == "FAT\0");
+    int file_version; Assert(file_version == 211);
+    int file_size;
+    int file_num;
+    ushort unk10;
+    ushort bucketCount;
+    uint unk14;
+    uint unk18;
+    ushort unk1C;
+    ushort unk1E;
+    uint unk20;
+    uint unk24;
+    uint unk28;
+    uint unk2C;
+    uint filePathOffset;
+    uint unk34;
+    uint bucketsOffset;
+    uint entriesOffset;
+} Header <bgcolor=cLtRed>;
+
+typedef struct
+{
+    int offset; // In archive
+    int size; // In archive
+    int nameOffset; // In FAT
+    
+    if (nameOffset > 0)
+    {
+        local quad pos <hidden=true> = FTell();
+        FSeek(nameOffset);
+        string name;
+        FSeek(pos);
+    }
+} Entry <bgcolor=cLtGreen, read=ReadEntry, optimize=false>;
+
+string ReadEntry(Entry& entry)
+{
+    if (exists(entry.name))
+    {
+        return entry.name;
+    }
+    
+    return "";
+}
+
+typedef struct
+{
+    uint count;
+    uint offset;
+    
+    if (count > 0 && offset > 0)
+    {
+        local quad pos <hidden=true> = FTell();
+        FSeek(offset);
+        Entry entries[count];
+        FSeek(pos);
+    }
+} Bucket <bgcolor=cLtYellow, read=ReadBucket, optimize=false>;
+
+string ReadBucket(Bucket& entry)
+{
+    return Str("Count: %d", entry.count);
+}
+
+//------------------------------------------------
+
+Header header;
+if (header.filePathOffset > 0)
+{
+    FSeek(header.filePathOffset);
+    string filePath <bgcolor=cAqua>;
+}
+
+FSeek(header.bucketsOffset);
+Bucket buckets[header.bucketCount];

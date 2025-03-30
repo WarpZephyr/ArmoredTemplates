@@ -15,6 +15,13 @@ BigEndian();
 
 //------------------------------------------------
 
+enum <ubyte> HangerType
+{
+    NotHangerable = 0,
+    TankOnly = 1,
+    AnyHanger = 2
+};
+
 typedef struct
 {
     Null unk00[52];
@@ -71,7 +78,7 @@ typedef struct
     float impact;
     uint unk174;
     uint unk178;
-    ubyte unk17C;
+    HangerType hanger;
     ubyte unk17D;
     ubyte unk17E;
     ubyte unk17F;

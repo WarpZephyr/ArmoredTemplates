@@ -12,7 +12,6 @@
 //------------------------------------------------
 
 BigEndian();
-local short ALIGNMENT <hidden=true> = 0x1000;
 
 void Align(int align)
 {
@@ -27,56 +26,76 @@ void Align(int align)
 
 typedef struct
 {
-    local quad start <hidden=true> = FTell();
     char magic[4]; Assert(magic == "XPR2");
-    int size04;
+    int alignment;
     int dataSize;
-    int textureCount;
 } Header <bgcolor=cLtRed>;
 
 typedef struct
 {
-    int unk00;
-    int unk04;
-    int unk08;
-    int unk0C;
-    int unk10;
-    int unk14 <format=hex>;
-    int unk18 <format=hex>;
-    short unk1C <format=binary>;
-    short unk1E;
-    int unk20;
-    int unk24;
-    int unk28;
-    int unk2C;
-    int unk30;
-} TextureInfo <bgcolor=cDkRed>;
+    uint unk00;
+    uint unk04;
+    uint unk08;
+    uint unk0C;
+    uint unk10;
+    uint unk14;
+    uint unk18;
+    uint unk1C;
+    uint format;
+    uint size_unk : 6;
+    uint height : 13;
+    uint width : 13;
+    uint unk28;
+    uint levels;
+    uint unk30;
+} TextureResource <bgcolor=cDkRed>;
 
-typedef struct
+typedef struct(quad tagsHeaderStart)
 {
+    char type[4];
+    int offset;
+    int size;
+    int nameOffset;
+    
+    local quad pos <hidden=true> = FTell();
+    FSeek(tagsHeaderStart + nameOffset);
     string name;
-} TextureName <bgcolor=cRed, read=ReadTextureName, optimize=false>;
+    
+    FSeek(tagsHeaderStart + offset);
+    switch (type)
+    {
+        case "USER":
+            
+            break;
+        case "TX2D":
+            TextureResource resource;
+            break;
+        case "TX3D":
+            TextureResource resource;
+            break;
+        case "TXCM":
+            TextureResource resource;
+            break;
+        default:
+            Assert(false, Str("Unknown resource tag type: %s", type));
+    }
+    
+    FSeek(pos);
+} ResourceTag <bgcolor=cDkRed, read=ReadResourceTag, optimize=false>;
 
-string ReadTextureName(TextureName& name)
+string ReadResourceTag(ResourceTag& tag)
 {
-    return name.name;
+    return Str("%s | %s", tag.type, tag.name);
 }
 
 typedef struct
 {
-    char type[4]; Assert(type == "TX2D"); // I haven't seen others yet.
-    int textureInfoOffset; // Unfortunately these seem to be pointing to just after the string padding, but not adding the additional 0x10 padding.
-    int offset08;
-    int offset0C;
-} TextureEntry <bgcolor=cRed, optimize=false>;
+    local quad tagsHeaderStart <hidden=true> = FTell();
+    int tagCount;
+    ResourceTag tags(tagsHeaderStart)[tagCount];
+} ResourceTagList <bgcolor=cRed>;
 
 //------------------------------------------------
 
 Header header;
-TextureEntry textureEntries[header.textureCount];
-TextureName textureNames[header.textureCount];
-Align(0x10);
-
-TextureInfo texureInfos[header.textureCount];
-Align(ALIGNMENT);
-byte textureData[header.dataSize] <bgcolor=cLtGreen>;
+ResourceTagList tags;

@@ -30,9 +30,7 @@ typedef struct
 
 string ReadVector3(Vector3& vec)
 {
-    string str;
-    SPrintf(str, "<%7.2f, %7.2f, %7.2f>", vec.x, vec.y, vec.z);
-    return str;
+    return Str("<%7.2f, %7.2f, %7.2f>", vec.x, vec.y, vec.z);
 }
 
 typedef struct
@@ -45,9 +43,7 @@ typedef struct
 
 string ReadVector4(Vector4& vec)
 {
-    string str;
-    SPrintf(str, "<%7.2f, %7.2f, %7.2f, %7.2f>", vec.x, vec.y, vec.z, vec.w);
-    return str;
+    return Str("<%7.2f, %7.2f, %7.2f, %7.2f>", vec.x, vec.y, vec.z, vec.w);
 }
 
 // Structs
@@ -68,7 +64,7 @@ typedef struct
     int materialCount;
     int boneCount;
     int lightObjectCount; // Never seen
-    int primitiveInfoCount;
+    int meshCount;
     int textureCount;
     int vertexBufferSize;
     int indicesBufferSize;
@@ -78,7 +74,7 @@ typedef struct
     int materialsOffset;
     int bonesOffset;
     int lightObjectsOffset; // Never seen
-    int primitiveInfosOffset;
+    int meshesOffset;
     int texturesOffset;
     int vertexBufferOffset;
     int indicesOffset;
@@ -108,8 +104,8 @@ typedef struct
     Vector3 boundingBoxMin;
     Vector3 boundingBoxMax;
     
-    int unk64;
-    int primitiveCount;
+    int meshIndex;
+    int meshCount;
     int unk6C;
     char name[8];
 } Bone <bgcolor=cGreen, read=ReadBone, optimize=false>;
@@ -126,17 +122,81 @@ typedef struct
 
 typedef struct
 {
+    ubyte attr_7 : 1;
+    ubyte attr_6 : 1;
+    ubyte attr_5 : 1;
+    ubyte attr_4 : 1;
+    ubyte attr_3 : 1;
+    ubyte attr_2 : 1;
+    ubyte attr_1 : 1;
+    ubyte attr_0 : 1;
+} AttributeFlags;
+
+typedef struct(AttributeFlags& flags)
+{
+    ushort position;
+    if (flags.attr_0)
+    {
+        ushort attr_0;
+    }
+    
+    if (flags.attr_1)
+    {
+        ushort attr_1;
+    }
+    
+    if (flags.attr_2)
+    {
+        ushort attr_2;
+    }
+    
+    if (flags.attr_3)
+    {
+        ushort attr_3;
+    }
+    
+    if (flags.attr_4)
+    {
+        ushort attr_4;
+    }
+    
+    if (flags.attr_5)
+    {
+        ushort attr_5;
+    }
+    
+    if (flags.attr_6)
+    {
+        ushort attr_6;
+    }
+    
+    if (flags.attr_7)
+    {
+        ushort attr_7;
+    }
+} Vertex <optimize=false>;
+
+typedef struct
+{
     short unk00; Assert(unk00 >= 0 || unk00 <= 6);
     ubyte unk02; Assert(unk02 == 1);
     ubyte unk03; Assert(unk03 == 4);
-    ubyte unk04;
+    AttributeFlags flags;
     ubyte unk05;
     short unk06 <hidden=true>; Assert(unk06 == 0);
     int unk08;
     int vertexBufferOffset;
-    int primitiveNodeCount;
+    int vertexCount;
     int unk14 <hidden=true>; Assert(unk14 == 0);
-} PrimitiveInfo <bgcolor=cLtYellow, optimize=false>;
+    
+    if (vertexCount > 0)
+    {
+        local quad pos <hidden=true> = FTell();
+        FSeek(header.vertexBufferOffset + vertexBufferOffset);
+        Vertex vertices(flags)[vertexCount];
+        FSeek(pos);
+    }
+} Mesh <bgcolor=cLtYellow, optimize=false>;
 
 typedef struct
 {
@@ -169,8 +229,7 @@ typedef struct
 
 string ReadDummy(Dummy& dummy)
 {
-    local string str;
-    return SPrintf(str, "%s", ReadVector3(dummy.position));
+    return Str("%s", ReadVector3(dummy.position));
 }
 
 typedef struct
@@ -210,11 +269,11 @@ if (header.lightObjectCount > 0)
     LightObject lightObjects[header.exLightObjectCount];
 }
 
-if (header.primitiveInfoCount > 0)
+if (header.meshCount > 0)
 {
-    Assert(header.primitiveInfosOffset > 0);
-    FSeek(header.primitiveInfosOffset);
-    PrimitiveInfo primitiveInfos[header.primitiveInfoCount];
+    Assert(header.meshesOffset > 0);
+    FSeek(header.meshesOffset);
+    Mesh meshes[header.meshCount];
 }
 
 if (header.textureCount > 0)
@@ -249,7 +308,7 @@ if (header.countUnkStruct10 > 0)
 if (header.vertexBufferOffset > 0)
 {
     FSeek(header.vertexBufferOffset);
-    VertexBuffer vertexBuffer;
+    //VertexBuffer vertexBuffer;
 }
 
 if (header.indicesOffset > 0)

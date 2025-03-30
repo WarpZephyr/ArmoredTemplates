@@ -1,0 +1,252 @@
+//------------------------------------------------
+//--- 010 Editor v15.0.1 Binary Template
+//
+//      File: AcParts.bt
+//   Authors: WarpZephyr
+//   Version: 1.0.0
+//   Purpose: Armored Core Last Raven part stats.
+//  Category: Stats
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+LittleEndian();
+
+// Enums
+//------------------------------------------------
+
+enum <ubyte> Manufacturer
+{
+    Mirage = 0,
+    Crest = 1,
+    Kisaragi = 2
+};
+
+enum <ushort> TuneType
+{
+    TuneTypeNone = 0,
+    TuneTypeWeight = 1,
+    TuneTypeCooling = 2,
+    TuneTypeBallisticDef = 3,
+    TuneTypeEnergyDef = 4,
+    TuneTypeAntiEcm = 5,
+    TuneTypeArmWeight = 6,
+    TuneTypeAiming = 7,
+    TuneTypeLegWeight = 17,
+    TuneTypeBoostPower = 11,
+    TuneTypeBoostHeat = 12,
+    TuneTypeBoostAccel = 18,
+    TuneTypeEnGain = 13,
+    TuneTypeEnMax = 14,
+    TuneTypeEnUsage = 15,
+    TuneTypeCoolingRadius = 16
+};
+
+enum <ubyte> CoreType
+{
+    ExceedOrbit = 0,
+    Overboost = 1,
+    Hanger = 4,
+    OverboostHanger = 5
+};
+
+enum <ubyte> EoAmmoType
+{
+    EoAmmoTypeEnergy = 0,
+    EoAmmoTypeBullet = 1
+};
+
+enum <ubyte> SightType
+{
+    SightTypeNormal = 0,
+    SightTypeWide = 1,
+    SightTypeFar = 2,
+    SightTypeVertical = 3,
+    SightTypeHorizontal = 4
+};
+
+// Part Type Structs
+//------------------------------------------------
+
+typedef struct
+{
+    ushort ap;
+    ushort ballistic_def;
+    ushort energy_def;
+    ushort cooling_power;
+    ushort arm_weight;
+    ushort anti_heat;
+    ubyte option_slots;
+    CoreType core_type;
+    ushort overboost_output;
+    ushort unk110;
+    ushort overboost_en_cost;
+    uint unk114;
+    ushort overboost_heat;
+    ushort unk11A;
+    ushort overboost_boost;
+    ushort unk11E;
+    ubyte intercept; // false or true
+    ubyte intercept_performance;
+    ushort unk122; // intercept?
+    ushort unk124;
+    ushort unk126;
+    ushort unk128;
+    ushort unk12A;
+    ushort unk12C; // intercept?
+    ushort unk12E; // intercept?
+    uint unk130; // intercept?
+    ubyte eo_orbits; // ?
+    ubyte eo_regen;
+    ubyte unk136;
+    EoAmmoType eo_ammo_type;
+    ushort eo_regen_time;
+    ushort unk13A;
+    ushort unk13C;
+    ushort unk13E;
+    ushort unk140;
+    ubyte unk142;
+    ubyte unk143;
+    uint unk144; // EO?
+    ushort unk148;
+} Core <bgcolor=cGreen>;
+
+typedef struct
+{
+    ubyte flag_0 : 1;
+    ubyte flag_1 : 1;
+    ubyte flag_2 : 1;
+    ubyte flag_3 : 1;
+    ubyte multilock : 1;
+    ubyte flag_5 : 1;
+    ubyte flag_6 : 1;
+    ubyte flag_7 : 1;
+} LockFlags;
+
+typedef struct
+{
+    SightType sight_type;
+    LockFlags lock_flags;
+    ubyte lockmax;
+    ubyte unk103;
+    ubyte unk104;
+    ubyte paraeffic;
+    ushort unk106;
+    float unk108;
+    ushort unk10C;
+    ushort unk10E;
+    float unk110;
+    ushort unk114; // heat?
+    ushort unk116; // heat?
+    ushort unk118; // heat?
+    ushort unk11A; // heat?
+    ushort missile_locktime; // Divided by 4?
+    ushort unk11E;
+    float unk120;
+    ushort unk124; // heat?
+    ushort unk126; // heat?
+    ushort unk128; // heat?
+    ushort unk12A; // heat?
+    ushort unk12C; // heat?
+    ushort unk12E;
+    float lock_range;
+    ushort unk134; // heat?
+    ushort unk136; // heat?
+    ushort unk138; // heat?
+    ushort unk13A; // heat?
+    ushort unk13C; // heat?
+    ushort unk13E;
+    float unk140;
+    ushort unk144; // heat?
+    ushort unk146; // heat?
+    ushort unk148; // heat?
+    ushort unk14A; // heat?
+    ushort unk14C; // heat?
+    ushort unk14E;
+    ushort anti_ecm;
+    ushort lock_time;
+} FCS <bgcolor=cYellow>;
+
+// Common Structs
+//------------------------------------------------
+
+typedef struct
+{
+    TuneType type;
+    ushort unk02;
+    ushort tune_max;
+} Tune <read=ReadTune>;
+
+string ReadTune(Tune& tune)
+{
+    local string str <hidden=true>;
+    switch (tune.type)
+    {
+        case TuneTypeNone: str = "None"; break;
+        case TuneTypeWeight: str = "Weight"; break;
+        case TuneTypeCooling: str = "Cooling"; break;
+        case TuneTypeBallisticDef: str = "BallisticDef"; break;
+        case TuneTypeEnergyDef: str = "EnergyDef"; break;
+        case TuneTypeAntiEcm: str = "AntiEcm"; break;
+        case TuneTypeArmWeight: str = "ArmWeight"; break;
+        case TuneTypeAiming: str = "Aiming"; break;
+        case TuneTypeLegWeight: str = "LegWeight"; break;
+        case TuneTypeBoostPower: str = "BoostPower"; break;
+        case TuneTypeBoostHeat: str = "BoostHeat"; break;
+        case TuneTypeBoostAccel: str = "BoostAccel"; break;
+        case TuneTypeEnGain: str = "EnGain"; break;
+        case TuneTypeEnMax: str = "EnMax"; break;
+        case TuneTypeEnUsage: str = "EnUsage"; break;
+        case TuneTypeCoolingRadius: str = "CoolingRadius"; break;
+        default: Assert(false, "Unknown tune type."); break;
+    }
+    
+    return Str("%s = %d", str, tune.tune_max);
+}
+
+typedef struct
+{
+    char name[18];
+    char sub_category[18];
+    int price;
+    Manufacturer maker;
+    char explain[146];
+    ubyte init_status;
+    ushort weight;
+    ushort en_cost;
+    float unkC0;
+    ushort unkC4;
+    ushort unkC6;
+    ushort unkC8;
+    ushort itemID; // ?
+    ubyte unkCC;
+    char category[3]; // Isn't filled out in Silent Line?
+    ushort duration; // ?
+    ushort sub_id; // The id of the part in this category?
+    Tune tune_1;
+    Tune tune_2;
+    Tune tune_3;
+    Tune tune_4;
+    Tune tune_5;
+    ubyte padding[14] <hidden=true, bgcolor=cBlack>;
+    local int i <hidden=true>;
+    for (i = 0; i < 14; i++)
+    {
+        Assert(padding[i] == 0);
+    }
+    
+    switch (category)
+    {
+        case "cr": Core stats; break;
+        case "fc": FCS stats; break;
+        default: Assert(false, "Unknown part category."); break;
+    }
+} Part <bgcolor=cLtGreen>;
+
+// Read
+//------------------------------------------------
+
+#ifndef _ACPARTS_NO_CALL
+Part part;
+#endif

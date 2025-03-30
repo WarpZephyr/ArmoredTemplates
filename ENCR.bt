@@ -1,0 +1,42 @@
+//------------------------------------------------
+//--- 010 Editor v15.0.1 Binary Template
+//
+//      File: ENCR.bt
+//   Authors: WarpZephyr
+//   Version: 1.0.0
+//   Purpose: Armored Core 4 encrypted payload.
+//  Category: Cryptography
+// File Mask: *.bin
+//  ID Bytes: 45 4E 43 52
+//   History: 
+//------------------------------------------------
+
+LittleEndian();
+
+//------------------------------------------------
+
+typedef struct
+{
+    ubyte md5[16]; // An MD5 hash of only the "data" byte array.
+    char magic[4]; Assert(magic == "ENCR");
+    ushort unk04 <hidden=true>; Assert(unk04 == 1);
+    ushort unk06 <hidden=true>; Assert(unk06 == 1);
+    uint length;
+    uint unk0C <hidden=true>; Assert(unk0C == 0);
+    char name[256];
+    
+    if (length > 0)
+    {
+        ubyte data[length] <bgcolor=cAqua>;
+    }
+    
+    local quad pad <hidden=true> = FileSize() - FTell();
+    if (pad > 0)
+    {
+        ubyte padding[pad] <bgcolor=cBlack>;    
+    }
+} ENCR <bgcolor=cLtRed>;
+
+//------------------------------------------------
+
+ENCR payload;
