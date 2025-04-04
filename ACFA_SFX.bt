@@ -1,0 +1,923 @@
+//------------------------------------------------
+//--- 010 Editor v15.0.1 Binary Template
+//
+//      File: SFX.bt
+//   Authors: WarpZephyr
+//   Version: 1.0.3
+//   Purpose: Armored Core: For Answer SFX files.
+//  Category: Effects
+// File Mask: sfx*.bin
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+BigEndian();
+
+// Template Options
+//------------------------------------------------
+
+// Hide a read style by commenting it out
+// Show a read style by leaving it uncommented
+//#define READ_TREE // Reads entry children inside of an entry leading to a tree style view
+#define READ_FLAT // Reads entries flat in an array
+
+// Enum Definitions
+//------------------------------------------------
+
+enum <short> EffectType
+{
+    EffectType0 = 0,
+    EffectType2 = 2,
+    EffectType5 = 5,
+    EffectType8 = 8,
+    EffectType9 = 9,
+    EffectType10 = 10,
+    EffectType11 = 11,
+    EffectType12 = 12,
+    EffectType13 = 13,
+    EffectType16 = 16,
+    EffectType17 = 17,
+    EffectType19 = 19,
+    EffectType21 = 21,
+    EffectType22 = 22,
+    EffectType23 = 23,
+    EffectType28 = 28,
+    EffectType31 = 31,
+    EffectType32 = 32,
+    EffectType33 = 33,
+    EffectType35 = 35,
+    EffectType36 = 36,
+    EffectType43 = 43,
+    EffectType44 = 44,
+    EffectType45 = 45,
+};
+
+// Data Struct Definitions
+//------------------------------------------------
+
+void ExpectEffectValueCount(short expected, short count)
+{
+    Assert(count == expected, Str("Unexpected effect value count: %d", count));
+}
+
+typedef struct
+{
+    int type;
+    Assert(type == 0
+        || type == 1
+        || type == 2
+        || type == 3
+        || type == 4
+        || type == 5
+        || type == 6
+        || type == 7
+        || type == 8
+        || type == 9
+        , Str("Unknown effect value type: %d", type));
+    
+    int offset04;
+    int offset08;
+    int offset0C;
+
+    local quad end <hidden=true> = FTell();
+    FSeek(offset04);
+    ubyte mark1 <bgcolor=cBlack>;
+    
+    FSeek(offset08);
+    ubyte mark2 <bgcolor=cBlack>;
+    
+    FSeek(offset0C);
+    ubyte mark3 <bgcolor=cBlack>;
+    
+    FSeek(end);
+} EffectValue <bgcolor=cDkYellow, read=ReadEffectValue, optimize=false>;
+
+string ReadEffectValue(EffectValue& value)
+{
+    return Str("Type: %d", value.type);
+}
+
+typedef struct
+{
+    short unk10;
+    short unk12;
+    short unk14;
+    short unk16;
+    int unk18; Assert(unk18 == 0);
+    float unk1C;
+    float unk20;
+    float unk24;
+    float unk28;
+    float unk2C;
+    float unk30;
+    float unk34;
+    float unk38;
+    float unk3C;
+    float unk40;
+    float unk44;
+    float unk48;
+    float unk4C;
+    float unk50;
+    
+    EffectValue values[7];
+} Effect0 <bgcolor=cYellow>;
+
+typedef struct
+{
+    short unk10;
+    short unk12;
+    short unk14;
+    short unk16;
+    short unk18;
+    short unk1A;
+    short unk1C;
+    short unk1E;
+    short unk20;
+    short unk22;
+    float unk24;
+    int unk28; Assert(unk28 == 0);
+    float unk2C;
+    float unk30;
+    float unk34;
+    float unk38;
+    float unk3C;
+    float unk40;
+    float unk44;
+    float unk48;
+    float unk4C;
+    float unk50;
+    float unk54;
+    short unk58;
+    short unk5A;
+    short unk5C;
+    short unk5E;
+    short unk60;
+    short unk62;
+    
+    EffectValue values[18];
+} Effect2 <bgcolor=cYellow>;
+
+typedef struct
+{
+    short unk10;
+    short unk12;
+    short unk14;
+    short unk16;
+    short unk18;
+    short unk1A;
+    short unk1C;
+    short unk1E;
+    short unk20;
+    short unk22;
+    float unk24;
+    float unk28;
+    float unk2C;
+    int unk30; Assert(unk30 == 0);
+    float unk34;
+    float unk38;
+    short unk3C;
+    short unk3E;
+    short unk40;
+    short unk42;
+    short unk44;
+    short unk46;
+    short unk48;
+    short unk4A;
+    int unk4C; Assert(unk4C == 0);
+    short unk50;
+    short unk52;
+    int unk54; Assert(unk54 == 0);
+    
+    EffectValue values[6];
+} Effect5 <bgcolor=cYellow>;
+
+typedef struct
+{
+    short unk10;
+    short unk12;
+    short unk14;
+    short unk16;
+    float unk18;
+    float unk1C;
+    float unk20;
+    float unk24;
+    float unk28;
+    float unk2C;
+    float unk30;
+    float unk34;
+    float unk38;
+    float unk3C;
+    float unk40;
+    float unk44;
+    short unk48;
+    short unk4A;
+    
+    EffectValue values[4];
+} Effect8 <bgcolor=cYellow>;
+
+typedef struct
+{
+    short unk10;
+    short unk12;
+    ubyte unk14;
+    ubyte unk15;
+    ubyte unk16;
+    ubyte unk17;
+    float unk18;
+    float unk1C;
+    float unk20;
+    float unk24;
+    float unk28;
+    float unk2C;
+    float unk30;
+    int unk34; Assert(unk34 == 0);
+    int unk38; Assert(unk38 == 0);
+    float unk3C;
+    float unk40;
+    float unk44;
+    ubyte unk48;
+    ubyte unk49;
+    ubyte unk50;
+    ubyte unk51;
+    
+    EffectValue values[4];
+} Effect9 <bgcolor=cYellow>;
+
+typedef struct
+{
+    short unk10;
+    short unk12;
+    short unk14;
+    short unk16;
+    float unk18;
+    float unk1C;
+    float unk20;
+    float unk24;
+    float unk28;
+    float unk2C;
+    float unk30;
+    float unk34;
+    float unk38;
+    int unk3C; Assert(unk3C == 0);
+    int unk40; Assert(unk40 == 0);
+    int unk44; Assert(unk44 == 0);
+    ubyte unk48;
+    ubyte unk49;
+    ubyte unk4A;
+    ubyte unk4B;
+    
+    EffectValue values[6];
+} Effect10 <bgcolor=cYellow>;
+
+typedef struct
+{
+    short unk10;
+    short unk12;
+    short unk14;
+    short unk16;
+    float unk18;
+    int unk1C; Assert(unk1C == 0);
+    float unk20;
+    float unk24;
+    int unk28; Assert(unk28 == 0);
+    int unk2C; Assert(unk2C == 0);
+    int unk30; Assert(unk30 == 0);
+    float unk34;
+    short unk38;
+    short unk3A;
+    
+    EffectValue values[14];
+} Effect11 <bgcolor=cYellow>;
+
+typedef struct
+{
+    short unk00;
+    short unk02;
+    short unk04;
+    short unk06;
+    short unk08;
+    short unk0A;
+    short unk0C;
+    short unk0E;
+    int unk10; Assert(unk10 == 0);
+    int unk14; Assert(unk14 == 0);
+    int unk18; Assert(unk18 == 0);
+    int unk1C; Assert(unk1C == 0);
+    float unk20;
+    float unk24;
+    float unk28;
+    float unk2C;
+    float unk30;
+    float unk34;
+    float unk38;
+    float unk3C;
+    float unk40;
+    int unk44; Assert(unk44 == 0);
+    
+    EffectValue values[8];
+} Effect12 <bgcolor=cYellow>;
+
+typedef struct
+{
+    short unk10;
+    short unk12;
+    short unk14;
+    short unk16;
+    short unk18;
+    short unk1A;
+    short unk1C;
+    short unk1E;
+    int unk20; Assert(unk20 == 0);
+    float unk24;
+    float unk28;
+    float unk2C;
+    float unk30;
+    float unk34;
+    float unk38;
+    float unk3C;
+    float unk40;
+    float unk44;
+    float unk48;
+    float unk4C;
+    float unk50;
+    float unk54;
+    
+    EffectValue values[8];
+} Effect13 <bgcolor=cYellow>;
+
+typedef struct
+{
+    short unk00;
+    short unk02;
+    int unk04; Assert(unk04 == 0);
+    int unk08; Assert(unk08 == 0);
+    int unk0C; Assert(unk0C == 0);
+    ubyte unk10;
+    ubyte unk11;
+    ubyte unk12;
+    ubyte unk13;
+    int unk14; Assert(unk14 == 0);
+    
+    EffectValue values[6];
+} Effect16 <bgcolor=cYellow>;
+
+typedef struct
+{
+    short unk10;
+    short unk12;
+    short unk14;
+    short unk16; Assert(unk16 == 0);
+    short unk18;
+    short unk1A;
+    float unk1C;
+    short unk20;
+    short unk22;
+    short unk24;
+    short unk26;
+    short unk28;
+    short unk2A;
+    short unk2C;
+    short unk2E;
+    short unk30;
+    short unk32;
+    short unk34;
+    short unk36;
+    short unk38;
+    short unk3A;
+    short unk3C;
+    short unk3E;
+    short unk40;
+    short unk42;
+    
+    EffectValue values[2];
+} Effect17 <bgcolor=cYellow>;
+
+typedef struct
+{
+    short unk10;
+    short unk12;
+    short unk14;
+    short unk16;
+    float unk18;
+    float unk1C;
+    float unk20;
+    ubyte unk24;
+    ubyte unk25;
+    ubyte unk26;
+    ubyte unk27;
+    int unk28; Assert(unk28 == 0);
+    
+    EffectValue values[6];
+} Effect19 <bgcolor=cYellow>;
+
+typedef struct
+{
+    short unk10;
+    short unk12;
+    short unk14;
+    short unk16;
+    short unk18;
+    short unk1A;
+    short unk1C;
+    short unk1E;
+    float unk20;
+    float unk24;
+    float unk28;
+    float unk2C;
+    float unk30;
+    float unk34;
+    float unk38;
+    float unk3C;
+    float unk40;
+    float unk44;
+    short unk48;
+    short unk4A;
+    short unk4C;
+    short unk4E;
+    float unk50;
+    int unk54; Assert(unk54 == 0);
+    ubyte unk58;
+    ubyte unk59;
+    ubyte unk5A;
+    ubyte unk5B;
+    
+    EffectValue values[12];
+} Effect21 <bgcolor=cYellow>;
+
+typedef struct
+{
+    float unk00;
+    float unk04;
+    float unk08;
+    float unk0C;
+    
+    EffectValue values[2];
+} Effect22 <bgcolor=cYellow>;
+
+typedef struct
+{
+    short unk10;
+    short unk12;
+    short unk14;
+    short unk16;
+    short unk18;
+    short unk1A;
+    short unk1C;
+    short unk1E;
+    short unk20;
+    short unk22;
+    short unk24;
+    short unk26;
+    float unk28;
+    int unk2C; Assert(unk2C == 0);
+    float unk30;
+    float unk34;
+    float unk38;
+    float unk3C;
+    short unk40;
+    short unk42;
+    float unk44;
+    float unk48;
+    float unk4C;
+    float unk50;
+    float unk54;
+    short unk56;
+    short unk58;
+    ubyte unk5A; 
+    ubyte unk5B; 
+    ubyte unk5C; 
+    ubyte unk5D;
+    ubyte unk5E; 
+    ubyte unk5F; 
+    ubyte unk60; 
+    ubyte unk61;
+    
+    EffectValue values[16];
+} Effect23 <bgcolor=cYellow>;
+
+typedef struct
+{
+    short unk10;
+    short unk12;
+    int unk14; Assert(unk14 == 0);
+    float unk16;
+    int unk18; Assert(unk18 == 0);
+    int unk1A; Assert(unk1A == 0);
+    int unk1C; Assert(unk1C == 0);
+    int unk1E; Assert(unk1E == 0);
+    float unk20;
+    float unk24;
+    float unk28;
+    float unk2C;
+    
+    EffectValue values[2];
+} Effect28 <bgcolor=cYellow>;
+
+typedef struct
+{
+    short unk10;
+    short unk12;
+    short unk14;
+    short unk16;
+    short unk18;
+    short unk1A;
+    short unk1C;
+    short unk1E;
+    short unk20;
+    short unk22;
+    short unk24;
+    short unk26;
+    float unk28;
+    float unk2C;
+    float unk30;
+    float unk34;
+    float unk38;
+    float unk3C;
+    short unk40;
+    short unk42;
+    float unk44;
+    float unk48;
+    float unk4C;
+    float unk50;
+    float unk54;
+    short unk58;
+    short unk5A;
+    ubyte unk5C;
+    ubyte unk5D;
+    ubyte unk5E;
+    ubyte unk5F;
+    ubyte unk60;
+    ubyte unk61;
+    short unk62;
+    
+    EffectValue values[16];
+} Effect31 <bgcolor=cYellow>;
+
+typedef struct
+{
+    short unk10;
+    short unk12;
+    short unk14;
+    short unk16;
+    int unk18; Assert(unk18 == 0);
+    float unk1A;
+    float unk1C;
+    int unk1E; Assert(unk1E == 0);
+    int unk1C; Assert(unk1C == 0);
+    int unk20; Assert(unk20 == 0);
+    float unk24;
+    int unk28; Assert(unk28 == 0);
+    int unk2C; Assert(unk2C == 0);
+    int unk30; Assert(unk30 == 0);
+    int unk34; Assert(unk34 == 0);
+    int unk38; Assert(unk38 == 0);
+    short unk3C;
+    short unk3E;
+    
+    EffectValue values[4];
+} Effect32 <bgcolor=cYellow>;
+
+typedef struct
+{
+    short unk10;
+    short unk12;
+    short unk14;
+    short unk16;
+    short unk18;
+    short unk1A;
+    short unk1C;
+    short unk1E;
+    short unk20;
+    short unk22;
+    short unk24;
+    short unk26;
+    float unk28;
+    float unk2C;
+    float unk30;
+    float unk34;
+    float unk38;
+    float unk3C;
+    short unk40;
+    short unk42;
+    float unk44;
+    float unk48;
+    float unk4C;
+    float unk50;
+    float unk54;
+    short unk58;
+    short unk5A;
+    ubyte unk5C;
+    ubyte unk5D;
+    ubyte unk5E;
+    ubyte unk5F;
+    ubyte unk60;
+    ubyte unk61;
+    ubyte unk62;
+    ubyte unk63;
+    
+    EffectValue values[16];
+} Effect33 <bgcolor=cYellow>;
+
+typedef struct
+{
+    short unk10;
+    short unk12;
+    int unk14; Assert(unk14 == 0);
+} Effect35 <bgcolor=cYellow>;
+
+typedef struct
+{
+    short unk10;
+    short unk12;
+    short unk14;
+    short unk16;
+    short unk18;
+    short unk1A;
+    short unk1C;
+    short unk1E;
+    short unk20;
+    short unk22;
+    short unk24;
+    short unk26;
+    int unk28; Assert(unk28 == 0);
+    int unk2C; Assert(unk2C == 0);
+    float unk30;
+    float unk34;
+    float unk38;
+    float unk3C;
+    ubyte unk40;
+    ubyte unk41;
+    ubyte unk42;
+    ubyte unk43;
+    float unk44;
+    float unk48;
+    float unk4C;
+    float unk50;
+    float unk54;
+    short unk58;
+    short unk5A;
+    ubyte unk5C;
+    ubyte unk5D;
+    ubyte unk5E;
+    ubyte unk5F;
+    ubyte unk60;
+    ubyte unk61;
+    ubyte unk62;
+    ubyte unk63;
+
+    EffectValue values[19];
+} Effect36 <bgcolor=cYellow>;
+
+typedef struct
+{
+    short unk10;
+    short unk12;
+    short unk14;
+    short unk16;
+    float unk18;
+    float unk1C;
+    float unk20;
+    float unk24;
+    float unk28;
+    float unk2C;
+    float unk30;
+    float unk34;
+    float unk38;
+    float unk3C;
+    float unk40;
+    int unk44; Assert(unk44 == 0);
+    
+    EffectValue values[3];
+} Effect43 <bgcolor=cYellow>;
+
+typedef struct
+{
+    short unk10;
+    short unk12;
+    short unk14;
+    short unk16;
+    short unk18;
+    short unk1A;
+    short unk1C;
+    short unk1E;
+    float unk20;
+    float unk24;
+    int unk28; Assert(unk28 == 0);
+    float unk2C;
+    float unk30;
+    float unk34;
+    float unk38;
+    ubyte unk3C;
+    ubyte unk3D;
+    ubyte unk3E;
+    ubyte unk3F;
+    int unk40; Assert(unk40 == 0);
+    float unk44;
+    int unk48; Assert(unk48 == 0);
+    ubyte unk4C;
+    ubyte unk4D;
+    ubyte unk4E;
+    ubyte unk4F;
+    
+    EffectValue values[9];
+} Effect44 <bgcolor=cYellow>;
+
+typedef struct
+{
+    short unk10;
+    short unk12;
+    short unk14;
+    short unk16;
+    int unk18; Assert(unk18 == 0);
+    float unk1C;
+    int unk20; Assert(unk20 == 0);
+    float unk24;
+    float unk28;
+    short unk30;
+    short unk32;
+    int unk34; Assert(unk34 == 0);
+    int unk38; Assert(unk38 == 0);
+    int unk3C; Assert(unk3C == 0);
+    int unk40; Assert(unk40 == 0);
+    
+    EffectValue values[6];
+} Effect45 <bgcolor=cYellow>;
+
+// Struct Definitions
+//------------------------------------------------
+
+local int READ_COUNT <hidden=true> = 0;
+struct Effect;
+
+void ExpectEffectUnk0A(short expected, short value)
+{
+    Assert(expected == value, Str("Unexpected value for effect unk0A: %d != %d", expected, value));
+}
+
+typedef struct
+{
+    EffectType type;
+    short index;
+    short parentIndex; Assert(parentIndex < index);
+    short firstChildIndex; Assert(firstChildIndex > index || firstChildIndex == -1);
+    short nextSiblingIndex; Assert(nextSiblingIndex > index || nextSiblingIndex == -1);
+    short unk0A;
+    int unk0C; Assert(unk0C == 0);
+    
+    switch (type)
+    {
+        case EffectType0:
+            ExpectEffectUnk0A(4, unk0A);
+            Effect0 data;
+            break;
+        case EffectType2:
+            ExpectEffectUnk0A(16, unk0A);
+            Effect2 data;
+            break;
+        case EffectType5:
+            ExpectEffectUnk0A(11, unk0A);
+            Effect5 data;
+            break;
+        case EffectType8:
+            ExpectEffectUnk0A(2, unk0A);
+            Effect8 data;
+            break;
+        case EffectType9:
+            ExpectEffectUnk0A(2, unk0A);
+            Effect9 data;
+            break;
+        case EffectType10:
+            ExpectEffectUnk0A(2, unk0A);
+            Effect10 data;
+            break;
+        case EffectType11:
+            ExpectEffectUnk0A(2, unk0A);
+            Effect11 data;
+            break;
+        case EffectType12:
+            ExpectEffectUnk0A(9, unk0A);
+            Effect12 data;
+            break;
+        case EffectType13:
+            ExpectEffectUnk0A(9, unk0A);
+            Effect13 data;
+            break;
+        case EffectType16:
+            ExpectEffectUnk0A(3, unk0A);
+            Effect16 data;
+            break;
+        case EffectType17:
+            ExpectEffectUnk0A(3, unk0A);
+            Effect17 data;
+            break;
+        case EffectType19:
+            ExpectEffectUnk0A(3, unk0A);
+            Effect19 data;
+            break;
+        case EffectType21:
+            ExpectEffectUnk0A(12, unk0A);
+            Effect21 data;
+            break;
+        case EffectType22:
+            ExpectEffectUnk0A(1, unk0A);
+            Effect22 data;
+            break;
+        case EffectType23:
+            ExpectEffectUnk0A(15, unk0A);
+            Effect23 data;
+            break;
+        case EffectType28:
+            ExpectEffectUnk0A(0, unk0A);
+            Effect28 data;
+            break;
+        case EffectType31:
+            ExpectEffectUnk0A(6, unk0A);
+            Effect31 data;
+            break;
+        case EffectType32:
+            ExpectEffectUnk0A(1, unk0A);
+            Effect32 data;
+            break;
+        case EffectType33:
+            ExpectEffectUnk0A(6, unk0A);
+            Effect33 data;
+            break;
+        case EffectType35:
+            ExpectEffectUnk0A(0, unk0A);
+            Effect35 data;
+            break;
+        case EffectType36:
+            ExpectEffectUnk0A(4, unk0A);
+            Effect36 data;
+            break;
+        case EffectType43:
+            ExpectEffectUnk0A(3, unk0A);
+            Effect43 data;
+            break;
+        case EffectType44:
+            ExpectEffectUnk0A(11, unk0A);
+            Effect44 data;
+            break;
+        case EffectType45:
+            ExpectEffectUnk0A(1, unk0A);
+            Effect45 data;
+            break;
+        default:
+            Assert(false, Str("Unknown EffectType: %d", type));
+            break;
+    }
+    
+#ifdef READ_TREE
+    if (firstChildIndex > -1)
+    {
+        FSeek(sfx.effectOffsets[firstChildIndex]);
+        Effect childEffect;
+        while (childEffect.nextSiblingIndex > -1)
+        {
+            FSeek(sfx.effectOffsets[childEffect.nextSiblingIndex]);
+            Effect childEffect;
+        }
+    }
+    
+    READ_COUNT++;
+#endif
+} Effect <bgcolor=cLtYellow, read=ReadEffect>;
+
+string ReadEffect(Effect& entry)
+{
+    return Str("Type: %s", EnumToString(entry.type));
+}
+
+typedef struct
+{
+    int effectCount;
+    int effectOffsets[effectCount];
+    
+#ifdef READ_TREE
+    if (effectCount > 0)
+    {
+        FSeek(effectOffsets[0]);
+        Effect rootEffect;
+    }
+
+    Assert(READ_COUNT == effectCount, Str("Unexpected number of effects read: %d/%d", READ_COUNT, effectCount));
+#endif
+
+#ifdef READ_FLAT
+    struct
+    {
+        local int i <hidden=true>;
+        for (i = 0; i < effectCount; i++) 
+        {
+            FSeek(effectOffsets[i]);
+            Effect effect;
+            Assert(effect.index == i, Str("Unexpected effect index value: %d != %d", effect.index, i));
+        }
+    } Entries;
+#endif
+} SFX <bgcolor=cLtRed>;
+
+// Read
+//------------------------------------------------
+
+SFX sfx;
