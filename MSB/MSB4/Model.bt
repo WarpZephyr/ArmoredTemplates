@@ -3,7 +3,7 @@
 //
 //      File: Model.bt
 //   Authors: WarpZephyr
-//   Version: 1.1.0
+//   Version: 1.1.1
 //   Purpose: Armored Core 4 MSB Models.
 //  Category: Maps
 // File Mask: 
@@ -66,7 +66,7 @@ typedef struct
     FSeek(start + offset14);
     ModelUnk14 modelUnk14;
 
-    if(rowReferenceOffset > 0)
+    if (rowReferenceOffset > 0)
     {
         FSeek(start + rowReferenceOffset);
         ModelRowReference rowReference;

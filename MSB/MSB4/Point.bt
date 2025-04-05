@@ -3,7 +3,7 @@
 //
 //      File: Point.bt
 //   Authors: WarpZephyr
-//   Version: 1.2.0
+//   Version: 1.2.2
 //   Purpose: Armored Core 4 MSB Points.
 //  Category: Maps
 // File Mask: 
@@ -48,9 +48,9 @@ typedef struct
     ubyte unk01;
     ubyte unk02;
     ubyte unk03;
-    int unk01;
-    int unk02;
-    int unk03;
+    int unk04;
+    int unk08;
+    int unk0C;
 } PointSpawn;
 
 typedef struct
@@ -84,15 +84,25 @@ typedef struct
 
 typedef struct
 {
-    short unk00;
-    short unk02;
-} PointUnk1;
+    short count;
+    if (count > 0)
+    {
+        short pointIndexes[count];
+    }
+    
+    Align(4);
+} PointLinkPrevious;
 
 typedef struct
 {
-    short unk00;
-    short unk02;
-} PointUnk2;
+    short count;
+    if (count > 0)
+    {
+        short pointIndexes[count];
+    }
+    
+    Align(4);
+} PointLinkNext;
 
 typedef struct
 {
@@ -124,8 +134,8 @@ typedef struct
     ShapeType shapeType;
     Vector3 position;
     Vector3 rotation;
-    int offsetUnk1; Assert(offsetUnk1 > 0);
-    int offsetUnk2; Assert(offsetUnk2 > 0);
+    int linkPreviousOffset; Assert(linkPreviousOffset > 0);
+    int linkNextOffset; Assert(linkNextOffset > 0);
     int pointID;
     int shapeDataOffset;
     int offsetArea;
@@ -150,11 +160,11 @@ typedef struct
     FSeek(start + nameOffset);
     string name;
 
-    FSeek(start + offsetUnk1);
-    PointUnk1 unk1;
+    FSeek(start + linkPreviousOffset);
+    PointLinkPrevious linkPrevious;
     
-    FSeek(start + offsetUnk2);
-    PointUnk2 unk2;
+    FSeek(start + linkNextOffset);
+    PointLinkNext linkNext;
 
     if (shapeDataOffset > 0)
     {
@@ -177,7 +187,7 @@ typedef struct
         Assert(pointType == PointTypeOperationalArea
             || pointType == PointTypeWarningArea
             || pointType == PointTypeNormalArea
-            || pointType == PointTypeVOBPurgeArea);
+            || pointType == PointTypeDeathArea);
         FSeek(start + offsetArea);
         PointArea area;
     }

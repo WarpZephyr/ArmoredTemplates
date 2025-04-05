@@ -142,7 +142,7 @@ typedef struct
 
 typedef struct
 {
-    short unk00;
+    short frameTime;
     short unk02;
     short unk04;
     short unk06;
@@ -178,13 +178,13 @@ typedef struct
     EffectParamFloat unk84;
     EffectParamFloat unk94;
     EffectParamFloat unkA4;
-    EffectParamFloat unkB4;
+    EffectParamFloat width;
     EffectParamFloat unkC4;
-    EffectParamFloat unkD4;
+    EffectParamFloat length;
     EffectParamByte unkE4;
-    EffectParamByte unkF4;
-    EffectParamByte unk104;
-    EffectParamByte unk114;
+    EffectParamByte red;
+    EffectParamByte green;
+    EffectParamByte blue;
     EffectParamFloat unk124;
     EffectParamFloat unk134;
     EffectParamFloat unk144;
