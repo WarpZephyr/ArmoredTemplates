@@ -3,7 +3,7 @@
 //
 //      File: Event.bt
 //   Authors: WarpZephyr
-//   Version: 1.1.1
+//   Version: 1.1.2
 //   Purpose: Armored Core 4 MSB Events.
 //  Category: Maps
 // File Mask: 
@@ -128,8 +128,11 @@ typedef struct
     Null null[468];
 
     // Get Offset Structs
-    FSeek(start + offset28);
-    EventFilterUnk0428 eventFilterUnk0428;
+    if (offset28 > 0)
+    {
+        FSeek(start + offset28);
+        EventFilterUnk0428 eventFilterUnk0428;
+    }
 } EventFilterUnk04;
 
 typedef struct
@@ -311,11 +314,13 @@ typedef struct
 
 typedef struct
 {
-    Null null_1[12];
+    int unk00; Assert(unk00 == 0);
+    int unk04; Assert(unk04 == 0);
+    int unk08; Assert(unk08 == 0);
     float unk0C;
     int unk10;
     int unk14;
-    Null null_2[104];
+    Null null[104];
 } EventFilterUnk24;
 
 typedef struct
@@ -406,7 +411,8 @@ typedef struct
 
 typedef struct
 {
-    short unk00;
+    ubyte id;
+    ubyte unk01;
     short unk02;
     short unk04;
     short unk06;
@@ -555,7 +561,11 @@ typedef struct
 
 typedef struct
 {
-    int unk00;
+    // Revision version values?
+    ubyte unk00;
+    ubyte unk01;
+    ubyte unk02;
+    ubyte unk03;
     Null null[60];
 } EventRev;
 
