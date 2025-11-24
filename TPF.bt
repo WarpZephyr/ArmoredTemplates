@@ -1,0 +1,291 @@
+//------------------------------------------------
+//--- 010 Editor v15.0.2 Binary Template
+//
+//      File: 
+//   Authors: 
+//   Version: 
+//   Purpose: 
+//  Category: 
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+typedef int8 dl_int8;
+typedef int16 dl_int16;
+typedef int32 dl_int32;
+typedef int64 dl_int64;
+typedef uint8 dl_uint8;
+typedef uint16 dl_uint16;
+typedef uint32 dl_uint32;
+typedef uint64 dl_uint64;
+typedef float dl_float32;
+typedef double dl_float64;
+typedef dl_uint32 dl_size;
+typedef char dl_char;
+typedef uchar dl_uchar;
+typedef wchar_t dl_wchar;
+typedef int dl_int;
+typedef uint dl_uint;
+typedef uint dl_address;
+typedef dl_address dl_pointer;
+typedef dl_int dl_pointer_int;
+typedef dl_uint8 dl_bool;
+
+enum <dl_char> Platform
+{
+    PF_WIN32 = 0,
+    PF_XBOX360,
+    PF_PLAYSTATION3
+};
+
+if (ReadByte(0xC) > 0)
+    BigEndian();
+else
+    LittleEndian();
+
+enum <dl_char> TextureFormat
+{
+    TF_DXT1C = 0,
+    TF_DXT1A,
+    TF_DXT2,
+    TF_DXT3,
+    TF_DXT4,
+    TF_DXT5,
+    TF_U1555,
+    TF_U4444,
+    TF_U565,
+    TF_U8888,
+    TF_U888,
+    TF_U555,
+    TF_P8C,
+    TF_P8A,
+    TF_P4C,
+    TF_P4A,
+    TF_A8,
+    TF_CXV8U8,
+    TF_V8U8,
+    TF_A8L8,
+    TF_FP32X4,
+    TF_FP32,
+    TF_FP16X4,
+    TF_DXT5NM,
+    TF_CTX1,
+    TF_DXT1NORM
+};
+
+enum <dl_char> TextureType
+{
+    TYPE_2D = 0,
+    TYPE_CUBE,
+    TYPE_VOLUME
+};
+
+enum <dl_char> Encoding
+{
+    EN_DEFAULT = 0,
+    EN_UTF16 = 1,
+    EN_SHIFTJIS = 2
+};
+
+typedef struct
+{
+    dl_char id[4];
+    dl_size size;
+    dl_uint32 numTexture;
+    Platform platform;
+    dl_char unk0D;
+    Encoding encoding;
+    dl_char unk0F;
+} TpfFileHeader <bgcolor=cLtRed>;
+
+typedef struct(Encoding& encoding)
+{
+    dl_uint32 offset;
+    dl_size size;
+    TextureFormat format;
+    TextureType type;
+    dl_char mipmap;
+    dl_char reserved;
+    dl_uint32 nameOffset;
+    dl_uint32 numData;
+    
+    local quad pos <hidden=true> = FTell();
+    if (nameOffset > 0)
+    {
+        FSeek(nameOffset);
+        if (encoding == EN_UTF16)
+        {
+            wstring name <bgcolor=cYellow>;
+        }
+        else
+        {
+            string name <bgcolor=cYellow>;
+        }
+    }
+    
+    if (offset > 0 && size > 0)
+    {
+        FSeek(offset);
+        ubyte data[size] <bgcolor=cAqua>;
+    }
+    
+    FSeek(pos);
+} TpfTexAttributeWin32 <bgcolor=cLtGreen, read=ReadTpfTexAttributeWin32, optimize=false>;
+
+string ReadTpfTexAttributeWin32(TpfTexAttributeWin32& tex)
+{
+    if (tex.nameOffset > 0)
+    {
+        if (tpf.header.encoding == EN_UTF16)
+        {
+            return StringToWString(tex.name);
+        }
+        else
+        {
+            return tex.name;
+        }
+    }
+    else
+    {
+        return "";
+    }
+}
+
+typedef struct(Encoding& encoding)
+{
+    dl_uint32 offset;
+    dl_size size;
+    TextureFormat format;
+    TextureType type;
+    dl_char mipmap;
+    dl_char reserved;
+    dl_uint16 width;
+    dl_uint16 height;
+    dl_uint16 depth;
+    dl_char reserved2[2];
+    dl_uint32 nameOffset;
+    dl_uint32 numData;
+    
+    local quad pos <hidden=true> = FTell();
+    if (nameOffset > 0)
+    {
+        FSeek(nameOffset);
+        if (encoding == EN_UTF16)
+        {
+            wstring name <bgcolor=cYellow>;
+        }
+        else
+        {
+            string name <bgcolor=cYellow>;
+        }
+    }
+    
+    if (offset > 0 && size > 0)
+    {
+        FSeek(offset);
+        ubyte data[size] <bgcolor=cAqua>;
+    }
+    
+    FSeek(pos);
+} TpfTexAttributeXbox360 <bgcolor=cLtGreen, read=ReadTpfTexAttributeXbox360, optimize=false>;
+
+string ReadTpfTexAttributeXbox360(TpfTexAttributeXbox360& tex)
+{
+    if (tex.nameOffset > 0)
+    {
+        if (tpf.header.encoding == EN_UTF16)
+        {
+            return StringToWString(tex.name);
+        }
+        else
+        {
+            return tex.name;
+        }
+    }
+    else
+    {
+        return "";
+    }
+}
+
+typedef struct(Encoding& encoding)
+{
+    dl_uint32 offset;
+    dl_size size;
+    TextureFormat format;
+    TextureType type;
+    dl_char mipmap;
+    dl_char reserved;
+    dl_uint16 width;
+    dl_uint16 height;
+    dl_uint32 pitch;
+    dl_uint32 unk14;
+    dl_uint32 nameOffset;
+    dl_uint32 numData;
+    
+    local quad pos <hidden=true> = FTell();
+    if (nameOffset > 0)
+    {
+        FSeek(nameOffset);
+        if (encoding == EN_UTF16)
+        {
+            wstring name <bgcolor=cYellow>;
+        }
+        else
+        {
+            string name <bgcolor=cYellow>;
+        }
+    }
+    
+    if (offset > 0 && size > 0)
+    {
+        FSeek(offset);
+        ubyte data[size] <bgcolor=cAqua>;
+    }
+    
+    FSeek(pos);
+} TpfTexAttributePs3 <bgcolor=cLtGreen, read=ReadTpfTexAttributePs3, optimize=false>;
+
+string ReadTpfTexAttributePs3(TpfTexAttributePs3& tex)
+{
+    if (tex.nameOffset > 0)
+    {
+        if (tpf.header.encoding == EN_UTF16)
+        {
+            return StringToWString(tex.name);
+        }
+        else
+        {
+            return tex.name;
+        }
+    }
+    else
+    {
+        return "";
+    }
+}
+
+typedef struct
+{
+    TpfFileHeader header;
+    switch (header.platform)
+    {
+        case PF_WIN32:
+            TpfTexAttributeWin32 textures(header.encoding)[header.numTexture];
+            break;
+        case PF_XBOX360:
+            TpfTexAttributeXbox360 textures(header.encoding)[header.numTexture];
+            break;
+        case PF_PLAYSTATION3:
+            TpfTexAttributePs3 textures(header.encoding)[header.numTexture];
+            break;
+        default:
+            Assert(false, Str("Unknown platform: %d", header.platform));
+            break;
+    }
+} Tpf;
+
+//------------------------------------------------
+
+Tpf tpf;

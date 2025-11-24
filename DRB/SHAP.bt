@@ -594,10 +594,10 @@ wstring ReadSHAPEntry(SHAPEntry& entry)
         case "GouraudRect":
             SPrintf(str, "%s - %i %s%s%s%s",
                 entry.type, entry.shape.blendMode,
-                FormatColor(entry.shape.topLeftColor),
-                FormatColor(entry.shape.topRightColor),
-                FormatColor(entry.shape.bottomLeftColor),
-                FormatColor(entry.shape.bottomRightColor));
+                FormatColor4(entry.shape.topLeftColor),
+                FormatColor4(entry.shape.topRightColor),
+                FormatColor4(entry.shape.bottomLeftColor),
+                FormatColor4(entry.shape.bottomRightColor));
             break;
         case "GouraudSprite":
             SPrintf(str, "%s", entry.type);
@@ -605,11 +605,11 @@ wstring ReadSHAPEntry(SHAPEntry& entry)
         case "MonoFrame":
             SPrintf(str, "%s - %i %i %i %s",
                 entry.type, entry.shape.blendMode, entry.shape.thickness, entry.shape.paletteColor,
-                FormatColor(entry.shape.customColor));
+                FormatColor4(entry.shape.customColor));
             break;
         case "MonoRect":
             SPrintf(str, "%s - %i %s", entry.type, entry.shape.paletteColor, 
-                FormatColor(entry.shape.customColor));
+                FormatColor4(entry.shape.customColor));
             break;
         default:
             str = entry.type;

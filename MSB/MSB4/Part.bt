@@ -150,11 +150,13 @@ typedef struct
     string linkPartName;
 } PartBreak;
 
-typedef struct
+typedef struct(byte is4)
 {
     int rowID;
-    short unk04;
-    short unk06;
+    if (is4 != 1)
+    {
+        int unk04;
+    }
 } PartCharaEventData;
 
 typedef struct
@@ -308,7 +310,17 @@ typedef struct
     if (charaEventDataOffset > 0)
     {
         FSeek(start + charaEventDataOffset);
-        PartCharaEventData charaEventData;
+        local byte is4 <hidden=true> = 0;
+        if (objectOffset > 0)
+        {
+            is4 = (objectOffset - charaEventDataOffset) == 4 ? 1 : 0;
+        }
+        else
+        {
+            is4 = (layerOffset - charaEventDataOffset) == 4 ? 1 : 0;
+        }
+
+        PartCharaEventData charaEventData(is4);
     }
 
     if (objectOffset > 0)

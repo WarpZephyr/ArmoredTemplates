@@ -15,23 +15,46 @@ BigEndian();
 
 //------------------------------------------------
 
-// Only present on FPO files
-// MicroCoding patching of some kind?
+enum <int> ShaderType
+{
+    ShaderTypeVertex = 0,
+    ShaderTypeFragment = 1
+};
+
+//------------------------------------------------
+
 typedef struct
 {
-    // An index of some kind?
-    // Usually increasing one-by-one, but not always.
-    int index;
+    float x;
+    float y;
+    float z;
+    float w;
+} Float4 <read=ReadFloat4>;
+
+string ReadFloat4(Float4& value)
+{
+    return Str("<%7.2f, %7.2f, %7.2f, %7.2f>", value.x, value.y, value.z, value.w);
+}
+
+// Only present on FPO files
+// MicroCoding patching of some kind?
+typedef struct(int ucodeOffset)
+{
+    int registerIndex;
 
     // Appears to be an offset into microCode starting from start of the file?
     // Usually decreasing (with a minimum of 32 between them?), but not always.
-    int microCodeOffset; 
-} UnkHeaderEntry <read=ReadUnkHeaderEntry>;
+    int constantOffset; 
+    
+    local quad pos <hidden=true> = FTell();
+    FSeek(ucodeOffset + constantOffset);
+    Float4 constant;
+    FSeek(pos);
+} FragmentParameter <read=ReadFragmentParameter, optimize=false>;
 
-string ReadUnkHeaderEntry(UnkHeaderEntry& entry)
+string ReadFragmentParameter(FragmentParameter& parameter)
 {
-    local string str;
-    return SPrintf(str, "%d | %d", entry.index, entry.microCodeOffset);
+    return Str("%d | %d", parameter.registerIndex, parameter.constantOffset);
 }
 
 typedef struct
@@ -42,23 +65,32 @@ typedef struct
     ubyte unk03 <hidden=true>; Assert(unk03 == 17);
     uint headerSize; // Always 0x20 on VPO files
     ubyte unk08;
-    ubyte entryCount;
+    ubyte parameterCount; // Includes "in" and "uniform" parameters
     ushort unk0A <hidden=true>; Assert(unk0A == 0);
-    int unk0C;
+    ShaderType shaderType;
 
     int unk10 <hidden=true>; Assert(unk10 == 0);
     int unk14 <hidden=true>; Assert(unk14 == 0);
     int unk18 <hidden=true>; Assert(unk18 == 0);
     int unk1C <hidden=true>; Assert(unk1C == 0);
 
-    if (headerSize > 0x20)
+    // Parameters aren't marked on Vertex Shaders as the official struct already has something for those
+    // Parameters need to be marked on Fragment Shaders however
+    if (shaderType == ShaderTypeFragment && parameterCount > 0)
     {
-        UnkHeaderEntry entries[entryCount];
+        Assert(headerSize > 32, "Header Size expected to be greater than 32 when parameters are present.");
+        
+        local quad pos <hidden=true> = FTell();
+        FSeek(headerSize + 0x1C);
+        local int ucodeOffset <hidden=true> = ReadInt() + headerSize;
+        FSeek(pos);
+        
+        FragmentParameter parameters(ucodeOffset)[parameterCount];
         Align(0x10);
     }
-} UnkHeader <bgcolor=cLtRed>;
+} UniformHeader <bgcolor=cLtRed>;
 
 //------------------------------------------------
 
-UnkHeader unkHeader;
+UniformHeader uniformHeader;
 #include "NVBinary.bt"

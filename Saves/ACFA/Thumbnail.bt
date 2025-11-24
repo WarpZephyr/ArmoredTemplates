@@ -18,7 +18,14 @@ typedef struct
     uint unk04 <hidden=true>; Assert(unk04 == 0);
     uint unk08 <hidden=true>; Assert(unk08 == 0);
     int dataSize;
-    ubyte data[dataSize];
+    if (dataSize > 0)
+    {
+        ubyte data[dataSize];
+    }
+    else
+    {
+        ubyte data[16384];
+    }
 } Thumbnail <bgcolor=cLtGreen>;
 
 //------------------------------------------------

@@ -21,7 +21,7 @@ enum <int> PointType
     PointTypeWarningArea = 101,     // An area the player can be in with a warning
     PointTypeNormalArea = 102,      // An area the player can be in without interruption
     PointTypeVOBPurgeArea = 103,    // An area that once entered will purge VOB.
-    PointTypeDeathArea = 150,       // An area that forces death. Only seen in AC4.
+    PointTypeDeathField = 150,       // An area that forces death. Only seen in AC4.
     PointTypeAntiAirArea = 160,     // An area for AA?
     PointTypeAntiAirCamera = 161,   // A camera for AA?
     PointTypeSpawn = 200,           // A spawn point
@@ -258,7 +258,6 @@ typedef struct
         Assert(pointType == PointTypeOperationalArea
             || pointType == PointTypeWarningArea
             || pointType == PointTypeNormalArea
-            || pointType == PointTypeDeathArea
             || pointType == PointTypeVOBPurgeArea);
         FSeek(start + offsetArea);
         PointArea area;
@@ -367,7 +366,7 @@ string ReadPoint(Point& point)
         case PointTypeWarningArea: type = "WarningArea"; break;
         case PointTypeNormalArea: type = "Area"; break;
         case PointTypeVOBPurgeArea: type = "VOBPurgeArea"; break;
-        case PointTypeDeathArea: type = "DeathArea"; break;
+        case PointTypeDeathField: type = "DeathField"; break;
         case PointTypeAntiAirArea: type = "AntiAirArea"; break;
         case PointTypeAntiAirCamera: type = "AntiAirCamera"; break;
         case PointTypeSpawn: type = "Spawn"; break;

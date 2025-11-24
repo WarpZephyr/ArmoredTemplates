@@ -84,7 +84,7 @@ typedef struct
 
 wstring ReadText(Text& entry)
 {
-    return Str("ID: %d | %s", entry.id, entry.str);
+    return entry.str;
 }
 
 typedef struct

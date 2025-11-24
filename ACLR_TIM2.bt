@@ -3,7 +3,7 @@
 //
 //      File: ACLR_TIM2.bt
 //   Authors: WarpZephyr
-//   Version: 1.0.0
+//   Version: 1.1.0
 //   Purpose: ACLR stripped down PS2 TIM2 textures.
 //  Category: Texture
 // File Mask: 
@@ -104,6 +104,103 @@ typedef struct
     uint64 reserved4 : 20; Assert(reserved4 == 0);
 } GsTex1;
 
+uint GetClutSize(PixelStorageMode& psm, PixelStorageMode& cpsm)
+{
+    local uint colorCount <hidden=true>;
+    switch (psm)
+    {
+        case PSMCT32:
+        case PSMZ32:
+        case PSMCT24:
+        case PSMZ24:
+        case PSMCT16:
+        case PSMCT16S:
+        case PSMZ16:
+        case PSMZ16S:
+            return 0;
+        case PSMT8:
+        case PSMT8H:
+            colorCount = 256;
+            break;
+        case PSMT4:
+        case PSMT4HL:
+        case PSMT4HH:
+            colorCount = 16;
+            break;
+        default:
+            Assert(false, Str("Pixel Storage Mode not supported: %s", EnumToString(psm)));
+            break;
+    }
+    
+    local uint actualSize <hidden=true>;
+    switch (cpsm)
+    {
+        case PSMCT32:
+        case PSMZ32:
+            actualSize = colorCount * 4;
+            break;
+        case PSMCT24:
+        case PSMZ24:
+            actualSize = colorCount * 3;
+            break;
+        case PSMCT16:
+        case PSMCT16S:
+        case PSMZ16:
+        case PSMZ16S:
+            actualSize = colorCount * 2;
+            break;
+        case PSMT8:
+        case PSMT8H:
+        case PSMT4:
+        case PSMT4HL:
+        case PSMT4HH:
+        default:
+            Assert(false, Str("Clut Pixel Storage Mode not supported: %s", EnumToString(cpsm)));
+            break;
+    }
+    
+    return actualSize;
+}
+
+uint GetImageSize(PixelStorageMode& psm)
+{
+    local ushort width <hidden=true> = 1 << gsTex0.TW;
+    local ushort height <hidden=true> = 1 << gsTex0.TH;
+    local ushort area <hidden=true> = width * height;
+    local uint actualSize <hidden=true>;
+    switch (psm)
+    {
+        case PSMCT32:
+        case PSMZ32:
+            actualSize = area * 4;
+            break;
+        case PSMCT24:
+        case PSMZ24:
+            actualSize = area * 3;
+            break;
+        case PSMCT16:
+        case PSMCT16S:
+        case PSMZ16:
+        case PSMZ16S:
+            actualSize = area * 2;
+            break;
+        case PSMT8:
+        case PSMT8H:
+            actualSize = area;
+            break;
+        case PSMT4:
+        case PSMT4HL:
+        case PSMT4HH:
+            actualSize = area / 2;
+            break;
+        default:
+            Assert(false, Str("Pixel Storage Mode not supported: %s", EnumToString(psm)));
+            break;
+    }
+    
+    return actualSize;
+}
+
 typedef struct
 {
     // Picture header
@@ -116,21 +213,30 @@ typedef struct
 	GsTex1 gsTex1;
 
     // Image Data
+    local uint clutSize <hidden=true>;
     if (imageSize > 0)
     {
         ubyte imageData[imageSize] <bgcolor=cLtGreen>;
-
-        // CLUT Data
-        local int clutSize <hidden=true> = totalSize - HEADER_SIZE - imageSize;
-        if (clutSize > 0)
-        {
-            ubyte clutData[clutSize] <bgcolor=cGreen>;
-        }
+        clutSize = totalSize - HEADER_SIZE - imageSize;
+    }
+    else if (totalSize > 0)
+    {
+        // Assumption for some files in other games with 0 imageSize and no clut
+        clutSize = GetClutSize(gsTex0.PSM, gsTex0.CPSM);
+        ubyte imageData[totalSize - HEADER_SIZE - clutSize] <bgcolor=cLtGreen>;
     }
     else
     {
-        // Assumption for some files in other games with 0 imageSize and no clut
-        ubyte imageData[totalSize - HEADER_SIZE] <bgcolor=cLtGreen>;
+        // Some files have no total size or image size and must rely on GsTex entirely.
+        local uint actualImageSize <hidden=true> = GetImageSize(gsTex0.PSM);
+        clutSize = GetClutSize(gsTex0.PSM, gsTex0.CPSM);
+        ubyte imageData[actualImageSize] <bgcolor=cLtGreen>;
+    }
+    
+    // CLUT Data
+    if (clutSize > 0)
+    {
+        ubyte clutData[clutSize] <bgcolor=cGreen>;
     }
 } TIM2_PICTURE <bgcolor=cRed, optimize=false>;
 

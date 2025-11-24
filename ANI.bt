@@ -3,7 +3,7 @@
 //
 //      File: ANI.bt
 //   Authors: WarpZephyr, FatDuck (For work from FatImporter)
-//   Version: 1.0.3
+//   Version: 1.0.4
 //   Purpose: Armored Core: For Answer ANI animation files
 //  Category: Animation
 // File Mask: *.ani
@@ -20,6 +20,16 @@ enum <int> ObjectType
 {
     Geom = 1,
     Dummy = 2
+};
+
+enum <int> FrameFormat
+{
+    PosRotByte = 1,
+    PosRotInt16 = 2,
+    RotInt16 = 4,
+    UnkFrameFormat6 = 6,
+    UnkFrameFormat7 = 7,
+    UnkFrameFormat9 = 9
 };
 
 typedef struct
@@ -77,12 +87,12 @@ typedef struct
     Null null[68];
 } Header <bgcolor=cLtRed>;
 
-typedef struct (int animationType)
+typedef struct (FrameFormat frameFormat)
 {
-    short keyTime;
-    switch(animationType)
+    short keyFrame;
+    switch(frameFormat)
     {
-        case 1:
+        case PosRotByte:
             byte position;
 			byte positionInTangent;
 			byte positionOutTangent;
@@ -90,7 +100,7 @@ typedef struct (int animationType)
 			byte angleInTangent;
 			byte angleOutTangent;
             break;
-        case 2:
+        case PosRotInt16:
 			short position;
 		    short positionInTangent;
 			short positionOutTangent;
@@ -99,53 +109,92 @@ typedef struct (int animationType)
 			short angleOutTangent;
 			short scale;
             break;
-        case 4:
+        case RotInt16:
             short angle;
 			short angleInTangent;
 			short angleOutTangent;
             break;
-        case 6:
+        case UnkFrameFormat6:
             ubyte unk02;
             ubyte unk03;
             ubyte unk04;
             ubyte unk05;
             short unk06;
             break;
-        case 7:
+        case UnkFrameFormat7:
             short unk02;
             short unk04;
             short unk06;
             short unk08;
             short unk0A;
             break;
-        case 9:
+        case UnkFrameFormat9:
             short unk02;
             break;
         default:
             Assert(false);
             break;
     }
-} KeyFrameInfo <bgcolor=cDkYellow, optimize=false>;
+} Frame <bgcolor=cDkYellow, optimize=false>;
 
 typedef struct
 {
-    int keyFramesOffset; Assert(keyFramesOffset >= FTell() + 36);
-    int numKeyFrames;
-    int animationType;
+    int framesOffset; Assert(framesOffset >= FTell() + 36);
+    int frameCount;
+    FrameFormat frameFormat;
     
-    Assert(animationType == 1
-        || animationType == 2
-        || animationType == 4
-        || animationType == 6
-        || animationType == 7
-        || animationType == 9);
+    Assert(frameFormat == PosRotByte
+        || frameFormat == PosRotInt16
+        || frameFormat == RotInt16
+        || frameFormat == UnkFrameFormat6
+        || frameFormat == UnkFrameFormat7
+        || frameFormat == UnkFrameFormat9);
     Vector3 unk10;
     Vector3 unk20;
     int unk24; Assert(unk24 == 0);
 
-    FSeek(keyFramesOffset);
-    KeyFrameInfo keyFrames(animationType)[numKeyFrames];
-} AnimationInfo <bgcolor=cYellow, optimize=false>;
+    FSeek(framesOffset);
+    Frame frames(frameFormat)[frameCount];
+} Animation <bgcolor=cYellow, optimize=false>;
+
+typedef struct
+{
+    Null unk00[48];
+    int endOffset; // ?
+    Null unk34[4];
+} Spline00;
+
+typedef struct
+{
+    Null unk00[4];
+    int count04;
+    float values04[count04];
+    
+} Spline04;
+
+typedef struct
+{
+    
+} Spline08;
+
+typedef struct
+{
+    int offset00;
+    int offset04;
+    int offset08;
+    
+    local quad end <hidden=true> = FTell();
+    FSeek(offset00);
+    Spline00 spline00;
+    
+    FSeek(offset04);
+    Spline04 spline04;
+    
+    FSeek(offset08);
+    Spline08 spline08;
+    
+    FSeek(end);
+} Spline <bgcolor=cYellow, optimize=false>;
 
 typedef struct
 {
@@ -164,11 +213,22 @@ typedef struct
         Vector3 scale;
     }
     
+    local quad end <hidden=true>;
     int animationOffset;
-
     if (header.version == 0x20051014)
     {
-        Null null[184];
+        Null unk3C[4];
+        int splineOffset;
+        Null null[176];
+        
+        // Get offset data
+        if (splineOffset > 0)
+        {
+            end = FTell();
+            FSeek(splineOffset);
+            Spline spline;
+            FSeek(end);
+        }
     }
     else if (header.version == 0x60100910 || header.version == 0xA0100910)
     {
@@ -180,7 +240,7 @@ typedef struct
     }
 
     // Get offset data
-    local quad end <hidden=true> = FTell();
+    end = FTell();
     if (header.version != 0xA0100910)
     {
         FSeek(nameOffset);
@@ -190,7 +250,7 @@ typedef struct
     if(animationOffset > 0)
     {
         FSeek(animationOffset);
-        AnimationInfo animation;
+        Animation animation;
     }
 
     FSeek(end);

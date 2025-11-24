@@ -13,13 +13,41 @@
 
 LittleEndian();
 
-// Helper Structs
+#define PRIMITIVE_SIZE 24
+local int VERTEX_COUNT = 0;
+
+// Math
+//------------------------------------------------
+double floor(double value)
+{
+    return (double)(quad)value;
+}
+
+double round(double value)
+{
+    local double floored = floor(value);
+    local double precision = value - floored;
+    if (precision < 0.5)
+    {
+        return floored;
+    }
+    
+    return floored + 1.0;
+}
+
+// Numerics
 //------------------------------------------------
 
 typedef struct
 {
-    ubyte null; Assert(null == 0);
-} Null <bgcolor=cBlack, optimize=false>;
+    float x;
+    float y;
+} Vector2 <read=ReadVector2>;
+
+string ReadVector2(Vector2& vec)
+{
+    return Str("<%7.6f, %7.6f>", vec.x, vec.y);
+}
 
 typedef struct
 {
@@ -30,7 +58,7 @@ typedef struct
 
 string ReadVector3(Vector3& vec)
 {
-    return Str("<%7.2f, %7.2f, %7.2f>", vec.x, vec.y, vec.z);
+    return Str("<%7.6f, %7.6f, %7.6f>", vec.x, vec.y, vec.z);
 }
 
 typedef struct
@@ -43,8 +71,129 @@ typedef struct
 
 string ReadVector4(Vector4& vec)
 {
-    return Str("<%7.2f, %7.2f, %7.2f, %7.2f>", vec.x, vec.y, vec.z, vec.w);
+    return Str("<%7.6f, %7.6f, %7.6f, %7.6f>", vec.x, vec.y, vec.z, vec.w);
 }
+
+typedef struct
+{
+    ubyte r;
+    ubyte g;
+    ubyte b;
+    ubyte a;
+} Rgba32 <read=ReadRgba32>;
+
+string ReadRgba32(Rgba32& color)
+{
+    return Str("<%d, %d, %d, %d>", color.r, color.g, color.b, color.a);
+}
+
+// Vertex Primitives
+//------------------------------------------------
+
+typedef struct
+{
+    ubyte x <read=ReadUByteNorm, write=WriteUByteNorm>;
+    ubyte y <read=ReadUByteNorm, write=WriteUByteNorm>;
+    ubyte z <read=ReadUByteNorm, write=WriteUByteNorm>;
+    ubyte w <read=ReadUByteNorm, write=WriteUByteNorm>;
+} UByte4Norm <read=ReadUByte4Norm>;
+
+string ReadUByteNorm(ubyte value)
+{
+    return Str("%7.6f", value / 256.0);
+}
+
+void WriteUByteNorm(ubyte& value, string s)
+{
+    value = (ubyte)(round(Atof(s) * 256.0));
+}
+
+string ReadUByte4Norm(UByte4Norm& value)
+{
+    return Str("<%s, %s, %s, %s>",
+        ReadUByteNorm(value.x),
+        ReadUByteNorm(value.y),
+        ReadUByteNorm(value.z),
+        ReadUByteNorm(value.w));
+}
+
+typedef struct
+{
+    byte x <read=ReadByteNorm, write=WriteByteNorm>;
+    byte y <read=ReadByteNorm, write=WriteByteNorm>;
+    byte z <read=ReadByteNorm, write=WriteByteNorm>;
+    byte w;
+} Byte4Norm <read=ReadByte4Norm>;
+
+string ReadByteNorm(byte value)
+{
+    return Str("%7.6f", value / 128.0);
+}
+
+void WriteByteNorm(byte& value, string s)
+{
+    value = (byte)(round(Atof(s) * 128.0));
+}
+
+string ReadByte4Norm(Byte4Norm& value)
+{
+    return Str("<%s, %s, %s, %d>",
+        ReadByteNorm(value.x),
+        ReadByteNorm(value.y),
+        ReadByteNorm(value.z),
+        value.w);
+}
+
+typedef struct
+{
+    ubyte r <read=ReadVertexColorChannel, write=WriteVertexColorChannel>;
+    ubyte g <read=ReadVertexColorChannel, write=WriteVertexColorChannel>;
+    ubyte b <read=ReadVertexColorChannel, write=WriteVertexColorChannel>;
+    ubyte a <read=ReadVertexColorChannel, write=WriteVertexColorChannel>;
+} VertexColor <read=ReadVertexColor>;
+
+string ReadVertexColorChannel(ubyte value)
+{
+    return Str("%7.6f", value / 255.0);
+}
+
+void WriteVertexColorChannel(ubyte& value, string s)
+{
+    value = (ubyte)(round(Atof(s) * 255.0));
+}
+
+string ReadVertexColor(VertexColor& value)
+{
+    return Str("<%s, %s, %s, %s>",
+        ReadVertexColorChannel(value.r),
+        ReadVertexColorChannel(value.g),
+        ReadVertexColorChannel(value.b),
+        ReadVertexColorChannel(value.a));
+}
+
+typedef struct(Vector3& fixed_multiplier, Vector3& fixed_offset)
+{
+    short x;
+    short y;
+    short z;
+    
+    local float _x <hidden=true> = ((x / 32768.0) * fixed_multiplier.x) + fixed_offset.x;
+    local float _y <hidden=true> = ((y / 32768.0) * fixed_multiplier.y) + fixed_offset.y;
+    local float _z <hidden=true> = ((z / 32768.0) * fixed_multiplier.z) + fixed_offset.z;
+} Fixed3 <read=ReadFixed3, optimize=false>;
+
+string ReadFixed3(Fixed3& value)
+{
+    return Str("<%f, %f, %f>", value._x, value._y, value._z);
+}
+
+// Helpers
+//------------------------------------------------
+
+typedef struct
+{
+    ubyte null; Assert(null == 0);
+} Null <bgcolor=cBlack, optimize=false>;
 
 // Structs
 //------------------------------------------------
@@ -57,14 +206,14 @@ typedef struct
     int fileSize;
     int unk0C;
     Null null_1[32];
-    int unk30;
+    int vertexIndexSize; Assert(vertexIndexSize == 16);
     Null null_2[28];
     Vector3 boundingBoxMin;
     Vector3 boundingBoxMax;
     int materialCount;
-    int boneCount;
+    int nodeCount;
     int lightObjectCount; // Never seen
-    int meshCount;
+    int primitiveCount;
     int textureCount;
     int vertexBufferSize;
     int indicesBufferSize;
@@ -72,9 +221,9 @@ typedef struct
     int countUnkStruct9;
     int countUnkStruct10; // Never seen
     int materialsOffset;
-    int bonesOffset;
+    int nodesOffset;
     int lightObjectsOffset; // Never seen
-    int meshesOffset;
+    int primitivesOffset;
     int texturesOffset;
     int vertexBufferOffset;
     int indicesOffset;
@@ -82,121 +231,6 @@ typedef struct
     int offsetUnkStruct9s;
     int offsetUnkStruct10s; // Never seen
 } Header <bgcolor=cLtRed>;
-
-typedef struct
-{
-    ubyte color[4]; // Divide by 255
-    ubyte unk04[4];
-    ubyte ambient_color[4]; // Divide by 255
-    ubyte unk0C[8];
-    float specular_exp;
-    ubyte unk[24];
-} Material <bgcolor=cLtGreen, optimize=false>;
-
-typedef struct
-{
-    Vector3 relative_position;
-    Vector3 relative_angle;
-    Vector3 relative_scale;
-    Vector3 world_position;
-    Vector3 world_angle;
-    Vector4 world_scale;
-    Vector3 boundingBoxMin;
-    Vector3 boundingBoxMax;
-    
-    int meshIndex;
-    int meshCount;
-    int unk6C;
-    char name[8];
-} Bone <bgcolor=cGreen, read=ReadBone, optimize=false>;
-
-string ReadBone(Bone& bone)
-{
-    return bone.name;
-}
-
-typedef struct
-{
-    Assert(false); // Never seen
-} LightObject <bgcolor=cDkGreen, optimize=false>;
-
-typedef struct
-{
-    ubyte attr_7 : 1;
-    ubyte attr_6 : 1;
-    ubyte attr_5 : 1;
-    ubyte attr_4 : 1;
-    ubyte attr_3 : 1;
-    ubyte attr_2 : 1;
-    ubyte attr_1 : 1;
-    ubyte attr_0 : 1;
-} AttributeFlags;
-
-typedef struct(AttributeFlags& flags)
-{
-    ushort position;
-    if (flags.attr_0)
-    {
-        ushort attr_0;
-    }
-    
-    if (flags.attr_1)
-    {
-        ushort attr_1;
-    }
-    
-    if (flags.attr_2)
-    {
-        ushort attr_2;
-    }
-    
-    if (flags.attr_3)
-    {
-        ushort attr_3;
-    }
-    
-    if (flags.attr_4)
-    {
-        ushort attr_4;
-    }
-    
-    if (flags.attr_5)
-    {
-        ushort attr_5;
-    }
-    
-    if (flags.attr_6)
-    {
-        ushort attr_6;
-    }
-    
-    if (flags.attr_7)
-    {
-        ushort attr_7;
-    }
-} Vertex <optimize=false>;
-
-typedef struct
-{
-    short unk00; Assert(unk00 >= 0 || unk00 <= 6);
-    ubyte unk02; Assert(unk02 == 1);
-    ubyte unk03; Assert(unk03 == 4);
-    AttributeFlags flags;
-    ubyte unk05;
-    short unk06 <hidden=true>; Assert(unk06 == 0);
-    int unk08;
-    int vertexBufferOffset;
-    int vertexCount;
-    int unk14 <hidden=true>; Assert(unk14 == 0);
-    
-    if (vertexCount > 0)
-    {
-        local quad pos <hidden=true> = FTell();
-        FSeek(header.vertexBufferOffset + vertexBufferOffset);
-        Vertex vertices(flags)[vertexCount];
-        FSeek(pos);
-    }
-} Mesh <bgcolor=cLtYellow, optimize=false>;
 
 typedef struct
 {
@@ -210,21 +244,144 @@ string ReadTexture(Texture& texture)
 
 typedef struct
 {
-    ubyte buffer[header.vertexBufferSize];
-} VertexBuffer <bgcolor=cDkYellow>;
+    Rgba32 color;
+    Rgba32 unk04;
+    Rgba32 ambient_color;
+    ubyte unk0C[8];
+    float specular_exp;
+    uint unk18;
+    uint unk1C;
+    uint unk20;
+    uint unk24;
+    ubyte diffuseChannelId; // guess
+    ubyte unk29;
+    byte textureIndex;
+    ubyte unk2B;
+    uint unk2C;
+} Material <bgcolor=cLtGreen, optimize=false>;
 
 typedef struct
 {
-    short indices[header.indicesBufferSize / 2];
+    Assert(false); // Never seen
+} LightObject <bgcolor=cDkGreen, optimize=false>;
+
+typedef struct
+{
+    ubyte flag7 : 1;
+    ubyte flag6 : 1;
+    ubyte texcoord : 1;
+    ubyte color : 1;
+    ubyte normal : 1;
+    ubyte position : 1;
+    ubyte flag1 : 1;
+    ubyte flag0 : 1;
+} PrimitiveFlags;
+
+typedef struct(PrimitiveFlags& flags, Vector3& fixed_multiplier, Vector3& fixed_offset)
+{
+    if (flags.texcoord)
+    {
+        UByte4Norm texcoord;
+    }
+    
+    if (flags.color)
+    {
+        VertexColor color;
+    }
+    
+    if (flags.normal)
+    {
+        Byte4Norm normal;
+    }
+    
+    if (flags.position)
+    {
+        Fixed3 position(fixed_multiplier, fixed_offset);
+    }
+    
+    if (flags.flag7)
+    {
+        ushort unk7;
+    }
+    
+    if (flags.flag6 || flags.flag1)
+    {
+        Assert(false, "Unknown primitive flags.");
+    }
+} Vertex <read=ReadVertex, optimize=false>;
+
+string ReadVertex(Vertex& vertex)
+{
+    return ReadFixed3(vertex.position);
+}
+
+typedef struct(Vector3& fixed_multiplier, Vector3& fixed_offset)
+{
+    short materialIndex;
+    ubyte unk02; Assert(unk02 == 1);
+    ubyte unk03; Assert(unk03 == 4);
+    PrimitiveFlags flags;
+    ubyte unk05;
+    short unk06 <hidden=true>; Assert(unk06 == 0);
+    int unk08;
+    int vertexBufferOffset;
+    int vertexCount; VERTEX_COUNT += vertexCount;
+    int unk14 <hidden=true>; Assert(unk14 == 0);
+    
+    if (vertexCount > 0)
+    {
+        local quad pos <hidden=true> = FTell();
+        FSeek(header.vertexBufferOffset + vertexBufferOffset);
+        Vertex vertices(flags, fixed_multiplier, fixed_offset)[vertexCount];
+        FSeek(pos);
+    }
+} Primitive <bgcolor=cLtYellow, optimize=false>;
+
+typedef struct
+{
+    Vector3 translation;
+    Vector3 rotation;
+    Vector3 scale;
+    Vector3 fixed_multiplier;
+    Vector3 fixed_offset;
+    Vector2 unk3C;
+    Vector2 unk44;
+    Vector3 boundingBoxMin;
+    Vector3 boundingBoxMax;
+    
+    int primitiveIndex;
+    int primitiveCount;
+    int unk6C;
+    char name[8];
+    
+    if (primitiveCount > 0)
+    {
+        Assert(primitiveIndex > -1);
+        local quad pos <hidden=true> = FTell();
+        FSeek(header.primitivesOffset + (primitiveIndex * PRIMITIVE_SIZE));
+        Primitive primitives(fixed_multiplier, fixed_offset)[primitiveCount];
+        
+        FSeek(pos);
+    }
+} Node <bgcolor=cGreen, read=ReadNode, optimize=false>;
+
+string ReadNode(Node& node)
+{
+    return node.name;
+}
+
+typedef struct
+{
+    ushort indices[header.indicesBufferSize / 2];
 } Indices <bgcolor=cLtAqua>;
 
 typedef struct
 {
     Vector3 position;
     Vector3 forward;
-    ubyte color[4];
-    int unk1C;
-    int unk20;
+    Rgba32 color;
+    int attachNodeIndex;
+    int parentNodeIndex;
 } Dummy <bgcolor=cAqua, read=ReadDummy, optimize=false>;
 
 string ReadDummy(Dummy& dummy)
@@ -254,11 +411,11 @@ if (header.materialCount > 0)
     Material materials[header.materialCount];
 }
 
-if (header.boneCount > 0)
+if (header.nodeCount > 0)
 {
-    Assert(header.bonesOffset > 0);
-    FSeek(header.bonesOffset);
-    Bone bones[header.boneCount];
+    Assert(header.nodesOffset > 0);
+    FSeek(header.nodesOffset);
+    Node nodes[header.nodeCount];
 }
 
 // Never seen
@@ -267,13 +424,6 @@ if (header.lightObjectCount > 0)
     Assert(header.lightObjectsOffset > 0);
     FSeek(header.lightObjectsOffset);
     LightObject lightObjects[header.exLightObjectCount];
-}
-
-if (header.meshCount > 0)
-{
-    Assert(header.meshesOffset > 0);
-    FSeek(header.meshesOffset);
-    Mesh meshes[header.meshCount];
 }
 
 if (header.textureCount > 0)
@@ -303,12 +453,6 @@ if (header.countUnkStruct10 > 0)
     Assert(header.offsetUnkStruct10s > 0);
     FSeek(header.offsetUnkStruct10s);
     UnkStruct10 unkStruct10s[header.countUnkStruct10];
-}
-
-if (header.vertexBufferOffset > 0)
-{
-    FSeek(header.vertexBufferOffset);
-    //VertexBuffer vertexBuffer;
 }
 
 if (header.indicesOffset > 0)

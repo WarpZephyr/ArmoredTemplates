@@ -1,0 +1,91 @@
+//------------------------------------------------
+//--- 010 Editor v15.0.2 Binary Template
+//
+//      File: ACM2_playerdata.bt
+//   Authors: WarpZephyr
+//   Version: 1.0.0
+//   Purpose: ACM2 save data.
+//  Category: Saves
+// File Mask: playerdata
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+BigEndian();
+
+enum <ubyte> bool
+{
+    False = 0,
+    True = 1
+};
+
+//------------------------------------------------
+
+typedef struct
+{
+    int length;
+    if (length > 0)
+    {
+        char str[length];
+    }
+} LengthString <read=ReadLengthString>;
+
+string ReadLengthString(LengthString& str)
+{
+    if (str.length > 0)
+    {
+        return str.str;
+    }
+    
+    return "";
+}
+
+typedef struct
+{
+    int score;
+    LengthString date;
+} AcTrainingRank <bgcolor=cYellow, read=ReadAcTrainingRank, optimize=false>;
+
+string ReadAcTrainingRank(AcTrainingRank& rank)
+{
+    return Str("%d on %s", rank.score, ReadLengthString(rank.date));
+}
+
+typedef struct
+{
+    byte r;
+    byte g;
+    byte b;
+} GpRGB <read=ReadGpRGB>;
+
+string ReadGpRGB(GpRGB& rgb)
+{
+    return Str("<%d,%d,%d>", rgb.r, rgb.g, rgb.b);
+}
+
+typedef struct
+{
+    GpRGB color[10];
+} GpPartsColors <bgcolor=cAqua>;
+
+typedef struct
+{
+    ubyte unk00; Assert(unk00 == 1); // Always written as 1, read and ignored
+    bool isTrainingOpen[12];
+    bool isArenaOpen[18];
+    AcTrainingRank TrainingRanking[60];
+    int SoundLevel;
+    bool isVibrate;
+    int ControlType;
+    bool isFog;
+    bool isBasePartsOpen[30];
+    bool isBoosterOpen[30];
+    bool isGeneratorOpen[30];
+    bool isWeaponOpen[30];
+    int PlayerParts[9];
+    GpPartsColors PartColor;
+} AcPlayerData <bgcolor=cLtGreen>;
+
+//------------------------------------------------
+
+AcPlayerData playerdata;

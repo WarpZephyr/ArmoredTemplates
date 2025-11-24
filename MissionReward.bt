@@ -2,9 +2,9 @@
 //--- 010 Editor v13.0.2 Binary Template
 //
 //      File: MissionReward.bt
-//   Authors: WarpZephyr
-//   Version: 1.0.0
-//   Purpose: ACFA MissionReward.bin binary file.
+//   Authors: WarpZephyr, iWAER, abcode6460
+//   Version: 1.1.1
+//   Purpose: Armored Core For Answer mission rewards.
 //  Category: 
 // File Mask: MissionReward.bin
 //  ID Bytes: 
@@ -21,136 +21,214 @@ local uint FRS_COUNT = 0;
 local uint DESIGN_COUNT = 0;
 local uint EMBLEM_COUNT = 0;
 
-enum <short> RewardType
+enum <ushort> RewardType
 {
-    Part = 1,
-    FRS = 3,
-    Design = 4,
-    Emblem = 5,
-    UNK_CONDITION = 6,
-    UNK_SEVEN = 7,
-    UNK_EIGHT = 8,
-    UNK_NINE = 9,
+    RewardPart = 1,
+    RewardFrs = 3,
+    RewardDesign = 4,
+    RewardEmblem = 5,
+    RewardUnk6 = 6,
+    RewardAcFree = 7,
+    RewardAcShop = 8,
+    RewardAllParts = 9,
+};
+
+enum <ushort> UnlockType
+{
+    UnlockMissionNormal = 100,
+    // UnlockMissionNormalS = 101?
+    UnlockMissionHard = 102,
+    // UnlockMissionHardS = 103?
+    UnlockSS = 110,
+    UnlockArena = 200,
+    UnlockContribution = 400
+};
+
+enum <ushort> UnlockDifficultyType
+{
+    UnlockDifficultyNormal = 0, 
+    UnlockDifficultyHard = 1
+};
+
+enum <ushort> ContributionPointType
+{
+    ContributionPointGA = 0,
+    ContributionPointInteriorUnion = 1,
+    ContributionPointOmer = 2,
+    ContributionPointLeague = 3,
+    ContributionPointORCA = 4,
+    ContributionPointLineArk = 5,
+    ContributionPointOther1 = 6,
+    ContributionPointOther2 = 7,
+    ContributionPointInvalid = 9999 
 };
 
 //------------------------------------------------
 
 typedef struct
 {
-    int entry_count;
-    int unlock_entry_count;
-    int reward_entry_count;
+    int entryCount;
+    int unlockEntryCount;
+    int rewardEntryCount;
     int unk0C <hidden=true>; Assert(unk0C == 0);
 
-    local quad unlock_offset = HEADER_SIZE + ENTRY_SIZE * entry_count;
-    local quad reward_offset = unlock_offset + (UNLOCK_ENTRY_SIZE * unlock_entry_count);
+    local quad unlockOffset <hidden=true> = HEADER_SIZE + ENTRY_SIZE * entryCount;
+    local quad rewardOffset <hidden=true> = unlockOffset + (UNLOCK_ENTRY_SIZE * unlockEntryCount);
 } Header <bgcolor=cLtRed>;
 
 typedef struct
 {
-    short unk00;
-    short rank;
-    short unk04;
-    short unk06;
+    UnlockType unlockType;
+    switch (unlockType)
+    {
+        case UnlockMissionNormal:
+        case UnlockMissionHard:
+        case UnlockSS:
+            // Assumed for each
+            ushort missionID;
+            UnlockDifficultyType difficulty;
+            break;
+        case UnlockArena:
+            ushort arenaID;
+            ushort unk04;
+            break;
+        case UnlockContribution:
+            ContributionPointType contributionID;
+            ushort points;
+            break;
+        default:
+            ushort id;
+            ushort value;
+            break;
+    }
+    
+    ushort unk06 <hidden=true>; Assert(unk06 == 0);
 } Unlock <bgcolor=cGreen, read=ReadUnlock, optimize=false>;
 
 string ReadUnlock(Unlock& entry)
 {
-    local string str;
-    return SPrintf(str, "%i %i %i %i", entry.unk00, entry.rank, entry.unk04, entry.unk06);
+    switch (entry.unlockType)
+    {
+        case UnlockMissionNormal:
+        case UnlockMissionHard:
+        case UnlockSS:
+            // Assumed for each
+            return Str("%s [%i,%s]", EnumToString(entry.unlockType), entry.missionID, EnumToString(entry.difficulty));
+        case UnlockArena:
+            return Str("%s [%i,%i]", EnumToString(entry.unlockType), entry.arenaID, entry.unk04);
+        case UnlockContribution:
+            return Str("%s [%s,%i]", EnumToString(entry.unlockType), EnumToString(entry.contributionID), entry.points);
+        default:
+            return Str("%i [%i,%i]", entry.unlockType, entry.id, entry.value);
+    }
 }
 
 typedef struct
 {
-    RewardType reward_type;
-    switch (reward_type)
+    RewardType rewardType;
+    switch (rewardType)
     {
-        case Part:
-            short category_id;
-            short part_id;
+        case RewardPart:
+            ushort categoryID;
+            ushort partID;
             PART_COUNT += 1;
             break;
-        case FRS:
-            short amount;
-            short frs_id;
+        case RewardFrs:
+            ushort amount;
+            ushort frsID;
             FRS_COUNT += 1;
             break;
-        case Design:
-            short design_id;
-            short unk04 <hidden=true>; Assert(unk04 == 0);
+        case RewardDesign:
+            ushort designID;
+            ushort unk04 <hidden=true>; Assert(unk04 == 0);
             DESIGN_COUNT += 1;
             break;
-        case Emblem:
-            short emblem_id;
-            short unk04 <hidden=true>; Assert(unk04 == 0);
+        case RewardEmblem:
+            ushort emblemID;
+            ushort unk04 <hidden=true>; Assert(unk04 == 0);
             EMBLEM_COUNT += 1;
             break;
-        case UNK_CONDITION:
-            short boolean; Assert(boolean == 0 || boolean == 1);
-            short unk04 <hidden=true>; Assert(unk04 == 0);
+        case RewardUnk6:
+            ushort unkBool; Assert(unkBool == 0 || unkBool == 1);
+            ushort unk04 <hidden=true>; Assert(unk04 == 0);
             break;
-        case UNK_SEVEN:
-            short unk_id;
-            short unk04 <hidden=true>; Assert(unk04 == 0);
+        case RewardAcFree:
+            ushort setID;
+            ushort unk04 <hidden=true>; Assert(unk04 == 0);
             break;
-        case UNK_EIGHT:
-            short unk_id;
-            short unk04 <hidden=true>; Assert(unk04 == 0);
+        case RewardAcShop:
+            ushort setID;
+            ushort unk04 <hidden=true>; Assert(unk04 == 0);
             break;
-        case UNK_NINE:
-            short unk02 <hidden=true>; Assert(unk02 == 0);
-            short unk04 <hidden=true>; Assert(unk04 == 0);
+        case RewardAllParts:
+            ushort unk02 <hidden=true>; Assert(unk02 == 0);
+            ushort unk04 <hidden=true>; Assert(unk04 == 0);
             break;
         default:
-            short unk02;
-            short unk04;
+            ushort unk02;
+            ushort unk04;
             break;
     }
     
-    short unk06 <hidden=true>; Assert(unk06 == 0);
+    ushort unk06 <hidden=true>; Assert(unk06 == 0);
 } Reward <bgcolor=cDkGreen, read=ReadReward, optimize=false>;
 
 string ReadReward(Reward& entry)
 {
-    local string str;
-    switch (entry.reward_type)
+    switch (entry.rewardType)
     {
-        
-        case FRS:
-            return SPrintf(str, "%s %i (%i)", EnumToString(entry.reward_type), entry.frs_id, entry.amount);
+        case RewardPart:
+            return Str("%s [%i,%i]", EnumToString(entry.rewardType), entry.categoryID, entry.partID);
+        case RewardFrs:
+            return Str("%s [%i,%i]", EnumToString(entry.rewardType), entry.frsID, entry.amount);
+        case RewardDesign:
+            return Str("%s [%i]", EnumToString(entry.rewardType), entry.designID);
+        case RewardEmblem:
+            return Str("%s [%i]", EnumToString(entry.rewardType), entry.emblemID);
+        case RewardUnk6:
+            return Str("%s [%i]", EnumToString(entry.rewardType), entry.unkBool);
+        case RewardAcFree:
+            return Str("%s [%i]", EnumToString(entry.rewardType), entry.setID);
+        case RewardAcShop:
+            return Str("%s [%i]", EnumToString(entry.rewardType), entry.setID);
+        case RewardAllParts:
+            return EnumToString(entry.rewardType);
         default: 
+            return Str("%s [%i,%i]", EnumToString(entry.rewardType), entry.unk02, entry.unk04);
     }
-    
-    return SPrintf(str, "%s", EnumToString(entry.reward_type));
 }
 
 typedef struct
 {
-    int unlock_count;
-    int unlock_start_index;
-    int reward_count;
-    int reward_start_index;
-    local quad end = FTell();
-    
-    FSeek(header.unlock_offset + (unlock_start_index * UNLOCK_ENTRY_SIZE));
-    Unlock unlocks[unlock_count];
+    int unlockCount;
+    int unlockStartIndex;
+    int rewardCount;
+    int rewardStartIndex;
+    local quad end <hidden=true> = FTell();
 
-    FSeek(header.reward_offset + (reward_start_index * REWARD_ENTRY_SIZE));
-    Reward rewards[reward_count];
+    FSeek(header.unlockOffset + (unlockStartIndex * UNLOCK_ENTRY_SIZE));
+    Unlock unlocks[unlockCount];
+
+    FSeek(header.rewardOffset + (rewardStartIndex * REWARD_ENTRY_SIZE));
+    Reward rewards[rewardCount];
+    
     FSeek(end);
 } Entry <bgcolor=cLtGreen, read=ReadEntry, optimize=false>;
 
 string ReadEntry(Entry& entry)
 {
-    local string str;
-    return SPrintf(str, "Unlocks: %i (%i) | Rewards: %i (%i)", entry.unlock_count, entry.unlock_start_index, entry.reward_count, entry.reward_start_index);
+    return Str("Unlocks: %i (%i) | Rewards: %i (%i)",
+    entry.unlockCount,
+    entry.unlockStartIndex,
+    entry.rewardCount,
+    entry.rewardStartIndex);
 }
 
 //------------------------------------------------
 
 Header header;
-Entry entries[header.entry_count];
-Printf("Parts: %d\n", PART_COUNT);
-Printf("FRS: %d\n", FRS_COUNT);
-Printf("Designs: %d\n", DESIGN_COUNT);
-Printf("Emblems: %d", EMBLEM_COUNT);
+Entry entries[header.entryCount];
+Printf("Reward Parts: %d\n", PART_COUNT);
+Printf("Reward FRS: %d\n", FRS_COUNT);
+Printf("Reward Designs: %d\n", DESIGN_COUNT);
+Printf("Reward Emblems: %d", EMBLEM_COUNT);

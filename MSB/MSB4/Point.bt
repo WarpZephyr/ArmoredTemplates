@@ -19,7 +19,7 @@ enum <int> PointType
     PointTypeOperationalArea = 100, // An area the player can be in without failure
     PointTypeWarningArea = 101,     // An area the player can be in with a warning
     PointTypeNormalArea = 102,      // An area the player can be in without interruption
-    PointTypeDeathArea = 150,       // An area that forces death.
+    PointTypeDeathField = 150,       // An area that forces death.
     PointTypeSpawn = 200,           // A spawn point
     PointTypeCamera = 300,          // A camera point?
     PointTypeSFX = 500,             // An SFX point?
@@ -186,8 +186,7 @@ typedef struct
     {
         Assert(pointType == PointTypeOperationalArea
             || pointType == PointTypeWarningArea
-            || pointType == PointTypeNormalArea
-            || pointType == PointTypeDeathArea);
+            || pointType == PointTypeNormalArea);
         FSeek(start + offsetArea);
         PointArea area;
     }
@@ -252,7 +251,7 @@ string ReadPoint(Point& point)
         case PointTypeOperationalArea: type = "OperationalArea"; break;
         case PointTypeWarningArea: type = "WarningArea"; break;
         case PointTypeNormalArea: type = "Area"; break;
-        case PointTypeDeathArea: type = "DeathArea"; break;
+        case PointTypeDeathField: type = "DeathField"; break;
         case PointTypeSpawn: type = "Spawn"; break;
         case PointTypeCamera: type = "Camera"; break;
         case PointTypeSFX: type = "SFX"; break;
