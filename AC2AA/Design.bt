@@ -1,0 +1,699 @@
+//------------------------------------------------
+//--- 010 Editor v15.0.2 Binary Template
+//
+//      File: Design.bt
+//   Authors: WarpZephyr
+//   Version: 1.0.0
+//   Purpose: Designs in Armored Core 2 Another Age?
+//  Category: Design
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+LittleEndian();
+
+// Enums
+//------------------------------------------------
+
+enum <ubyte> Manufacturer
+{
+    ZioMatrix = 0,
+    Emeraude = 1,
+    Balena = 2
+};
+
+enum <ubyte> LegType
+{
+    BipedalLegs = 0,
+    ReverseJointLegs = 1,
+    QuadLegs = 2,
+    TankLegs = 3,
+    FloatLegs = 4
+};
+
+// Structs
+//------------------------------------------------
+
+typedef struct
+{
+    ushort unk00;
+    ushort unk02;
+    ushort unk04;
+    ushort unk06;
+    ushort unk08;
+    ushort unk0A;
+    ushort unk0C;
+    ushort unk0E;
+    ushort unk10;
+    ushort unk12;
+    ushort unk14;
+    ushort unk16;
+    ushort unk18;
+    ushort unk1A;
+    ushort unk1C;
+    ushort unk1E;
+    ushort unk20;
+    ushort unk22;
+    ushort unk24;
+    ushort unk26;
+    ushort unk28;
+    ushort unk2A;
+    ushort unk2C;
+    ushort unk2E;
+    ushort unk30;
+    ushort unk32;
+    ushort unk34;
+    ushort unk36;
+    ushort unk38;
+    ushort unk3A;
+    ushort unk3C;
+    ushort unk3E;
+    ushort unk40;
+    ushort unk42;
+    ushort unk44;
+    ushort unk46;
+    ushort unk48;
+    ushort unk4A;
+    ushort unk4C;
+    ushort unk4E;
+    ushort unk50;
+    ushort unk52;
+    ushort unk54;
+    ushort unk56;
+    ushort unk58;
+    ushort unk5A;
+    ushort unk5C;
+    ushort unk5E;
+    ushort unk60;
+    ushort unk62;
+    ushort unk64;
+    ushort unk66;
+    ushort unk68;
+    ushort unk6A;
+    ushort unk6C;
+    ushort unk6E;
+    ushort unk70;
+    ushort unk72;
+    ushort unk74;
+    ushort unk76;
+    ushort unk78;
+    ushort unk7A;
+    ushort unk7C;
+    ushort unk7E;
+} Header <bgcolor=cLtRed>;
+
+typedef struct
+{
+    int unk00;
+    ushort unk04;
+    ushort unk06;
+    char actionName[20];
+    ushort unk1C;
+    ushort unk1E;
+    ushort unk20;
+    ushort unk22;
+    ushort unk24;
+    ushort unk26;
+    ushort unk28;
+    ushort unk2A;
+    ushort unk2C;
+    ushort unk2E;
+    ushort unk30;
+    ushort unk32;
+    ushort unk34;
+    ushort unk36;
+    ushort unk38;
+    ushort unk3A;
+    ushort unk3C;
+    ushort unk3E;
+} Action <bgcolor=cLtYellow, read=ReadAction>;
+
+string ReadAction(Action& action)
+{
+    return action.actionName;
+}
+
+typedef struct
+{
+    char name[18];
+    char sub_category[18];
+    int price;
+    Manufacturer maker;
+    char explain[73];
+    ushort weight;
+    int en_cost;
+    float unk78;
+    int unk7C;
+    ushort ap;
+    ushort ballistic_def;
+    ushort en_def;
+    ushort cooling;
+    ushort system_recovery;
+    ushort auto_balancer;
+    ushort unk8C;
+    ushort unk8A;
+    float radar_range;
+    float unk94;
+    ushort scanning_interval;
+    ushort sensor_interval;
+    int unk9C;
+} Head <bgcolor=cLtGreen, read=ReadHead>;
+
+string ReadHead(Head& part)
+{
+    return part.name;    
+}
+
+typedef struct
+{
+    char name[18];
+    char sub_category[18];
+    int price;
+    Manufacturer maker;
+    char explain[73];
+    ushort weight;
+    int en_cost;
+    float unk78;
+    int unk7C;
+    ushort ap;
+    ushort ballistic_def;
+    ushort en_def;
+    ushort cooling;
+    ushort load;
+    ushort unk8A;
+    ubyte optional_slots;
+    ubyte unk8D;
+    ushort ob_power;
+    ushort ob_en_cost;
+    ushort unk92;
+    ushort unk94;
+    ushort unk96;
+    ushort unk98;
+    ushort unk9A;
+    ushort ob_limit;
+    ushort unk9E;
+    ubyte unkA0;
+    ubyte vs_mg_response;
+    ushort vs_mg_angle;
+    ubyte unkA6;
+    ubyte unkA7;
+    ubyte unkA8;
+    ubyte unkA9;
+    ushort unkAA;
+    ushort unkAC;
+    ushort unkAE;
+    ushort discharge_heat;
+} Core <bgcolor=cLtGreen, read=ReadCore>;
+
+string ReadCore(Core& part)
+{
+    return part.name;    
+}
+
+typedef struct
+{
+    char name[18];
+    char sub_category[18];
+    int price;
+    Manufacturer maker;
+    char explain[73];
+    ushort weight;
+    int en_cost;
+    float unk78;
+    int unk7C;
+    ushort ap;
+    ushort ballistic_def;
+    ushort en_def;
+    ushort cooling;
+    ushort unk88;
+    ushort en_supply;
+    ushort unk8C;
+    ushort recoil_control;
+    ushort accuracy;
+    ushort unk92;
+    ushort unk94;
+    ushort unk96;
+    ushort unk98;
+    ushort unk9A;
+    ushort unk9C;
+    ushort unk9E;
+    ushort unkA0;
+    ushort unkA2;
+    ushort unkA4;
+    ushort unkA6;
+    ushort unkA8;
+    ushort unkAA;
+    ushort unkAC;
+    ushort unkAE;
+    ushort unkB0;
+    ushort unkB2;
+    ushort unkB4;
+    ushort unkB6;
+    ushort unkB8;
+    ushort unkBA;
+    ushort unkBC;
+    ushort unkBE;
+} Arms <bgcolor=cLtGreen, read=ReadArms>;
+
+string ReadArms(Arms& part)
+{
+    return part.name;    
+}
+
+typedef struct
+{
+    char name[18];
+    char sub_category[18];
+    int price;
+    Manufacturer maker;
+    char explain[73];
+    ushort weight;
+    int en_cost;
+    float unk78;
+    int unk7C;
+    ushort ap;
+    ushort ballistic_def;
+    ushort en_def;
+    ushort cooling;
+    LegType leg_type;
+    ubyte unk89;
+    ushort unk8A;
+    ushort moving_speed;
+    ushort braking_ability;
+    ushort landing_stability;
+    ushort defensive_stability;
+    ushort unk94;
+    ushort stationary_drain;
+    ushort unk98;
+    ushort unk9A;
+    ushort unk9C;
+    ushort unk9E;
+    ushort unkA0;
+    ushort unkA2;
+    float unkA4;
+    float unkA8;
+    float unkAC;
+    float unkB0;
+    float unkB4;
+    float unkB8;
+    float unkBC;
+    float unkC0;
+    ushort unkC4;
+    ushort unkC6;
+    ushort unkC8;
+    ushort unkCA;
+    ushort unkCC;
+    ushort unkCE;
+} Legs <bgcolor=cLtGreen, read=ReadLegs>;
+
+string ReadLegs(Legs& part)
+{
+    return part.name;    
+}
+
+typedef struct
+{
+    char name[18];
+    char sub_category[18];
+    int price;
+    Manufacturer maker;
+    char explain[73];
+    ushort weight;
+    int en_cost;
+    float unk78;
+    int unk7C;
+    ushort boost_power;
+    ushort charge_drain;
+    ushort unk84;
+    ushort unk86;
+    ushort unk88;
+    ushort unk8A;
+    ushort unk8C;
+    ushort unk8E;
+} Booster <bgcolor=cLtGreen, read=ReadBooster>;
+
+string ReadBooster(Booster& part)
+{
+    return part.name;    
+}
+
+typedef struct
+{
+    char name[18];
+    char sub_category[18];
+    int price;
+    Manufacturer maker;
+    char explain[73];
+    ushort weight;
+    int en_cost;
+    float unk78;
+    int unk7C;
+    ushort unk80;
+    ubyte max_lock;
+    ubyte reticle_mobility;
+    ushort precision;
+    ushort unk86;
+    float unk88;
+    ushort unk8C;
+    ushort unk8E;
+    float unk90;
+    ushort unk94;
+    ushort unk96;
+    ushort unk98;
+    ushort unk9A;
+    ushort unk9C;
+    ushort unk9E;
+    float unkA0;
+    ushort unkA4;
+    ushort unkA6;
+    ushort unkA8;
+    ushort unkAA;
+    ushort unkAC;
+    ushort unkAE;
+    float unkB0;
+    ushort unkB4;
+    ushort unkB6;
+    ushort unkB8;
+    ushort unkBA;
+    ushort unkBC;
+    ushort unkBE;
+    float unkC0;
+    ushort unkC4;
+    ushort unkC6;
+    ushort unkC8;
+    ushort unkCA;
+    ushort unkCC;
+    ushort unkCE;
+} Fcs <bgcolor=cLtGreen, read=ReadFcs>;
+
+string ReadFcs(Fcs& part)
+{
+    return part.name;    
+}
+
+typedef struct
+{
+    char name[18];
+    char sub_category[18];
+    int price;
+    Manufacturer maker;
+    char explain[73];
+    ushort weight;
+    int en_cost;
+    float unk78;
+    int unk7C;
+    ushort en_output;
+    ushort en_capacity;
+    ushort en_max;
+    ushort calorific_value;
+    ushort unk88;
+    ushort unk8A;
+    ushort unk8C;
+    ushort unk8E;
+} Generator <bgcolor=cLtGreen, read=ReadGenerator>;
+
+string ReadGenerator(Generator& part)
+{
+    return part.name;    
+}
+
+typedef struct
+{
+    char name[18];
+    char sub_category[18];
+    int price;
+    Manufacturer maker;
+    char explain[73];
+    ushort weight;
+    int en_cost;
+    float unk78;
+    int unk7C;
+    ushort cooling;
+    ushort forced_cooling;
+    ushort unk84;
+    ushort unk86;
+    ushort unk88;
+    ushort unk8A;
+    ushort unk8C;
+    ushort unk8E;
+} Radiator <bgcolor=cLtGreen, read=ReadRadiator>;
+
+string ReadRadiator(Radiator& part)
+{
+    return part.name;    
+}
+
+typedef struct
+{
+    char name[18];
+    char sub_category[18];
+    int price;
+    Manufacturer maker;
+    char explain[73];
+    ushort weight;
+    int en_cost;
+    float unk78;
+    int unk7C;
+    ushort unk80;
+    ushort unk82;
+    ushort unk84;
+    ushort unk86;
+    ushort unk88;
+    ushort unk8A;
+    ushort unk8C;
+    ushort unk8E;
+} InsidePart <bgcolor=cLtGreen, read=ReadInsidePart>;
+
+string ReadInsidePart(InsidePart& part)
+{
+    return part.name;    
+}
+
+typedef struct
+{
+    char name[18];
+    char sub_category[18];
+    int price;
+    Manufacturer maker;
+    char explain[73];
+    ushort weight;
+    int en_cost;
+    float unk78;
+    int unk7C;
+    
+    switch (sub_category)
+    {
+        case "ADDITIONAL ARMOR  ":
+            ushort unk80;
+            ushort shield_ballistic_def;
+            ushort shield_en_def;
+            ushort unk86;
+            ushort unk88;
+            ushort unk8A;
+            ushort unk8C;
+            ushort unk8E;
+            ushort unk90;
+            ushort unk92;
+            ushort unk94;
+            ushort unk96;
+            ushort unk98;
+            ushort unk9A;
+            ushort unk9C;
+            ushort unk9E;
+            break;
+        case "DIVE BOOSTER      ":
+        case "BACK BOOSTER      ":
+            ushort unk80;
+            ushort boost_power;
+            ushort charge_drain;
+            ushort unk86;
+            ushort unk88;
+            ushort unk8A;
+            ushort reload_time;
+            ushort unk8E;
+            ushort unk90;
+            ushort unk92;
+            ushort unk94;
+            ushort unk96;
+            ushort unk98;
+            ushort unk9A;
+            ushort unk9C;
+            ushort unk9E;
+            break;
+        default:
+            ushort unk80;
+            ushort unk82;
+            ushort unk84;
+            ushort unk86;
+            ushort unk88;
+            ushort unk8A;
+            ushort unk8C;
+            ushort unk8E;
+            ushort unk90;
+            ushort unk92;
+            ushort unk94;
+            ushort unk96;
+            ushort unk98;
+            ushort unk9A;
+            ushort unk9C;
+            ushort unk9E;
+            break;
+    }
+} Extension <bgcolor=cLtGreen, read=ReadExtension>;
+
+string ReadExtension(Extension& part)
+{
+    return part.name;    
+}
+
+typedef struct
+{
+    char name[18];
+    char sub_category[18];
+    int price;
+    Manufacturer maker;
+    char explain[73];
+    ushort weight;
+    int en_cost;
+    float unk78;
+    int unk7C;
+    ushort unk80;
+    ushort unk82;
+    ushort unk84;
+    ushort unk86;
+    ushort unk88;
+    ushort unk8A;
+    ushort unk8C;
+    ushort unk8E;
+    ushort unk90;
+    ushort unk92;
+    ushort unk94;
+    ushort unk96;
+    ushort unk98;
+    ushort unk9A;
+    ushort unk9C;
+    ushort unk9E;
+} BackUnit <bgcolor=cLtGreen, read=ReadBackUnit>;
+
+string ReadBackUnit(BackUnit& part)
+{
+    return part.name;    
+}
+
+typedef struct
+{
+    char name[18];
+    char sub_category[18];
+    int price;
+    Manufacturer maker;
+    char explain[73];
+    ushort weight;
+    int en_cost;
+    float unk78;
+    int unk7C;
+    ushort unk80;
+    ushort unk82;
+    ushort unk84;
+    ushort unk86;
+    ushort unk88;
+    ushort unk8A;
+    ushort unk8C;
+    ushort unk8E;
+} ArmUnitRight <bgcolor=cLtGreen, read=ReadArmUnitRight>;
+
+string ReadArmUnitRight(ArmUnitRight& part)
+{
+    return part.name;    
+}
+
+typedef struct
+{
+    char name[18];
+    char sub_category[18];
+    int price;
+    Manufacturer maker;
+    char explain[73];
+    ushort weight;
+    int en_cost;
+    float unk78;
+    int unk7C;
+    ushort unk80;
+    ushort usage_drain;
+    ushort discharge_heat;
+    ushort unk86;
+    ushort unk88;
+    ushort attack_power;
+    ushort attack_heat;
+    ushort unk8E;
+    ushort unk90;
+    ushort unk92;
+    ushort unk94;
+    ushort unk96;
+    ushort unk98;
+    ushort unk9A;
+    ushort unk9C;
+    ushort unk9E;
+    ushort shield_ballistic_def;
+    ushort shield_en_def;
+    ushort unkA4;
+    ushort unkA6;
+    ushort unkA8;
+    ubyte unkAA;
+    ubyte unkAB;
+    float range_rating;
+} ArmUnitLeft <bgcolor=cLtGreen, read=ReadArmUnitLeft>;
+
+string ReadArmUnitLeft(ArmUnitLeft& part)
+{
+    return part.name;    
+}
+
+typedef struct
+{
+    char name[18];
+    char sub_category[18];
+    int price;
+    Manufacturer maker;
+    char explain[73];
+    ushort weight;
+    int en_cost;
+    float unk78;
+    int unk7C;
+    ushort slot_spend;
+    ushort unk82;
+    ushort unk84;
+    ushort unk86;
+    ushort unk88;
+    ushort unk8A;
+    ushort unk8C;
+    ushort unk8E;
+} OptionalPart <bgcolor=cLtGreen, read=ReadOptionalPart>;
+
+string ReadOptionalPart(OptionalPart& part)
+{
+    return part.name;    
+}
+
+// Read
+//------------------------------------------------
+
+Header header;
+Action actions[32];
+ubyte unk880[6144];
+Head head;
+Core core;
+Arms arms;
+Legs legs;
+Booster booster;
+Fcs fcs;
+Generator generator;
+Radiator radiator;
+InsidePart inside_part;
+Extension extension;
+BackUnit back_unit_right;
+BackUnit back_unit_left;
+ArmUnitRight arm_unit_right;
+ArmUnitLeft arm_unit_left;
+OptionalPart optional_parts[13];
+ubyte unk30E0[1824] <bgcolor=cBlack>;

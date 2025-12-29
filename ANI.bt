@@ -65,7 +65,7 @@ typedef struct
     int anglesOffset;
     int positionCount;
     int angleCount;
-    int dataSize; // Does not include padding at the end of the file, except for 2 bytes sometimes for some reason
+    int dataSize; // Padded to 4
 
     local long fileSize = FileSize();
     Assert(dataSize == fileSize || dataSize < fileSize);
@@ -73,7 +73,7 @@ typedef struct
     {
         FSeek(dataSize);
         local int paddingSize = fileSize - dataSize;
-        Null padding[paddingSize];
+        Null padding[paddingSize] <hidden=true, bgcolor=cBlack>;
         FSeek(40);
     }
 

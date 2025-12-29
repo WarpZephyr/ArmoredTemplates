@@ -372,5 +372,5 @@ string ReadPart(Part& part)
         default: type = "UnknownType";
     }
     
-    return Str("ID: %d | %s | %s | %s", part.id, type, part.name, part.modelName);
+    return Str("ID: %d | %s | %s | %s | %s", part.id, type, part.name, part.modelName, ReadVector3(part.position));
 }

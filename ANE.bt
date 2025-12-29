@@ -25,44 +25,53 @@ typedef struct
     int indicesOffset;
     int animationEntryOffset;
     int animationDataOffset;
-    int offset18;
+    int valueDataOffset;
     int unk1C <hidden=true>; Assert(unk1C == 0);
 } Header <bgcolor=cLtRed>;
 
-typedef struct
+typedef struct(int valueDataOffset)
 {
     short unk00;
-    short unk02;
-    byte unk03;
-    byte unk04;
-    short unk06;
-} AnimationData <bgcolor=cDkGreen>;
+    short unk02; Assert(unk00 < unk02);
+    ubyte byteCount;
+    byte unk04 <hidden=true>; Assert(unk04 == 0);
+    ushort offset;
+    
+    if (valueDataOffset > 0) // Just in case
+    {
+        local quad pos <hidden=true> = FTell();
+        FSeek(valueDataOffset + offset);
+        ubyte bytes[byteCount] <bgcolor=cLtBlue>;
+        
+        FSeek(pos);
+    }
+} AnimationData <bgcolor=cDkGreen, optimize=false>;
 
-typedef struct
+typedef struct(int valueDataOffset)
 {
-    short unk00;
-    short unk02;
-    short unk04;
-    short unk06;
+    short aniId;
+    short index;
+    short dataCount;
+    short unk06 <hidden=true>; Assert(unk06 == 0);
     int animationDataOffset;
     int unk0C <hidden=true>; Assert(unk0C == 0);
-    float unk10;
+    float frameCount;
     int unk14 <hidden=true>; Assert(unk14 == 0);
     int unk18 <hidden=true>; Assert(unk18 == 0);
     int unk1C <hidden=true>; Assert(unk1C == 0);
 
-    if(animationDataOffset != 0)
+    if(animationDataOffset != 0 && dataCount > 0)
     {
         local quad pos = FTell();
         FSeek(animationDataOffset);
-        AnimationData animationData;
+        AnimationData animationData(valueDataOffset)[dataCount];
         FSeek(pos);
     }
 } AnimationEntry <bgcolor=cGreen, read=ReadAnimationEntry, optimize=false>;
 
 string ReadAnimationEntry(AnimationEntry& entry)
 {
-    return Str("%d %d", entry.unk00, entry.unk02);
+    return Str("Id: %d | Patches: %d | Frames: %f", entry.aniId, entry.dataCount, entry.frameCount);
 }
 
 typedef struct
@@ -75,7 +84,7 @@ typedef struct
 Header header;
 
 FSeek(header.indicesOffset);
-short indices[header.indexCount] <bgcolor=cGreen>;
+short aniIdIndices[header.indexCount] <bgcolor=cGreen>; // Maps ANI ID to index
 
 FSeek(header.animationEntryOffset);
-AnimationEntry animationEntries[header.animationEntryCount];
+AnimationEntry animationEntries(header.valueDataOffset)[header.animationEntryCount];

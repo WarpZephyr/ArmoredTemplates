@@ -1,0 +1,279 @@
+//------------------------------------------------
+//--- 010 Editor v15.0.2 Binary Template
+//
+//      File: JOINT.bt
+//   Authors: WarpZephyr
+//   Version: 1.0.0
+//   Purpose: Joint files in Armored Core 2 Another Age.
+//  Category: 
+// File Mask: *.jnt
+//  ID Bytes: 4A 4F 49 4E
+//   History: 
+//------------------------------------------------
+
+LittleEndian();
+
+#define _TIM2_NO_CALL
+
+#include "../Util.bt"
+#include "TIM2.bt"
+
+// Enums
+//------------------------------------------------
+
+enum <byte> SectionType
+{
+    SectionTypeUnk0 = 0,
+    SectionTypeTexture = 1,
+    SectionTypeUnk2 = 2,
+    SectionTypePart = 3,
+    SectionTypeUnused = -1
+};
+
+// This seems unreliable
+enum <uint> PartType
+{
+    Head = 0,
+    Core = 1,
+    Arms = 2,
+    WeaponArms = 3,
+    BladeArms = 4,
+    Legs = 5,
+    Booster = 6,
+    Fcs = 7,
+    Generator = 8,
+    Radiator = 9,
+    Weapon = 10, // Used on inside and a LOT of weapons
+    Missile = 11,
+    AntiMissile = 12, // Used on Anti Laser too but that doesn't matter so much
+    AddBooster = 13,
+    LaserBlade = 14,
+    Shield = 15,
+    Radar = 16,
+    AddAmmo = 17,
+    Stealth = 18, // Also used on AddAmmo things where "partType2" is 17??
+    Optional = 19,
+    AddArmor = 21,
+};
+
+// Structs
+//------------------------------------------------
+
+typedef struct
+{
+    ushort unk00;
+    ushort unk02;
+    ushort unk04;
+    ushort unk06;
+    Vector2 unk08;  // UV?
+    Vector2 unk10;  // UV?
+    Vector2 unk14;  // UV?
+} Unk0_1_1_1 <bgcolor=cLtAqua>;
+
+typedef struct
+{
+    ushort unk1Count;
+    ushort unk02;
+    ushort unk04;
+    ushort unk06;
+    ushort unk08;
+    ushort unk0A;
+    ushort unk0C;
+    ushort unk0E;
+    ushort unk10;
+    ushort unk12;
+    int unk14;
+    int unk18;
+    int unk1C;
+    
+    if (unk1Count > 0)
+    {
+        Unk0_1_1_1 unk1s[unk1Count];
+    }
+} Unk0_1_1 <bgcolor=cLtYellow, optimize=false>;
+
+typedef struct(quad start)
+{
+    Vector4 translation;
+    Vector4 rotation;
+    Vector4 scale;
+    int unk1Count;
+    int unk1Offset;
+    int vertexCount;
+    int verticesOffset;
+    int unk3Count;
+    int unk3Offset;
+    int unk4Count;
+    int unk4Offset;
+    
+    local quad end <hidden=true> = FTell();
+    if (unk1Offset > -1 && unk1Count > 0)
+    {
+        FSeek(start + unk1Offset);
+        Unk0_1_1 unk1s[unk1Count];
+    }
+    
+    if (verticesOffset > -1 && vertexCount > 0)
+    {
+        FSeek(start + verticesOffset);
+        Vector4 vertices[vertexCount];
+    }
+    
+    if (unk3Offset > -1 && unk3Count > 0)
+    {
+        FSeek(start + unk3Offset);
+        Vector4 unk3s[unk3Count];
+    }
+    
+    if (unk4Offset > -1 && unk4Count > 0)
+    {
+        FSeek(start + unk4Offset);
+        Assert(false, "Unseen data.");
+    }
+    
+    FSeek(end);
+} Unk0_1 <bgcolor=cLtGreen, optimize=false>;
+
+typedef struct
+{
+    local quad start <hidden=true> = FTell();
+    
+    int size;
+    ubyte unk04;
+    ubyte unk05;
+    ubyte unk06;
+    ubyte unk07;
+    int unk1Count;
+    int unk0C;
+    
+    if (unk1Count > 0)
+    {
+        Unk0_1 unk1s(start)[unk1Count];
+    }
+} Unk0 <bgcolor=cRed>;
+
+typedef struct
+{
+    short unk00;
+    short unk02;
+    int unk04;
+    int unk08;
+    int unk0C;
+    Vector4 unk10[7];
+    short unk80;
+    short unk82;
+    int unk84;
+    int unk88;
+    int unk8C;
+    Vector4 unk90[7];
+} Unk2_1_1 <bgcolor=cLtYellow>;
+
+typedef struct(quad start)
+{
+    int unk00;
+    ushort unk04;
+    ushort unk06;
+    float unk08[10];
+    int offset30;
+    int unk34;
+    int unk38;
+    int unk3C;
+    
+    if (offset30 > 0)
+    {
+        local quad pos <hidden=true> = FTell();
+        FSeek(start + offset30);
+        Unk2_1_1 unk1;
+        FSeek(pos);
+    }
+} Unk2_1 <bgcolor=cLtGreen, optimize=false>;
+
+typedef struct
+{
+    local quad start <hidden=true> = FTell();
+    int size;
+    ubyte unk04;
+    ubyte unk05;
+    ubyte unk06;
+    ubyte unk07;
+    int unk1Count;
+    int unk0C;
+    
+    if (unk1Count > 0)
+    {
+        Unk2_1 unk1s(start)[unk1Count];
+    }
+} Unk2 <bgcolor=cRed>;
+
+typedef struct(int size)
+{
+    ubyte data[size];
+} Part <bgcolor=cRed>;
+
+typedef struct
+{
+    char magic[4]; Assert(magic == "JOIN");
+    ushort partCount;
+    
+    SectionType sectionTypes[8];
+    
+    byte unk0E;
+    byte unk0F;
+    int partIndex;
+    
+    int sizes[8];
+    int offsets[8];
+    
+    PartType partType;
+    PartType partType2; // ?
+    int unk5C; Assert(unk5C == 0); //?
+    
+    struct
+    {
+        local int i <hidden=true>;
+        for (i = 0; i < 8; i++)
+        {
+            if (sectionTypes[i] == SectionTypeUnused)
+            {
+                continue;
+            }
+            
+            if (sizes[i] == -1)
+            {
+                continue;    
+            }
+        
+            if (offsets[i] == -1)
+            {
+                continue;
+            }
+            
+            FSeek(offsets[i]);
+            switch (sectionTypes[i])
+            {
+                case SectionTypeUnk0:
+                    Unk0 section;
+                    break;
+                case SectionTypeTexture:
+                    TIM2 section;
+                    break;
+                case SectionTypeUnk2:
+                    Unk2 section;
+                    break;
+                case SectionTypePart:
+                    Part section(sizes[i]);
+                    break;
+                case SectionTypeUnused:
+                    Assert(false, "Should not reach section type -1 here.");
+                    break;
+                default:
+                    Assert(false, Str("Unknown datatype: %d", sectionTypes[i]));
+                    break;
+            }
+        }
+    } sections;
+} JOINT <bgcolor=cLtRed, open=true>;
+
+//------------------------------------------------
+
+JOINT joint;
