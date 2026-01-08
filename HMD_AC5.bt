@@ -1,0 +1,122 @@
+//------------------------------------------------
+//--- 010 Editor v15.0.2 Binary Template
+//
+//      File: HMD_AC5.bt
+//   Authors: WarpZephyr
+//   Version: 1.1.0
+//   Purpose: Armored Core V and Armored Core: Verdict Day Collision Data
+//  Category: Collision
+// File Mask: *.hmd
+//  ID Bytes: 10 00 01 17
+//   History: 
+//------------------------------------------------
+
+#include "Util.bt";
+BigEndian();
+
+//------------------------------------------------
+
+typedef struct
+{
+    int offsetName;
+    int offsetUnk2; // Offset to another string? It looks like an extra null terminator is allocated between "material" names.
+
+    local quad pos <hidden=true> = FTell();
+    FSeek(offsetName);
+    string name;
+    
+    FSeek(offsetUnk2);
+    string unk2;
+    FSeek(pos);
+} Material <bgcolor=cLtGreen, read=ReadMaterial, optimize=false>;
+
+string ReadMaterial(Material& material)
+{
+    return material.name;
+}
+
+typedef struct
+{
+    short unk00;
+    short unk02;
+    short unk04;
+    short unk06;
+    byte unk08;
+    byte materialIndex; Assert(materialIndex < hmd.countMaterials); // Can be -1 if there are no materials
+} Indices <bgcolor=cLtYellow, read=ReadIndices, optimize=false>;
+
+string ReadIndices(Indices& indices)
+{
+    return Str("(%d, %d, %d) | %d | %d | %d", indices.unk00, indices.unk02, indices.unk04, indices.unk06, indices.unk08, indices.materialIndex);
+}
+
+typedef struct
+{
+    short indexCount;
+    short startIndex; Assert(indexCount > 0 ? startIndex > -1 : startIndex == -1);
+    short firstChildIndex;
+    short nextSiblingIndex;
+    Vector3 min;
+    Vector3 max;
+    Vector3 origin;
+    float radius;   //  (min      -> origin( min,max))
+    float radius2d; //  (min(x,z) -> origin( min,max)(x,z))
+} Node <bgcolor=cGreen, read=ReadNode, optimize=false>;
+
+string ReadNode(Node& node)
+{
+    return Str("%d / %d", node.firstChildIndex, node.nextSiblingIndex);    
+}
+
+typedef struct
+{
+    Vector3 translation;
+    Vector3 rotation;
+    Vector3 scale;
+    short index;
+    short unkIndex; Assert(unkIndex == index); // Maybe current sibling index?
+    short parentIndex;
+    short childIndex;
+    short nextSiblingIndex;
+    short unk2E <hidden=true>; Assert(unk2E == 0);
+    int offsetNodes; // Also what count, but hierarchy indices can be used to map this
+    int offsetVertices; // But what count??
+    int unk38 <hidden=true>; Assert(unk38 == 0);
+} Object <bgcolor=cDkGreen, optimize=false>;
+
+typedef struct
+{
+    int version <format=hex>; Assert(version == 0x10000117);
+    int unk04;
+    int fileSize;
+    int countMaterials;
+    int countObjects;
+    int countVertices;
+    int unk18;
+    int countNodes;
+    int countIndices;
+    int offsetMaterials;
+    int offsetObjects;
+    int offsetIndices;
+    int unk30 <hidden=true>; Assert(unk30 == 0);
+    int unk34 <hidden=true>; Assert(unk34 == 0);
+    int unk38 <hidden=true>; Assert(unk38 == 0);
+    int unk3C <hidden=true>; Assert(unk3C == 0);
+    
+    FSeek(offsetMaterials);
+    Material materials[countMaterials];
+
+    FSeek(offsetObjects);
+    Object objects[countObjects]; // One per bone in related model
+    Node nodes[countNodes];
+    
+    FSeek(offsetIndices);
+    Indices indices[countIndices]; 
+    
+    Align(4);
+    Vector3 vertices[countVertices] <bgcolor=cAqua>;
+} HMD <bgcolor=cLtRed>;
+
+//------------------------------------------------
+
+HMD hmd;

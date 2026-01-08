@@ -23,9 +23,9 @@ LittleEndian();
 
 enum <byte> SectionType
 {
-    SectionTypeUnk0 = 0,
+    SectionTypeModel = 0,
     SectionTypeTexture = 1,
-    SectionTypeUnk2 = 2,
+    SectionTypeTod = 2,
     SectionTypePart = 3,
     SectionTypeUnused = -1
 };
@@ -61,78 +61,74 @@ enum <uint> PartType
 
 typedef struct
 {
-    ushort unk00;
-    ushort unk02;
+    ushort positionIndex;
+    ushort normalIndex;
     ushort unk04;
     ushort unk06;
-    Vector2 unk08;  // UV?
-    Vector2 unk10;  // UV?
-    Vector2 unk14;  // UV?
-} Unk0_1_1_1 <bgcolor=cLtAqua>;
+    Vector2 uv;
+    Vector4 color;
+} Vertex <bgcolor=cLtAqua, optimize=false>;
 
 typedef struct
 {
-    ushort unk1Count;
+    ushort vertexCount;
     ushort unk02;
     ushort unk04;
     ushort unk06;
-    ushort unk08;
-    ushort unk0A;
-    ushort unk0C;
-    ushort unk0E;
+    uint64 unk08 <format=hex>;
     ushort unk10;
     ushort unk12;
     int unk14;
     int unk18;
     int unk1C;
     
-    if (unk1Count > 0)
+    if (vertexCount > 0)
     {
-        Unk0_1_1_1 unk1s[unk1Count];
+        Vertex vertices[vertexCount];
     }
-} Unk0_1_1 <bgcolor=cLtYellow, optimize=false>;
+} Primitive <bgcolor=cLtYellow, optimize=false>;
 
 typedef struct(quad start)
 {
     Vector4 translation;
     Vector4 rotation;
     Vector4 scale;
-    int unk1Count;
-    int unk1Offset;
-    int vertexCount;
-    int verticesOffset;
-    int unk3Count;
-    int unk3Offset;
+    int primitiveCount;
+    int primitivesOffset;
+    int positionCount;
+    int positionsOffset;
+    int normalCount;
+    int normalsOffset;
     int unk4Count;
-    int unk4Offset;
+    int unk4sOffset;
     
     local quad end <hidden=true> = FTell();
-    if (unk1Offset > -1 && unk1Count > 0)
+    if (primitivesOffset > -1 && primitiveCount > 0)
     {
-        FSeek(start + unk1Offset);
-        Unk0_1_1 unk1s[unk1Count];
+        FSeek(start + primitivesOffset);
+        Primitive primitives[primitiveCount];
     }
     
-    if (verticesOffset > -1 && vertexCount > 0)
+    if (positionsOffset > -1 && positionCount > 0)
     {
-        FSeek(start + verticesOffset);
-        Vector4 vertices[vertexCount];
+        FSeek(start + positionsOffset);
+        Vector4 positions[positionCount];
     }
     
-    if (unk3Offset > -1 && unk3Count > 0)
+    if (normalsOffset > -1 && normalCount > 0)
     {
-        FSeek(start + unk3Offset);
-        Vector4 unk3s[unk3Count];
+        FSeek(start + normalsOffset);
+        Vector4 normals[normalCount];
     }
     
-    if (unk4Offset > -1 && unk4Count > 0)
+    if (unk4sOffset > -1 && unk4Count > 0)
     {
-        FSeek(start + unk4Offset);
+        FSeek(start + unk4sOffset);
         Assert(false, "Unseen data.");
     }
     
     FSeek(end);
-} Unk0_1 <bgcolor=cLtGreen, optimize=false>;
+} Node <bgcolor=cLtGreen, optimize=false>;
 
 typedef struct
 {
@@ -143,50 +139,64 @@ typedef struct
     ubyte unk05;
     ubyte unk06;
     ubyte unk07;
-    int unk1Count;
+    int nodeCount;
     int unk0C;
     
-    if (unk1Count > 0)
+    if (nodeCount > 0)
     {
-        Unk0_1 unk1s(start)[unk1Count];
+        Node nodes(start)[nodeCount];
     }
-} Unk0 <bgcolor=cRed>;
+} Model <bgcolor=cRed>;
 
 typedef struct
 {
-    short unk00;
-    short unk02;
+    short keyStartTime;
+    short keyTimeLength;
     int unk04;
     int unk08;
     int unk0C;
-    Vector4 unk10[7];
-    short unk80;
-    short unk82;
-    int unk84;
-    int unk88;
-    int unk8C;
-    Vector4 unk90[7];
-} Unk2_1_1 <bgcolor=cLtYellow>;
+    Vector4 position;
+    Vector4 positionInTangent;
+    Vector4 positionOutTangent;
+    Vector4 angle;
+    Vector4 angleInTangent;
+    Vector4 angleOutTangent;
+    Vector4 scale;
+} TodKeyFrameInfo <bgcolor=cLtYellow, read=ReadTodKeyFrameInfo>;
+
+string ReadTodKeyFrameInfo(TodKeyFrameInfo& keyFrame)
+{
+    return Str("%d + %d", keyFrame.keyStartTime, keyFrame.keyTimeLength);    
+}
 
 typedef struct(quad start)
 {
-    int unk00;
+    int keyFrameInfoCount;
     ushort unk04;
     ushort unk06;
-    float unk08[10];
-    int offset30;
+    float unk08;
+    float unk0C;
+    float unk10;
+    float unk14;
+    float unk18;
+    float unk1C;
+    float unk20;
+    float unk24;
+    float unk28;
+    float unk2C;
+    int keyFrameInfosOffset;
     int unk34;
     int unk38;
     int unk3C;
     
-    if (offset30 > 0)
+    if (keyFrameInfosOffset > 0 && keyFrameInfoCount > 0)
     {
         local quad pos <hidden=true> = FTell();
-        FSeek(start + offset30);
-        Unk2_1_1 unk1;
+        FSeek(start + keyFrameInfosOffset);
+        TodKeyFrameInfo keyFrames[keyFrameInfoCount];
         FSeek(pos);
     }
-} Unk2_1 <bgcolor=cLtGreen, optimize=false>;
+} TodAnimationInfo <bgcolor=cLtGreen, optimize=false>;
 
 typedef struct
 {
@@ -196,14 +206,14 @@ typedef struct
     ubyte unk05;
     ubyte unk06;
     ubyte unk07;
-    int unk1Count;
+    int todCount;
     int unk0C;
     
-    if (unk1Count > 0)
+    if (todCount > 0)
     {
-        Unk2_1 unk1s(start)[unk1Count];
+        TodAnimationInfo tods(start)[todCount];
     }
-} Unk2 <bgcolor=cRed>;
+} TOD <bgcolor=cRed>;
 
 typedef struct(int size)
 {
@@ -251,14 +261,14 @@ typedef struct
             FSeek(offsets[i]);
             switch (sectionTypes[i])
             {
-                case SectionTypeUnk0:
-                    Unk0 section;
+                case SectionTypeModel:
+                    Model section;
                     break;
                 case SectionTypeTexture:
                     TIM2 section;
                     break;
-                case SectionTypeUnk2:
-                    Unk2 section;
+                case SectionTypeTod:
+                    TOD section;
                     break;
                 case SectionTypePart:
                     Part section(sizes[i]);

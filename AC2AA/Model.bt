@@ -14,6 +14,8 @@
 LittleEndian();
 #include "../Util.bt"
 
+BitfieldDisablePadding();
+
 //------------------------------------------------
 
 typedef struct
@@ -21,9 +23,10 @@ typedef struct
     Vector4 position;
     Vector4 normal;
     Vector2 uv;
-    Vector2 unk28;
+    float unk28;
+    int restartFlag;
     Vector4 color;
-} Vertex <bgcolor=cLtYellow, read=ReadVertex>;
+} Vertex <bgcolor=cLtYellow, read=ReadVertex, optimize=false>;
 
 string ReadVertex(Vertex& vertex)
 {
@@ -32,54 +35,64 @@ string ReadVertex(Vertex& vertex)
 
 typedef struct
 {
-    ushort unk00;
-    ushort unk02;
-    int unk04;
-    int unk08;
-    int unk0C;
-    int unk10;
-    int unk14;
-    int unk18;
-    int unk1C;
-    int unk20;
-    int unk24;
-    int unk28;
-    int unk2C;
-    int unk30;
-    int unk34;
-    int unk38;
-    int unk3C;
-    int unk40;
-    int unk44;
-    int unk48;
-    int unk4C;
-    int unk50;
-    int unk54;
-    int unk58;
-    int unk5C;
-    int unk60;
-    int unk64;
-    int unk68;
-    int unk6C;
-    int unk70;
-    int unk74;
-    int unk78;
-    int unk7C;
+    ushort qwc;
+    ubyte mark;
+    ubyte tag;
+    uint next; Assert(next == 0);
+    uint pad[2]; Assert(pad[0] == 0 && pad[1] == 0);
+} sceDmaTag;
+
+typedef struct
+{
+	unsigned long NLOOP:15;
+	unsigned long EOP:1;
+	unsigned long pad16:16;
+	unsigned long id:14;
+	unsigned long PRE:1;
+	unsigned long PRIM:11;
+	unsigned long FLG:2;
+	unsigned long NREG:4;
+	unsigned long REGS0:4;
+	unsigned long REGS1:4;
+	unsigned long REGS2:4;
+	unsigned long REGS3:4;
+	unsigned long REGS4:4;
+	unsigned long REGS5:4;
+	unsigned long REGS6:4;
+	unsigned long REGS7:4;
+	unsigned long REGS8:4;
+	unsigned long REGS9:4;
+	unsigned long REGS10:4;
+	unsigned long REGS11:4;
+	unsigned long REGS12:4;
+	unsigned long REGS13:4;
+	unsigned long REGS14:4;
+	unsigned long REGS15:4;
+} sceGifTag;
+
+typedef struct
+{
+    sceDmaTag dma; // Not sure if this is correct
+    uint64 unk10;
+    uint64 unk18 <format=hex>;
+    sceGifTag gif; // Not sure if this is correct
+    uint64 unk30;
+    uint64 unk38;
+    uint64 unk40 <format=hex>;
+    uint64 unk48;
+    uint unk50;
+    ushort unk54;
+    ushort unk56;
+    uint64 unk58;
+    uint64 unk60;
+    uint64 unk68;
+    uint64 unk70;
+    uint64 unk78 <format=hex>;
     
     ubyte vertexCount;
-    ubyte unk81;
-    ubyte unk82;
-    ubyte unk83;
-    int unk84;
-    int unk88;
-    int unk8C;
-    ubyte vertexCount2; // ?
-    ubyte unk91;
-    ubyte unk92;
-    ubyte unk93;
-    int unk94;
-    int unk98;
-    int unk9C;
+    ubyte unk81[15];
+    ubyte vertexCount2; Assert(vertexCount2 == vertexCount); // ?
+    ubyte unk91[15];
     
     if (vertexCount > 0)
     {
@@ -87,43 +100,43 @@ typedef struct
     }
     
     // ?
-    int unkF00 <bgcolor=cGreen>;
-    int unkF04 <bgcolor=cGreen>;
-    int unkF08 <bgcolor=cGreen>;
-    int unkF0C <bgcolor=cGreen>;
-} Mesh <bgcolor=cLtGreen, optimize=false>;
+    uint64 unkF00 <bgcolor=cGreen>;
+    uint64 unkF08 <bgcolor=cGreen, format=hex>;
+} Primitive <bgcolor=cLtGreen, optimize=false>;
 
 typedef struct
 {
     int unk00;
-    int meshesOffset;
+    int primitivesOffset;
     ushort faceCount;
-    ushort meshCount;
+    ushort primitiveCount;
     int unk0C;
     
-    if (meshesOffset > 0)
+    if (primitivesOffset > 0)
     {
         local quad pos <hidden=true> = FTell();
-        FSeek(meshesOffset);
-        Mesh meshes[meshCount];
+        FSeek(primitivesOffset);
+        Primitive primitives[primitiveCount];
         FSeek(pos);
     }
-} Object <bgcolor=cRed, optimize=false>;
+} Mesh <bgcolor=cRed, optimize=false>;
 
 typedef struct
 {
+    // Same as JOINT file data, probably copy and pasted
+    // There is no data past this struct for it however
     Vector4 translation;
     Vector4 rotation;
     Vector4 scale;
-    int meshCount;
-    int unk44;
-    int unk48;
-    int unk4C;
-    int unk50;
-    int unk54;
-    int unk58;
-    int unk5C;
-} Node <bgcolor=cRed>;
+    int primitiveCount;
+    int primitivesOffset;
+    int positionCount;
+    int positionsOffset;
+    int normalCount;
+    int normalsOffset;
+    int unk4Count;
+    int unk4sOffset;
+} Joint <bgcolor=cRed>;
 
 typedef struct
 {
@@ -134,8 +147,8 @@ typedef struct
     
     if (objectCount > 0)
     {
-        Object objects[objectCount];
-        Node nodes[objectCount];
+        Mesh meshes[objectCount];
+        Joint joints[objectCount];
     }
 } Model <bgcolor=cLtRed>;
 

@@ -1,0 +1,168 @@
+//------------------------------------------------
+//--- 010 Editor v15.0.2 Binary Template
+//
+//      File: HMD_AC4.bt
+//   Authors: WarpZephyr
+//   Version: 1.1.0
+//   Purpose: Armored Core 4 and Armored Core: For Answer Collision Data
+//  Category: Collision
+// File Mask: *.hmd
+//  ID Bytes: 10 00 01 13
+//   History: 
+//------------------------------------------------
+
+#include "Util.bt"
+BigEndian();
+
+//------------------------------------------------
+
+typedef struct
+{
+    int offsetName;
+    int offsetUnk2; // Offset to another string? It looks like an extra null terminator is allocated between "material" names.
+
+    local quad pos <hidden=true> = FTell();
+    FSeek(offsetName);
+    string name;
+    
+    FSeek(offsetUnk2);
+    string unk2;
+    FSeek(pos);
+} Material <bgcolor=cLtGreen, read=ReadMaterial, optimize=false>;
+
+string ReadMaterial(Material& material)
+{
+    return material.name;
+}
+
+typedef struct
+{
+    short unk00;
+    short unk02;
+    short unk04;
+    short unk06;
+    byte unk08;
+    byte materialIndex; Assert(materialIndex < hmd.countMaterials); // Can be -1 if there are no materials
+} Indices <bgcolor=cYellow, read=ReadIndices, optimize=false>;
+
+string ReadIndices(Indices& indices)
+{
+    return Str("(%d, %d, %d) | %d | %d | %d", indices.unk00, indices.unk02, indices.unk04, indices.unk06, indices.unk08, indices.materialIndex);
+}
+
+struct Node;
+
+typedef struct
+{
+    short indicesCount;
+    short unk02; // Flags?
+    int offsetFirstChild;
+    int offsetNextSibling;
+    int unk0C; Assert(unk0C == 0);
+    Vector4 min;
+    Vector4 max;
+    Vector4 origin;
+    float radius;      //  (min      -> origin( min,max))
+    float radius2d;    //  (min(x,z) -> origin( min,max)(x,z))
+    float maxRadius;   // (-max      -> origin(-max,max))
+    float maxRadius2d; // (-max(x,z) -> origin(-max,max)(x,z))
+    if (indicesCount > 0)
+    {
+        Indices indices[indicesCount] <bgcolor=cRed>;
+    }
+    
+    local quad pos <hidden=true> = FTell();
+    if (offsetFirstChild > 0)
+    {
+        FSeek(offsetFirstChild);
+        Node firstChild;
+    }
+
+    if (offsetNextSibling > 0)
+    {
+        FSeek(offsetNextSibling);
+        Node nextSibling;
+    }
+    
+    FSeek(pos);
+} Node <bgcolor=cDkGreen, optimize=false>;
+
+typedef struct
+{
+    Vector4 translation;
+    Vector4 rotation;
+    Vector4 scale;
+    short index;
+    short unkIndex;
+    short parentIndex;
+    short childIndex;
+    short nextSiblingIndex;
+    short unk3A; Assert(unk3A == 0);
+    short unk3C; Assert(unk3C == 0);
+    short unk3E; Assert(unk3E == 0);
+    int unk40; Assert(unk40 == 0);
+    int offsetNode;
+    int countVertices;
+    int offsetVertices;
+    int countUnk1s;
+    int offsetUnk1s;
+    int countUnk2s;
+    int offsetUnk2s;
+    
+    local quad pos <hidden=true> = FTell();
+    if (offsetNode > 0)
+    {
+        FSeek(offsetNode);
+        Node node;
+    }
+    
+    if (offsetVertices > 0 && countVertices > 0)
+    {
+        FSeek(offsetVertices);
+        Vector4 vertices[countVertices];
+    }
+
+    if (countUnk1s > 0)
+    {
+        FSeek(offsetUnk1s);
+        Vector4 unk1s[countUnk1s]; // Normals? Directions?
+    }
+
+    if (offsetUnk2s > 0 && countUnk2s > 0)
+    {
+        FSeek(offsetUnk2s);
+        int unk2s[countUnk2s];
+    }
+
+    FSeek(pos);
+} Object <bgcolor=cGreen, optimize=false>;
+
+typedef struct
+{
+    int version <format=hex>; Assert(version == 0x10000113);
+    int unk04;
+    int fileSize;
+    int countMaterials;
+    int countObjects;
+    int countVertices;
+    int countVector2s;
+    int countIndices;
+    int offsetMaterials;
+    int offsetObjects;
+    int unk28;
+    int unk2C <format=hex>;
+    int unk30; Assert(unk30 == 0);
+    int unk34; Assert(unk34 == 0);
+    int unk38; Assert(unk38 == 0);
+    int unk3C; Assert(unk3C == 0);
+    
+    FSeek(offsetMaterials);
+    Material materials[countMaterials];
+
+    FSeek(offsetObjects);
+    Object objects[countObjects];
+} HMD <bgcolor=cLtRed>;
+
+//------------------------------------------------
+
+HMD hmd;
