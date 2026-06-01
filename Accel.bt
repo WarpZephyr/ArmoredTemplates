@@ -54,8 +54,7 @@ typedef struct
 
 string ReadAccelKeyEntry(AccelKeyEntry &keyEntry)
 {
-     string str;
-     return SPrintf( str, "%d \t\\ %d \\ %d", 
+     return Str("%d \t\\ %d \\ %d", 
         keyEntry.key, keyEntry.messageHandlerID, keyEntry.unk06);
 }
 
@@ -85,10 +84,10 @@ typedef struct
     }
 } AccelEntry <bgcolor=cLtGreen, read=ReadAccelEntry, optimize=false>;
 
-wstring ReadAccelEntry(AccelEntry &accelEntry) {
-     string str;
-     return SPrintf( str, "%d \t\\ %d \\ %d", 
-        accelEntry.accelID, accelEntry.keyCount, accelEntry.accelKeyEntryOffset);
+string ReadAccelEntry(AccelEntry &accelEntry)
+{
+     return Str("%d \t\\ %d", 
+        accelEntry.accelID, accelEntry.keyCount);
 }
 
 Header header;

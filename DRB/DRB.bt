@@ -1,5 +1,5 @@
 //------------------------------------------------
-//--- 010 Editor v13.0.1 Binary Template
+//--- 010 Editor v15.0.2 Binary Template
 //
 //      File: DRB.bt
 //   Authors: TKGP, WarpZephyr
@@ -10,6 +10,24 @@
 //  ID Bytes: [+4] 00 00 00 00 00 00 00 00 00 00 00 00 [+12] 00 00 00 00
 //   History: 
 //------------------------------------------------
+
+LittleEndian();
+if (ReadInt() == 0x44524200)
+{
+    BigEndian();
+}
+
+// There is no sensible way to distinguish versions automatically,
+// so you must choose one manually.
+enum VERSION
+{
+    VERSION_ACFA,
+    VERSION_DS1,
+    VERSION_ACV,
+    VERSION_DSR
+};
+
+local VERSION version = VERSION_ACFA;
 
 #include "../Util.bt"
 #include "Header.bt"
@@ -25,22 +43,6 @@
 #include "SCDL.bt"
 #include "DLGO.bt"
 #include "DLG.bt"
-
-LittleEndian();
-if (ReadInt() == 0x44524200) {
-    BigEndian();
-}
-
-// There is no sensible way to distinguish versions automatically,
-// so you must choose one manually.
-enum VERSION
-{
-    VERSION_ACFA,
-    VERSION_DS1,
-    VERSION_ACV,
-    VERSION_DSR
-};
-local VERSION version = VERSION_ACFA;
 
 //------------------------------------------------
 
@@ -58,7 +60,8 @@ wstring ReadSTR(STR& str)
 typedef struct
 {
     BlockHeader header("TEXI");
-    if (header.count > 0) {
+    if (header.count > 0)
+    {
         TEXIEntry entries[header.count];
     }
 } TEXI <read=ReadTEXI>;
@@ -68,12 +71,14 @@ wstring ReadTEXI(TEXI& texi)
     return ReadBlockHeader(texi.header);
 }
 
-typedef struct {
+typedef struct
+{
     BlockHeader header("SHAP");
     //SHAPEntry entries[header.count];
 } SHAP <read=ReadSHAP>;
 
-wstring ReadSHAP(SHAP& shap) {
+wstring ReadSHAP(SHAP& shap)
+{
     return ReadBlockHeader(shap.header);
 }
 
@@ -130,56 +135,70 @@ wstring ReadANIM(ANIM& anim)
     return ReadBlockHeader(anim.header);
 }
 
-typedef struct {
+typedef struct
+{
     BlockHeader header("SCDK");
-    if (header.count > 0) {
+    if (header.count > 0)
+    {
         //SCDKEntry entries[header.count];
     }
 } SCDK <read=ReadSCDK>;
 
-wstring ReadSCDK(SCDK& scdk) {
+wstring ReadSCDK(SCDK& scdk)
+{
     return ReadBlockHeader(scdk.header);
 }
 
-typedef struct {
+typedef struct
+{
     BlockHeader header("SCDO");
-    if (header.count > 0) {
+    if (header.count > 0)
+    {
         //SCDOEntry entries[header.count];
     }
 } SCDO <read=ReadSCDO>;
 
-wstring ReadSCDO(SCDO& scdo) {
+wstring ReadSCDO(SCDO& scdo)
+{
     return ReadBlockHeader(scdo.header);
 }
 
-typedef struct {
+typedef struct
+{
     BlockHeader header("SCDL");
-    if (header.count > 0) {
+    if (header.count > 0)
+    {
         SCDLEntry entries[header.count];
     }
 } SCDL <read=ReadSCDL>;
 
-wstring ReadSCDL(SCDL& scdl) {
+wstring ReadSCDL(SCDL& scdl)
+{
     return ReadBlockHeader(scdl.header);
 }
 
-typedef struct {
+typedef struct
+{
     BlockHeader header("DLGO");
-    if (header.count > 0) {
+    if (header.count > 0)
+    {
         //DLGOEntry entries[header.count];
     }
 } DLGO <read=ReadDLGO>;
 
-wstring ReadDLGO(DLGO& dlgo) {
+wstring ReadDLGO(DLGO& dlgo)
+{
     return ReadBlockHeader(dlgo.header);
 }
 
-typedef struct {
+typedef struct
+{
     BlockHeader header("DLG\0");
     DLGEntry entries[header.count];
 } DLG <read=ReadDLG>;
 
-wstring ReadDLG(DLG& dlg) {
+wstring ReadDLG(DLG& dlg)
+{
     return ReadBlockHeader(dlg.header);
 }
 

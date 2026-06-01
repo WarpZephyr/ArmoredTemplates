@@ -1,5 +1,5 @@
 //------------------------------------------------
-//--- 010 Editor v13.0.1 Binary Template
+//--- 010 Editor v15.0.2 Binary Template
 //
 //      File: DLGO.bt
 //   Authors: WarpZephyr
@@ -11,7 +11,8 @@
 //   History: 
 //------------------------------------------------
 
-typedef struct {
+typedef struct
+{
     int nameOffset <format=hex, hidden=true>;
     int shapOffset <format=hex, hidden=true>;
     int ctrlOffset <format=hex, hidden=true>;
@@ -33,6 +34,7 @@ typedef struct {
     FSeek(pos);
 } DLGOEntry <read=ReadDLGOEntry, optimize=false>;
 
-wstring ReadDLGOEntry(DLGOEntry& entry) {
+wstring ReadDLGOEntry(DLGOEntry& entry)
+{
     return entry.name;
 }

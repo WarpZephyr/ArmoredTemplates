@@ -1,5 +1,5 @@
 //------------------------------------------------
-//--- 010 Editor v13.0.1 Binary Template
+//--- 010 Editor v15.0.2 Binary Template
 //
 //      File: TEXI.bt
 //   Authors: WarpZephyr
@@ -29,7 +29,5 @@ typedef struct
 
 wstring ReadTEXIEntry(TEXIEntry& entry)
 {
-    string str;
-    SPrintf(str, "%s - %s", entry.name, entry.path);
-    return str;
+    return Str("%s - %s", entry.name, entry.path);
 }

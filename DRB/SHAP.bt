@@ -1,5 +1,5 @@
 //------------------------------------------------
-//--- 010 Editor v13.0.1 Binary Template
+//--- 010 Editor v15.0.2 Binary Template
 //
 //      File: SHAP.bt
 //   Authors: WarpZephyr
@@ -57,7 +57,8 @@ typedef struct
     {
         short unk10;
         short unk12;
-        int unk14;
+        short unk14;
+        short unk16;
     }
 } Dialog;
 
@@ -106,11 +107,13 @@ typedef struct
             Assert(false);
     }
         
-    if (unk01 != 0 && unk01 != 4) {
+    if (unk01 != 0 && unk01 != 4)
+    {
         short leftEdge;
         short unkY02;
         short rightEdge;
-        //if (unkY04 == 1) { // Only used in Shadow Assault Tenchu
+        //if (unkY04 == 1) // Only used in Shadow Assault Tenchu
+        //{ 
         //    int unkY06; Assert(unkY06 == 0);
         //    short unkY0A; Assert(unkY0A == 0xFF);
         //    short unkY0C; Assert(unkY0C == 0 || unkY0C == 2);
@@ -119,7 +122,8 @@ typedef struct
     }
     
 
-    if (textType == LITERAL) {
+    if (textType == LITERAL)
+    {
         local quad endpos = FTell();
         FSeek(offsets.str + stringOffset);
         wstring str;
@@ -165,10 +169,12 @@ typedef struct
     short unkX0A;
     //---------------
         
-    if (unk01 != 0) {
+    if (unk01 != 0)
+    {
         int unkY00;
         short unkY04;
-        if (unkY04 == 1) { // Only used in Shadow Assault Tenchu
+        if (unkY04 == 1) // Only used in Shadow Assault Tenchu
+        {
             int unkY06; Assert(unkY06 == 0);
             short unkY0A; Assert(unkY0A == 0xFF);
             short unkY0C; Assert(unkY0C == 0 || unkY0C == 2);
@@ -176,7 +182,8 @@ typedef struct
         }
     }
     
-    if (textType == LITERAL) {
+    if (textType == LITERAL)
+    {
         local quad endpos = FTell();
         FSeek(offsets.str + stringOffset);
         wstring str;
@@ -476,7 +483,8 @@ typedef struct
     short bottomEdge;
 
     // Why though?
-    if (type != "FadeNoiseSprite" && type != "DepthLineSprite"){
+    if (type != "FadeNoiseSprite" && type != "DepthLineSprite")
+    {
         Assert(rightEdge >= leftEdge);
         Assert(bottomEdge >= topEdge);
     }
@@ -576,44 +584,34 @@ typedef struct
 
 wstring ReadSHAPEntry(SHAPEntry& entry)
 {
-    string str;
     switch (entry.type)
     {
         case "Mask":
-            SPrintf(str, "%s", entry.type);
+            return Str("%s", entry.type);
         case "Text":
             if (entry.shape.textType == LITERAL)
             {
-                return SPrintf(str, "%s - ", entry.type) + entry.shape.str;
+                return Str("%s - %s", entry.type, entry.shape.str);
             }
-            else
-            {
-                str = entry.type;
-            }
-            break;
+            
+            return entry.type;
         case "GouraudRect":
-            SPrintf(str, "%s - %i %s%s%s%s",
+            return Str("%s - %d %s%s%s%s",
                 entry.type, entry.shape.blendMode,
                 FormatColor4(entry.shape.topLeftColor),
                 FormatColor4(entry.shape.topRightColor),
                 FormatColor4(entry.shape.bottomLeftColor),
                 FormatColor4(entry.shape.bottomRightColor));
-            break;
         case "GouraudSprite":
-            SPrintf(str, "%s", entry.type);
-            break;
+            return Str("%s", entry.type);
         case "MonoFrame":
-            SPrintf(str, "%s - %i %i %i %s",
+            return Str("%s - %d %d %d %s",
                 entry.type, entry.shape.blendMode, entry.shape.thickness, entry.shape.paletteColor,
                 FormatColor4(entry.shape.customColor));
-            break;
         case "MonoRect":
-            SPrintf(str, "%s - %i %s", entry.type, entry.shape.paletteColor, 
+            return Str("%s - %d %s", entry.type, entry.shape.paletteColor, 
                 FormatColor4(entry.shape.customColor));
-            break;
         default:
-            str = entry.type;
-            break;
+            return entry.type;
     }
-    return str;
 }

@@ -1,5 +1,5 @@
 //------------------------------------------------
-//--- 010 Editor v13.0.1 Binary Template
+//--- 010 Editor v15.0.2 Binary Template
 //
 //      File: SCDK.bt
 //   Authors: WarpZephyr
@@ -11,7 +11,8 @@
 //   History: 
 //------------------------------------------------
 
-typedef struct {
+typedef struct
+{
     int nameOffset <format=hex, hidden=true>;
     int unk04;
     int unk08; Assert(unk08 == 1);
@@ -31,9 +32,8 @@ typedef struct {
     FSeek(pos);
 } SCDKEntry <read=ReadSCDKEntry, optimize=false>;
 
-wstring ReadSCDKEntry(SCDKEntry& entry) {
-    string str;
-    SPrintf(str, "%s %3i %i %i %4X %3i %3i %i", entry.name,
+wstring ReadSCDKEntry(SCDKEntry& entry)
+{
+    return Str("%s %3d %d %d %4X %3d %3d %d", entry.name,
         entry.unk04, entry.unk08, entry.unk0C, entry.scdpOffset, entry.unk14, entry.animIndex, entry.scdp04);
-    return str;
 }

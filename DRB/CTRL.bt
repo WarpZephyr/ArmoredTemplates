@@ -1,5 +1,5 @@
 //------------------------------------------------
-//--- 010 Editor v13.0.1 Binary Template
+//--- 010 Editor v15.0.2 Binary Template
 //
 //      File: CTRL.bt
 //   Authors: WarpZephyr
@@ -45,10 +45,10 @@ typedef struct
 
 typedef struct
 {
-    int unk00;
-    int unk04;
-    int unk08;
-    int unk0C;
+    int messageHandlerId; // What does it communicate to though?
+    int countA; // These all need to be updated to get an accurate resizing? Width?
+    int countB; // These all need to be updated to get an accurate resizing? Height?
+    int countC; // These all need to be updated to get an accurate resizing? What is this one?
     int unk10;
 } GridCtrl;
 
@@ -242,16 +242,12 @@ typedef struct
 
 wstring ReadCTRLEntry(CTRLEntry& entry)
 {
-    string str;
     switch (entry.type)
     {
         case "FrpgMenuDlgObjContentsHelpItem":
-            SPrintf(str, "%s %2i %2i %2i %2i %2i %2i %6i", entry.type,
+            return Str("%s %2d %2d %2d %2d %2d %2d %6d", entry.type,
                 entry.control.unk00, entry.control.unk04, entry.control.unk08, entry.control.unk0C, entry.control.unk10, entry.control.unk14, entry.control.textID);
-            break;
         default:
-            str = entry.type;
-            break;
+            return entry.type;
     }
-    return str;
 }

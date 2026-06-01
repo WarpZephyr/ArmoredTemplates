@@ -1,5 +1,5 @@
 //------------------------------------------------
-//--- 010 Editor v13.0.1 Binary Template
+//--- 010 Editor v15.0.2 Binary Template
 //
 //      File: Header.bt
 //   Authors: WarpZephyr
@@ -13,7 +13,7 @@
 
 typedef struct (string assertFourCC)
 {
-    int fourCC <format=hex>; Assert(fourCC == FourCCToInt(assertFourCC));
+    int fourCC <format=hex>; Assert(fourCC == FourCCToInt(assertFourCC), Str("0x%X != 0x%X", fourCC, FourCCToInt(assertFourCC)));
     
     int size <format=hex>; Assert(size == 0 || size == 16);
     int count; Assert(count == 0 || count == 1);
@@ -26,8 +26,7 @@ typedef struct (string assertFourCC)
 
 wstring ReadNullHeader(NullHeader& header)
 {
-    string str;
-    return SPrintf(str, "%s", IntToFourCC(header.fourCC));
+    return IntToFourCC(header.fourCC);
 }
 
 typedef struct (string assertFourCC)
@@ -41,8 +40,7 @@ typedef struct (string assertFourCC)
 
 wstring ReadBlobHeader(BlobHeader& header)
 {
-    string str;
-    return SPrintf(str, "%-4s        %5Xh", IntToFourCC(header.fourCC), header.size);
+    return Str("%-4s        %5Xh", IntToFourCC(header.fourCC), header.size);
 }
 
 typedef struct (string assertFourCC)
@@ -56,8 +54,7 @@ typedef struct (string assertFourCC)
 
 wstring ReadBlockHeader(BlockHeader& header)
 {
-    string str;
-    return SPrintf(str, "%-4s [%4i] %5Xh", IntToFourCC(header.fourCC), header.count, header.size);
+    return Str("%-4s [%4d] %5Xh", IntToFourCC(header.fourCC), header.count, header.size);
 }
 
 typedef struct

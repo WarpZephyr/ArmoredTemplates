@@ -1,5 +1,5 @@
 //------------------------------------------------
-//--- 010 Editor v13.0.1 Binary Template
+//--- 010 Editor v15.0.2 Binary Template
 //
 //      File: SCDL.bt
 //   Authors: WarpZephyr
@@ -11,7 +11,8 @@
 //   History: 
 //------------------------------------------------
 
-typedef struct {
+typedef struct
+{
     int nameOffset <format=hex, hidden=true>;
     int scdoCount <hidden=true>;
     int scdoOffset <format=hex, hidden=true>;
@@ -21,15 +22,15 @@ typedef struct {
     FSeek(offsets.str + nameOffset);
     wstring name;
 
-    if (scdoCount > 0) {
+    if (scdoCount > 0)
+    {
         FSeek(offsets.scdo + scdoOffset);
         SCDOEntry scdoEntries[scdoCount] <bgcolor=cGreen, optimize=false>;
     }
     FSeek(pos);
 } SCDLEntry <read=ReadSCDLEntry, optimize=false>;
 
-wstring ReadSCDLEntry(SCDLEntry& entry) {
-    string str;
-    SPrintf(str, "%3i %s", entry.unk0C, entry.name);
-    return str;
+wstring ReadSCDLEntry(SCDLEntry& entry)
+{
+    return Str("%3d %s", entry.unk0C, entry.name);
 }

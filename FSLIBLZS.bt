@@ -1,17 +1,17 @@
 //------------------------------------------------
-//--- 010 Editor v13.0.1 Binary Template
+//--- 010 Editor v15.0.2 Binary Template
 //
 //      File: FSLIBLZS.bt
 //   Authors: WarpZephyr
-//   Version: 
+//   Version: 1.1.0
 //   Purpose: fsliblzs compression format in 3rdgen Armored Core.
-//  Category: 
+//  Category: Compression
 // File Mask: 
-//  ID Bytes: 
+//  ID Bytes: 66 73 6C 69 62 6C 7A 73
 //   History: 
 //------------------------------------------------
 
-local byte HEADER_SIZE = 44;
+#define HEADER_SIZE 44
 
 LittleEndian();
 
@@ -19,26 +19,31 @@ LittleEndian();
 
 typedef struct
 {
+    BigEndian();
+    short unk00;
+    short unk02;
+    int size;
+    int is_not_compressed; Assert(is_not_compressed == 0 || is_not_compressed == 1);
+    LittleEndian();
+} FsLzssBufferHeader <bgcolor=cRed>;
+
+typedef struct
+{
     char magic[8]; Assert(magic == "fsliblzs");
+    int unk08;
     int unk0C;
-    int unk10;
     int compressed_size;
+    int unk14;
     int unk18;
     int unk1C;
-    int unk20;
-    BigEndian();
-    short unk24;
-    short unk26;
-    int decompressed_size;
-    int compressed_is_larger;
-    LittleEndian();
-} Header <bgcolor=cLtRed>;
+    
+    FsLzssBufferHeader bufferHeader;
+    if (compressed_size > HEADER_SIZE)
+    {
+        byte compressed_data[compressed_size - HEADER_SIZE] <bgcolor=cAqua>;
+    }
+} FSLIBLZS <bgcolor=cLtRed>;
 
 //------------------------------------------------
 
-Header header;
-
-if (header.compressed_size > HEADER_SIZE)
-{
-    byte compressed_data[header.compressed_size - HEADER_SIZE] <bgcolor=cLtGreen>;
-}
+FSLIBLZS fsliblzs;

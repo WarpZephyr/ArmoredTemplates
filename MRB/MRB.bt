@@ -3,13 +3,31 @@
 //
 //      File: MRB.bt
 //   Authors: WarpZephyr
-//   Version: 1.0.0
+//   Version: 1.1.0
 //   Purpose: MenuResourceBinary UI configuration.
 //  Category: Dantelion
 // File Mask: *.mrb
 //  ID Bytes: 
 //   History: 
 //------------------------------------------------
+
+LittleEndian();
+if (ReadInt() == 0x4D524200)
+{
+    BigEndian();
+}
+
+enum <uint> MRB_VERSION
+{
+    VER_ACFF = 0,
+    VER_ACFF_NO_SHAP_TYPE = 1,
+    VER_ACFF_DIFF_MONORECT = 2,
+    VER_ACLR = 3,
+    VER_CHROMEHOUNDS = 4
+};
+
+// Set this to tell apart different versions of the format.
+local MRB_VERSION VERSION <hidden=true> = VER_CHROMEHOUNDS;
 
 #include "../Util.bt"
 #include "STR.bt"
@@ -22,7 +40,6 @@
 #include "DLGO.bt"
 #include "FSPR.bt"
 #include "DLG.bt"
-LittleEndian();
 
 local quad offsetsStr <hidden=true, format=hex> = -1;
 local quad offsetsPrmi <hidden=true, format=hex> = -1;
@@ -35,27 +52,17 @@ local quad offsetsDlgo <hidden=true, format=hex> = -1;
 local quad offsetsFspr <hidden=true, format=hex> = -1;
 local quad offsetsDlg <hidden=true, format=hex> = -1;
 
-enum <uint> MRB_VERSION
-{
-    VER_ACFF = 0,
-    VER_ACFF_NO_SHAP_TYPE = 1,
-    VER_ACFF_DIFF_MONORECT = 2,
-    VER_ACLR = 3
-};
-
-// Set this to tell apart different versions of the format.
-local MRB_VERSION VERSION <hidden=true> = VER_ACFF;
-
 //------------------------------------------------
 
 typedef struct
 {
-    char type[4];
+    int fourCC;
     int size;
     int count;
     int unk0C <hidden=true>; Assert(unk0C == 0);
     local quad start <hidden=true> = FTell();
-
+    local string type <hidden=true> = IntToFourCC(fourCC);
+    
     switch (type)
     {
         case "MRB\0":
@@ -116,7 +123,7 @@ int64 GetSectionBgcolor(Section& section)
     return GetSectionBgcolorByType(section.type);
 }
 
-int64 GetSectionBgcolorByType(char type[])
+int64 GetSectionBgcolorByType(string type)
 {
     switch (type)
     {

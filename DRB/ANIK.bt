@@ -1,5 +1,5 @@
 //------------------------------------------------
-//--- 010 Editor v13.0.1 Binary Template
+//--- 010 Editor v15.0.2 Binary Template
 //
 //      File: ANIK.bt
 //   Authors: WarpZephyr
@@ -11,12 +11,12 @@
 //   History: 
 //------------------------------------------------
 
-typedef struct (int anioIndex)
+typedef struct
 {
     int nameOffset <format=hex, hidden=true>;
-    int unk04; // Frame count?
-    byte unk08; Assert(unk08 >= 0 && unk08 <= 1);
-    byte unk09; Assert(unk09 >= 1 && unk09 <= 2);
+    int keyFrame;
+    byte unk08; Assert(unk08 == 0 || unk08 == 1);
+    byte unk09; Assert(unk09 == 1 || unk09 == 2);
     short unk0A <hidden=true>; Assert(unk0A == 0);
     int intpOffset;
     int anipOffset;
@@ -38,6 +38,7 @@ typedef struct (int anioIndex)
     }
 
     FSeek(offsets.anip + anipOffset);
+    ubyte anipData <bgcolor=cBlack>;
     /*if (anioIndex == 0)
     {
         short anio00;
@@ -70,8 +71,6 @@ typedef struct (int anioIndex)
 
 wstring ReadANIKEntry(ANIKEntry& entry)
 {
-    string str;
-    SPrintf(str, "%3i %i %i %s %4X %4X",
-        entry.unk04, entry.unk08, entry.unk09, entry.name, entry.intpOffset, entry.anipOffset);
-    return str;
+    return Str("%3d %d %d %s %d %d",
+        entry.keyFrame, entry.unk08, entry.unk09, entry.name, entry.intpOffset, entry.anipOffset);;
 }

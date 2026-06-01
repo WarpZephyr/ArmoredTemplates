@@ -1,5 +1,5 @@
 //------------------------------------------------
-//--- 010 Editor v13.0.1 Binary Template
+//--- 010 Editor v15.0.2 Binary Template
 //
 //      File: ANIM.bt
 //   Authors: WarpZephyr
@@ -16,7 +16,7 @@ typedef struct (enum version)
     int nameOffset <format=hex>;
     int anioCount; //Assert(anioCount == 4);
     int anioOffset <format=hex>;
-    int unk0C; // Frame count?
+    int totalFrameCount;
     int unk10; Assert(unk10 >= 0 && unk10 <= 7);
     int unk14; Assert(unk14 >= 0 && unk14 <= 8);
     int unk18; //Assert(unk18 == 4);
@@ -51,7 +51,5 @@ typedef struct (enum version)
 
 wstring ReadANIMEntry(ANIMEntry& entry)
 {
-    string str;
-    SPrintf(str, "%3i %s", entry.unk0C, entry.name);
-    return str;
+    return entry.name;
 }

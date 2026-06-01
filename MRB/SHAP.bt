@@ -32,16 +32,20 @@ typedef struct
     {
         switch (type)
         {
-            case "Null":          ShprNull      shape <bgcolor=GetSectionBgcolorByType("SHPR")>; break;
-            case "MonoRect":      MonoRect      shape <bgcolor=GetSectionBgcolorByType("SHPR")>; break;
-            case "GouraudRect":   GouraudRect   shape <bgcolor=GetSectionBgcolorByType("SHPR")>; break;
-            case "MonoFrame":     MonoFrame     shape <bgcolor=GetSectionBgcolorByType("SHPR")>; break;
-            case "GouraudFrame":  GouraudFrame  shape <bgcolor=GetSectionBgcolorByType("SHPR")>; break;
-            case "Sprite":        Sprite        shape <bgcolor=GetSectionBgcolorByType("SHPR")>; break;
-            case "SimpleSprite":  SimpleSprite  shape <bgcolor=GetSectionBgcolorByType("SHPR")>; break;
-            case "GouraudSprite": GouraudSprite shape <bgcolor=GetSectionBgcolorByType("SHPR")>; break;
-            case "FormSprite":    FormSprite    shape <bgcolor=GetSectionBgcolorByType("SHPR")>; break;
-            case "StaticText":    StaticText    shape <bgcolor=GetSectionBgcolorByType("SHPR")>; break;
+            case "Null":           ShprNull       shape <bgcolor=GetSectionBgcolorByType("SHPR")>; break;
+            case "MonoRect":       MonoRect       shape <bgcolor=GetSectionBgcolorByType("SHPR")>; break;
+            case "GouraudRect":    GouraudRect    shape <bgcolor=GetSectionBgcolorByType("SHPR")>; break;
+            case "MonoFrame":      MonoFrame      shape <bgcolor=GetSectionBgcolorByType("SHPR")>; break;
+            case "GouraudFrame":   GouraudFrame   shape <bgcolor=GetSectionBgcolorByType("SHPR")>; break;
+            case "Sprite":         Sprite         shape <bgcolor=GetSectionBgcolorByType("SHPR")>; break;
+            case "SimpleSprite":   SimpleSprite   shape <bgcolor=GetSectionBgcolorByType("SHPR")>; break;
+            case "GouraudSprite":  GouraudSprite  shape <bgcolor=GetSectionBgcolorByType("SHPR")>; break;
+            case "FormSprite":     FormSprite     shape <bgcolor=GetSectionBgcolorByType("SHPR")>; break;
+            case "StaticText":     StaticText     shape <bgcolor=GetSectionBgcolorByType("SHPR")>; break;
+            case "Noise":          Noise          shape <bgcolor=GetSectionBgcolorByType("SHPR")>; break;
+            case "StaticMovie":    StaticMovie    shape <bgcolor=GetSectionBgcolorByType("SHPR")>; break;
+            case "DrawEnvSetting": DrawEnvSetting shape <bgcolor=GetSectionBgcolorByType("SHPR")>; break;
+            case "SpriteNoise":    SpriteNoise    shape <bgcolor=GetSectionBgcolorByType("SHPR")>; break;
             default:
                 Assert(false, Str("Shape Type not recognized: %s", type));
         }

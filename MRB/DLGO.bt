@@ -19,7 +19,7 @@ typedef struct
     int prmiOffset;
 
     int unk10;
-    int unk14 <hidden=true>; Assert(unk14 == 0);
+    int unk14;
     int unk18 <hidden=true>; Assert(unk18 == 0);
     int unk1C <hidden=true>; Assert(unk1C == 0);
     

@@ -1,5 +1,5 @@
 //------------------------------------------------
-//--- 010 Editor v13.0.1 Binary Template
+//--- 010 Editor v15.0.2 Binary Template
 //
 //      File: DLG.bt
 //   Authors: WarpZephyr
@@ -11,7 +11,8 @@
 //   History: 
 //------------------------------------------------
 
-typedef struct {
+typedef struct
+{
     int nameOffset <format=hex, hidden=true>;
     int shapOffset <format=hex, hidden=true>;
     int ctrlOffset <format=hex, hidden=true>; Assert(ctrlOffset == shapOffset);
@@ -36,6 +37,7 @@ typedef struct {
     {
         short unk32;
     }
+    
     short unk34;
     short unk36;
     short unk38;
@@ -52,13 +54,15 @@ typedef struct {
     FSeek(offsets.ctrl + ctrlOffset);
     CTRLEntry ctrlEntry <bgcolor=cAqua>;
 
-    if (dlgoCount > 0) {
+    if (dlgoCount > 0)
+    {
         FSeek(offsets.dlgo + dlgoOffset);
         DLGOEntry dlgoEntries[dlgoCount] <bgcolor=cLtRed, optimize=false>;
     }
     FSeek(pos);
 } DLGEntry <read=ReadDLGEntry, optimize=false>;
 
-wstring ReadDLGEntry(DLGEntry& entry) {
+wstring ReadDLGEntry(DLGEntry& entry)
+{
     return entry.name;
 }
